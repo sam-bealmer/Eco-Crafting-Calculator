@@ -1,0 +1,4099 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eco Calorie Price Calculator</title>
+    <style>
+      :root {
+        --bg: #1a1f2e;
+        --surface: #242938;
+        --surface2: #2e3447;
+        --border: #3d4561;
+        --accent: #5b9cf6;
+        --accent2: #7ec8a0;
+        --danger: #e06c75;
+        --warn: #e5c07b;
+        --text: #ced3e0;
+        --text-dim: #7a8299;
+        --text-bright: #f0f4ff;
+        --radius: 8px;
+        --bp-green: #2a4a35;
+        --bp-border: #3d8a5a;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        height: 100%;
+        overflow: hidden;
+      }
+
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        justify-content: space-between;
+      }
+
+      header h1 {
+        font-size: 1.2rem;
+        color: var(--text-bright);
+        font-weight: 600;
+      }
+
+      header .subtitle {
+        font-size: 0.8rem;
+        color: var(--text-dim);
+      }
+
+      .main-layout {
+        display: flex;
+        flex: 1;
+        gap: 0;
+        height: calc(100vh - 57px);
+      }
+
+      /* ── Resize handles ── */
+      .resize-handle {
+        width: 5px;
+        flex-shrink: 0;
+        background: var(--border);
+        cursor: col-resize;
+        transition: background 0.15s;
+        z-index: 10;
+      }
+      .resize-handle:hover,
+      .resize-handle.is-dragging {
+        background: var(--accent);
+      }
+
+      /* ── LEFT PANEL: Recipe DB ── */
+      .panel-left {
+        width: 380px;
+        min-width: 200px;
+        background: var(--surface);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .panel-header {
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .panel-header h2 {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-bright);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .btn-group {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+
+      button {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 5px 10px;
+        border-radius: var(--radius);
+        cursor: pointer;
+        font-size: 0.78rem;
+        transition: all 0.15s;
+        white-space: nowrap;
+      }
+
+      button:hover {
+        background: var(--border);
+        color: var(--text-bright);
+      }
+
+      button.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+
+      button.primary:hover {
+        opacity: 0.85;
+      }
+
+      button.danger {
+        background: transparent;
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+
+      button.danger:hover {
+        background: var(--danger);
+        color: #fff;
+      }
+
+      button.success {
+        background: transparent;
+        border-color: var(--accent2);
+        color: var(--accent2);
+      }
+
+      button.success:hover {
+        background: var(--accent2);
+        color: #fff;
+      }
+
+      .search-bar {
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .search-bar input {
+        width: 100%;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--text);
+        padding: 7px 10px;
+        font-size: 0.85rem;
+      }
+
+      .search-bar input:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      .item-list {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 8px;
+      }
+
+      .item-list::-webkit-scrollbar,
+      .form-body::-webkit-scrollbar,
+      .calc-result::-webkit-scrollbar {
+        width: 5px;
+      }
+      .item-list::-webkit-scrollbar-track,
+      .form-body::-webkit-scrollbar-track,
+      .calc-result::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .item-list::-webkit-scrollbar-thumb,
+      .form-body::-webkit-scrollbar-thumb,
+      .calc-result::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 3px;
+      }
+
+      /* ── Group-by toolbar ── */
+      .group-bar {
+        padding: 6px 16px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .group-label {
+        font-size: 0.7rem;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        white-space: nowrap;
+        margin-right: 2px;
+      }
+
+      .group-btn {
+        font-size: 0.72rem;
+        padding: 3px 8px;
+        border-radius: 4px;
+      }
+
+      .group-btn.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+
+      /* ── Folder sections ── */
+      .folder {
+        margin-bottom: 4px;
+      }
+
+      .folder-header {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 6px;
+        cursor: pointer;
+        border-radius: var(--radius);
+        user-select: none;
+      }
+
+      .folder-header:hover {
+        background: var(--surface2);
+      }
+
+      .folder-chevron {
+        font-size: 0.65rem;
+        color: var(--text-dim);
+        display: inline-block;
+        transition: transform 0.15s;
+        line-height: 1;
+      }
+
+      .folder-chevron.collapsed {
+        transform: rotate(-90deg);
+      }
+
+      .folder-name {
+        flex: 1;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .folder-count {
+        font-size: 0.7rem;
+        color: var(--text-dim);
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 0 6px;
+        min-width: 20px;
+        text-align: center;
+      }
+
+      .folder-body.collapsed {
+        display: none;
+      }
+
+      .item-card {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 10px 12px;
+        margin-bottom: 6px;
+        cursor: pointer;
+        transition: border-color 0.15s;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .item-card:hover {
+        border-color: var(--accent);
+      }
+      .item-card.selected {
+        border-color: var(--accent);
+        background: #2a3555;
+      }
+
+      .item-card-name {
+        font-size: 0.9rem;
+        color: var(--text-bright);
+        font-weight: 500;
+      }
+
+      .item-card-meta {
+        font-size: 0.75rem;
+        color: var(--text-dim);
+        margin-top: 2px;
+      }
+
+      .item-card-cal {
+        font-size: 0.8rem;
+        color: var(--accent2);
+        font-weight: 600;
+        white-space: nowrap;
+        margin-left: 8px;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--text-dim);
+        font-size: 0.85rem;
+      }
+
+      /* ── MIDDLE PANEL: Edit form ── */
+      .panel-mid {
+        width: 400px;
+        min-width: 200px;
+        background: var(--bg);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      /* Recipe tabs */
+      .recipe-tabs-section {
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+        padding: 0 12px;
+        display: none;
+      }
+
+      .recipe-tabs {
+        display: flex;
+        gap: 2px;
+        overflow-x: auto;
+        padding: 6px 0 0 0;
+        scrollbar-width: none;
+      }
+
+      .recipe-tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .recipe-tab {
+        background: transparent;
+        border: 1px solid var(--border);
+        border-bottom: none;
+        border-radius: 6px 6px 0 0;
+        padding: 5px 10px;
+        font-size: 0.78rem;
+        color: var(--text-dim);
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.15s;
+        margin-bottom: -1px;
+      }
+
+      .recipe-tab:hover {
+        color: var(--text-bright);
+        background: var(--surface2);
+      }
+
+      .recipe-tab.active {
+        background: var(--bg);
+        border-color: var(--border);
+        border-bottom-color: var(--bg);
+        color: var(--text-bright);
+      }
+
+      .recipe-tab .tab-star {
+        color: var(--warn);
+        margin-right: 3px;
+        font-size: 0.7rem;
+      }
+
+      .recipe-tab-add {
+        background: transparent;
+        border: 1px dashed var(--border);
+        border-bottom: none;
+        border-radius: 6px 6px 0 0;
+        padding: 5px 10px;
+        font-size: 0.78rem;
+        color: var(--text-dim);
+        cursor: pointer;
+        margin-bottom: -1px;
+      }
+
+      .recipe-tab-add:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+        background: transparent;
+      }
+
+      .recipe-tab-actions {
+        display: flex;
+        gap: 4px;
+        padding: 6px 0;
+        align-items: center;
+        border-top: 1px solid var(--border);
+        margin-top: 2px;
+      }
+
+      .recipe-tab-actions button {
+        font-size: 0.72rem;
+        padding: 3px 7px;
+      }
+
+      .form-body {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 16px;
+      }
+
+      .form-group {
+        margin-bottom: 14px;
+      }
+
+      label {
+        display: block;
+        font-size: 0.78rem;
+        color: var(--text-dim);
+        margin-bottom: 5px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      select {
+        width: 100%;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--text);
+        padding: 8px 10px;
+        font-size: 0.88rem;
+      }
+
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      .ingredient-row {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 6px;
+        align-items: center;
+      }
+
+      .ingredient-row input[type="text"] {
+        flex: 1;
+      }
+      .ingredient-row input[type="number"] {
+        width: 80px;
+      }
+      .ingredient-row button {
+        padding: 6px 8px;
+      }
+
+      /* Byproduct rows — green tinted */
+      .byproduct-row {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 6px;
+        align-items: center;
+        background: rgba(62, 138, 90, 0.08);
+        border-radius: 5px;
+        padding: 2px;
+      }
+
+      .byproduct-row input[type="text"] {
+        flex: 1;
+        background: rgba(62, 138, 90, 0.12);
+      }
+      .byproduct-row input[type="number"] {
+        width: 80px;
+        background: rgba(62, 138, 90, 0.12);
+      }
+      .byproduct-row button {
+        padding: 6px 8px;
+      }
+
+      .add-ingredient-btn {
+        width: 100%;
+        margin-top: 4px;
+        background: transparent;
+        border-style: dashed;
+        color: var(--text-dim);
+      }
+
+      .add-ingredient-btn:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+
+      .add-byproduct-btn {
+        width: 100%;
+        margin-top: 4px;
+        background: transparent;
+        border-style: dashed;
+        color: var(--text-dim);
+        border-color: var(--bp-border);
+      }
+
+      .add-byproduct-btn:hover {
+        color: var(--accent2);
+        border-color: var(--accent2);
+        background: transparent;
+      }
+
+      .form-actions {
+        padding: 12px 16px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 8px;
+      }
+
+      .hint {
+        font-size: 0.75rem;
+        color: var(--text-dim);
+        margin-top: 4px;
+        font-style: italic;
+      }
+
+      /* ── RIGHT PANEL: Calculator ── */
+      .panel-right {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        background: var(--bg);
+      }
+
+      .calc-settings {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      .calc-settings .setting {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+      }
+
+      .calc-settings label {
+        text-transform: none;
+        letter-spacing: 0;
+        font-size: 0.85rem;
+        color: var(--text);
+        margin: 0;
+        white-space: nowrap;
+      }
+
+      .calc-settings input[type="number"] {
+        width: 100px;
+        padding: 5px 8px;
+        font-size: 0.85rem;
+      }
+
+      .calc-settings input[type="text"] {
+        width: 100px;
+        padding: 5px 8px;
+        font-size: 0.85rem;
+      }
+
+      .calc-search {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .calc-search input {
+        flex: 1;
+        font-size: 0.95rem;
+        padding: 9px 12px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--text);
+      }
+
+      .calc-search input:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      #calc-recipe-select {
+        padding: 9px 10px;
+        font-size: 0.85rem;
+        width: auto;
+        min-width: 120px;
+      }
+
+      .calc-result {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 20px;
+      }
+
+      .result-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+
+      .result-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+
+      .result-item-name {
+        font-size: 1.2rem;
+        color: var(--text-bright);
+        font-weight: 600;
+      }
+
+      .result-price {
+        text-align: right;
+      }
+
+      .result-price .credits {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: var(--accent2);
+      }
+
+      .result-price .per-item {
+        font-size: 0.78rem;
+        color: var(--text-dim);
+      }
+
+      .result-body {
+        padding: 16px 20px;
+      }
+
+      .stat-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 0;
+        font-size: 0.88rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .stat-row:last-child {
+        border-bottom: none;
+      }
+      .stat-row .stat-label {
+        color: var(--text-dim);
+      }
+      .stat-row .stat-value {
+        color: var(--text-bright);
+        font-weight: 500;
+      }
+      .stat-row .stat-value.highlight {
+        color: var(--accent2);
+      }
+      .stat-row .stat-value.deduct {
+        color: var(--accent2);
+      }
+
+      .breakdown-section {
+        margin-top: 16px;
+      }
+
+      .breakdown-title {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-dim);
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+
+      .tree-node {
+        position: relative;
+        margin-left: 16px;
+        padding-left: 12px;
+        border-left: 1px solid var(--border);
+      }
+
+      .tree-node::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 14px;
+        width: 10px;
+        height: 1px;
+        background: var(--border);
+      }
+
+      .tree-root {
+        margin-left: 0;
+        padding-left: 0;
+        border-left: none;
+      }
+      .tree-root::before {
+        display: none;
+      }
+
+      .tree-item {
+        padding: 6px 10px;
+        border-radius: 5px;
+        margin-bottom: 4px;
+        font-size: 0.84rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--surface2);
+      }
+
+      .tree-item .tree-name {
+        color: var(--text-bright);
+      }
+      .tree-item .tree-detail {
+        color: var(--text-dim);
+        font-size: 0.78rem;
+      }
+      .tree-item .tree-cal {
+        color: var(--warn);
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+      .tree-item.is-raw {
+        opacity: 0.75;
+      }
+      .tree-item.is-labor {
+        background: transparent;
+        color: var(--accent2);
+      }
+      .tree-item.is-labor .tree-cal {
+        color: var(--accent2);
+      }
+
+      /* Byproduct tree item — green tinted */
+      .tree-item.is-byproduct {
+        background: rgba(62, 138, 90, 0.15);
+        border: 1px solid rgba(62, 138, 90, 0.3);
+      }
+      .tree-item.is-byproduct .tree-name {
+        color: var(--accent2);
+      }
+      .tree-item.is-byproduct .tree-cal {
+        color: var(--accent2);
+      }
+
+      .bp-section-label {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--accent2);
+        opacity: 0.7;
+        margin: 4px 0 2px 0;
+      }
+
+      /* Skill / Table badges in tree */
+      .adj-badge {
+        display: inline-block;
+        border-radius: 3px;
+        padding: 1px 5px;
+        font-size: 0.68rem;
+        font-weight: 600;
+        margin-left: 4px;
+        vertical-align: middle;
+      }
+
+      .adj-badge.skill {
+        background: rgba(91, 156, 246, 0.18);
+        color: var(--accent);
+        border: 1px solid rgba(91, 156, 246, 0.35);
+      }
+
+      .adj-badge.table {
+        background: rgba(229, 192, 123, 0.15);
+        color: var(--warn);
+        border: 1px solid rgba(229, 192, 123, 0.3);
+      }
+
+      .error-box {
+        background: #3d2030;
+        border: 1px solid var(--danger);
+        border-radius: var(--radius);
+        padding: 12px 16px;
+        font-size: 0.85rem;
+        color: var(--danger);
+      }
+
+      .warn-box {
+        background: #3a3020;
+        border: 1px solid var(--warn);
+        border-radius: var(--radius);
+        padding: 10px 14px;
+        font-size: 0.82rem;
+        color: var(--warn);
+        margin-bottom: 12px;
+      }
+
+      .placeholder-msg {
+        color: var(--text-dim);
+        font-size: 0.9rem;
+        text-align: center;
+        padding: 60px 20px;
+      }
+
+      .qty-input-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .qty-input-row input {
+        width: 80px;
+      }
+
+      /* Import/Export modal */
+      .modal-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 100;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-backdrop.open {
+        display: flex;
+      }
+
+      .modal {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        width: 620px;
+        max-width: 95vw;
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Settings modal — wider */
+      #settings-modal-backdrop .modal {
+        width: 700px;
+      }
+
+      .modal-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .modal-header h3 {
+        color: var(--text-bright);
+        font-size: 1rem;
+      }
+
+      .modal-body {
+        padding: 20px;
+        overflow-y: auto;
+        flex: 1;
+      }
+
+      .modal-footer {
+        padding: 12px 20px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      textarea {
+        width: 100%;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--text);
+        padding: 10px;
+        font-family: "Cascadia Code", "Fira Code", "Consolas", monospace;
+        font-size: 0.78rem;
+        resize: vertical;
+        min-height: 300px;
+      }
+
+      textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      .schema-hint {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 12px;
+        margin-top: 14px;
+        font-family: monospace;
+        font-size: 0.75rem;
+        color: var(--text-dim);
+        white-space: pre;
+        overflow-x: auto;
+      }
+
+      .tab-row {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 12px;
+      }
+
+      .tab-btn {
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid transparent;
+        border-radius: 0;
+        padding: 6px 12px;
+        color: var(--text-dim);
+        font-size: 0.85rem;
+      }
+
+      .tab-btn.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+      }
+
+      .tab-panel {
+        display: none;
+      }
+      .tab-panel.active {
+        display: block;
+      }
+
+      .tag {
+        display: inline-block;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 1px 6px;
+        font-size: 0.72rem;
+        color: var(--text-dim);
+        margin-left: 6px;
+      }
+
+      .tag.recipe-count {
+        background: rgba(91, 156, 246, 0.15);
+        border-color: rgba(91, 156, 246, 0.3);
+        color: var(--accent);
+      }
+
+      .tag.market {
+        background: rgba(91, 214, 170, 0.15);
+        border-color: rgba(91, 214, 170, 0.3);
+        color: #5dd6aa;
+      }
+
+      /* Market-priced tree item — teal tinted */
+      .tree-item.is-market {
+        background: rgba(91, 214, 170, 0.08);
+        border: 1px solid rgba(91, 214, 170, 0.25);
+      }
+      .tree-item.is-market .tree-name {
+        color: #5dd6aa;
+      }
+      .tree-item.is-market .tree-cal {
+        color: #5dd6aa;
+      }
+
+      .autocomplete-wrapper {
+        position: relative;
+      }
+
+      .autocomplete-list {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--surface);
+        border: 1px solid var(--accent);
+        border-top: none;
+        border-radius: 0 0 var(--radius) var(--radius);
+        z-index: 50;
+        max-height: 180px;
+        overflow-y: auto;
+      }
+
+      .autocomplete-item {
+        padding: 7px 10px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        color: var(--text);
+      }
+
+      .autocomplete-item:hover,
+      .autocomplete-item.focused {
+        background: var(--surface2);
+        color: var(--text-bright);
+      }
+
+      .divider {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 12px 0;
+      }
+
+      /* Settings table */
+      .settings-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+        margin-top: 8px;
+      }
+
+      .settings-table th {
+        text-align: left;
+        padding: 8px 10px;
+        color: var(--text-dim);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid var(--border);
+        font-weight: 600;
+      }
+
+      .settings-table td {
+        padding: 6px 8px;
+        border-bottom: 1px solid rgba(61, 69, 97, 0.5);
+        vertical-align: middle;
+      }
+
+      .settings-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .settings-table input[type="text"],
+      .settings-table input[type="number"],
+      .settings-table select {
+        padding: 5px 8px;
+        font-size: 0.82rem;
+        background: var(--bg);
+        width: 100%;
+      }
+
+      .settings-table input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        accent-color: var(--accent2);
+      }
+
+      .pct-cell {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .pct-cell span {
+        color: var(--text-dim);
+        font-size: 0.8rem;
+      }
+
+      .info-box {
+        background: rgba(91, 156, 246, 0.08);
+        border: 1px solid rgba(91, 156, 246, 0.25);
+        border-radius: var(--radius);
+        padding: 10px 14px;
+        font-size: 0.82rem;
+        color: var(--text-dim);
+        margin-bottom: 14px;
+      }
+
+      kbd {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-bottom: 2px solid var(--border);
+        border-radius: 3px;
+        padding: 1px 6px;
+        font-size: 0.82rem;
+        font-family: inherit;
+        color: var(--text);
+      }
+
+      .copy-btn {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text-dim);
+        padding: 3px 9px;
+        font-size: 0.72rem;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: all 0.15s;
+        margin-top: 6px;
+        display: block;
+      }
+
+      .copy-btn:hover {
+        background: var(--surface2);
+        color: var(--text-bright);
+        border-color: var(--accent);
+      }
+
+      .copy-btn.copied {
+        border-color: var(--accent2);
+        color: var(--accent2);
+      }
+
+      .workflow-hint {
+        font-size: 0.72rem;
+        color: var(--text-dim);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 0;
+      }
+
+      .workflow-hint .step {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1px 7px;
+        white-space: nowrap;
+      }
+
+      .workflow-hint .arrow {
+        color: var(--border);
+        font-size: 0.6rem;
+      }
+
+      .item-card:hover .item-card-cal {
+        color: var(--accent);
+      }
+
+      /* ── Item Tags ── */
+      .tree-item.is-tag {
+        background: rgba(179, 136, 255, 0.08);
+        border: 1px solid rgba(179, 136, 255, 0.3);
+      }
+      .tree-item.is-tag .tree-name {
+        color: #b388ff;
+      }
+      .tree-item.is-tag .tree-cal {
+        color: #b388ff;
+      }
+
+      .tag.item-tag {
+        background: rgba(179, 136, 255, 0.15);
+        border-color: rgba(179, 136, 255, 0.3);
+        color: #b388ff;
+      }
+
+      .tag-card {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 12px 14px;
+        margin-bottom: 8px;
+      }
+
+      .tag-card-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+      }
+
+      .tag-members {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        align-items: center;
+      }
+
+      .tag-member-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 2px 6px;
+        font-size: 0.78rem;
+        color: var(--text);
+      }
+
+      .tag-member-chip .chip-remove {
+        background: none;
+        border: none;
+        color: var(--text-dim);
+        padding: 0 0 0 2px;
+        font-size: 0.72rem;
+        cursor: pointer;
+        line-height: 1;
+      }
+
+      .tag-member-chip .chip-remove:hover {
+        color: var(--danger);
+        background: none;
+      }
+
+      /* ── Help Modal ── */
+      .help-modal .modal {
+        max-width: 740px;
+        max-height: 82vh;
+      }
+      .help-modal .modal-body {
+        overflow-y: auto;
+        padding: 0;
+      }
+      .help-toc {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 16px 20px 12px;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface2);
+      }
+      .help-toc a {
+        font-size: 0.78rem;
+        color: var(--accent);
+        text-decoration: none;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 3px 9px;
+      }
+      .help-toc a:hover {
+        border-color: var(--accent);
+      }
+      .help-sections {
+        padding: 0 20px 20px;
+      }
+      .help-section {
+        margin-top: 22px;
+      }
+      .help-section h4 {
+        font-size: 0.95rem;
+        color: var(--text-bright);
+        font-weight: 600;
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .help-dl {
+        display: grid;
+        grid-template-columns: minmax(160px, auto) 1fr;
+        gap: 5px 14px;
+        font-size: 0.84rem;
+      }
+      .help-dt {
+        color: var(--warn);
+        font-weight: 500;
+        padding-top: 2px;
+        white-space: nowrap;
+      }
+      .help-dd {
+        color: var(--text);
+        line-height: 1.5;
+      }
+      .help-dd code {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 3px;
+        padding: 0 4px;
+        font-size: 0.82em;
+        color: var(--accent2);
+      }
+      .help-note {
+        font-size: 0.8rem;
+        color: var(--text-dim);
+        background: var(--surface2);
+        border-left: 3px solid var(--border);
+        padding: 7px 10px;
+        margin-top: 10px;
+        border-radius: 0 4px 4px 0;
+        line-height: 1.5;
+      }
+      .help-note strong {
+        color: var(--text);
+      }
+      .help-formula {
+        font-family: monospace;
+        font-size: 0.82rem;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        padding: 10px 14px;
+        margin-top: 8px;
+        line-height: 1.8;
+        color: var(--accent2);
+      }
+      .help-formula em {
+        color: var(--text-dim);
+        font-style: normal;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>
+        <h1>Eco — Calorie Price Calculator</h1>
+        <div class="subtitle">
+          <span class="workflow-hint">
+            <span class="step">1. Add recipes</span>
+            <span class="arrow">▶</span>
+            <span class="step">2. Click any item</span>
+            <span class="arrow">▶</span>
+            <span class="step">3. See its credit price</span>
+          </span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center">
+        <button onclick="openHelp()" style="font-size: 0.85rem; padding: 6px 14px">? Help</button>
+        <button onclick="openSettings()" style="font-size: 0.85rem; padding: 6px 14px">⚙ Skills &amp; Tables</button>
+      </div>
+    </header>
+
+    <div class="main-layout">
+      <!-- LEFT: Recipe Database -->
+      <div class="panel-left">
+        <div class="panel-header">
+          <h2>Recipe Database <span class="tag" id="item-count">0 items</span></h2>
+          <div class="btn-group">
+            <button onclick="openImport()">Import</button>
+            <button onclick="openExport()">Export</button>
+            <button onclick="seedDefaultRaws()" title="Add the built-in list of common raw materials to your database">
+              ↺ Seed Raws
+            </button>
+            <button class="danger" onclick="clearDatabase()" title="Remove all items from the recipe database">
+              ✕ Clear All
+            </button>
+            <button class="primary" onclick="newItem()">+ New</button>
+          </div>
+        </div>
+        <div class="search-bar">
+          <input type="text" id="list-search" placeholder="Filter items…" oninput="renderList()" />
+        </div>
+        <div class="group-bar">
+          <span class="group-label">Group:</span>
+          <button class="group-btn active" id="grp-none" onclick="setGroupBy('none')">A–Z</button>
+          <button class="group-btn" id="grp-type" onclick="setGroupBy('type')">Type</button>
+          <button class="group-btn" id="grp-skill" onclick="setGroupBy('skill')">Skill</button>
+          <button class="group-btn" id="grp-table" onclick="setGroupBy('table')">Table</button>
+        </div>
+        <div class="item-list" id="item-list">
+          <div class="empty-state">
+            No recipes yet.<br />Click <strong>+ New</strong> to add your first item,<br />or <strong>Import</strong> to
+            load a database.<br /><br />
+            <button onclick="seedDefaultRaws()" style="margin-top: 4px">↺ Seed Default Raw Materials</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="resize-handle" id="resize-handle-left"></div>
+
+      <!-- MIDDLE: Edit Form -->
+      <div class="panel-mid">
+        <div class="panel-header">
+          <h2 id="form-title">Item Editor</h2>
+          <div class="btn-group">
+            <button class="danger" id="btn-delete" onclick="deleteItem()" style="display: none">Delete Item</button>
+          </div>
+        </div>
+
+        <!-- Recipe tabs (hidden until editing) -->
+        <div class="recipe-tabs-section" id="recipe-tabs-section">
+          <div class="recipe-tabs" id="recipe-tabs"></div>
+          <div class="recipe-tab-actions" id="recipe-tab-actions"></div>
+        </div>
+
+        <div class="form-body" id="form-body">
+          <div class="empty-state">
+            <div style="font-size: 0.95rem; color: var(--text-bright); margin-bottom: 8px">
+              Select an item to edit its recipe
+            </div>
+            <div style="line-height: 1.6">
+              Click any item in the <strong>Recipe Database</strong> list — the editor opens here and the
+              <strong>Calculator</strong> automatically shows its price.
+            </div>
+            <div
+              style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); color: var(--text-dim)">
+              Click <strong style="color: var(--text)">+ New</strong> to add a new item to the database.
+            </div>
+          </div>
+        </div>
+        <div class="form-actions" id="form-actions" style="display: none">
+          <button class="primary" onclick="saveItem()">Save Item</button>
+          <button onclick="cancelEdit()">Cancel</button>
+        </div>
+      </div>
+
+      <div class="resize-handle" id="resize-handle-mid"></div>
+
+      <!-- RIGHT: Calculator -->
+      <div class="panel-right">
+        <div class="calc-settings">
+          <div class="setting">
+            <label title="How many credits one calorie is worth. e.g. 0.001 = 1000 cal per credit"
+              >Credits per Calorie:</label
+            >
+            <input type="number" id="cred-per-cal" value="2" min="0.0001" step="0.0001" oninput="recalc()" />
+          </div>
+          <div class="setting">
+            <label>Currency Symbol:</label>
+            <input type="text" id="currency-symbol" value="$" maxlength="5" style="width: 60px" oninput="recalc()" />
+          </div>
+          <div class="setting">
+            <label
+              title="Profit margin added on top of the calculated base cost. Per-recipe overrides available in the editor."
+              >Profit Margin:</label
+            >
+            <input type="number" id="margin-pct" value="0" min="0" max="500" step="5" oninput="recalc()" />
+          </div>
+          <div class="setting">
+            <label
+              title="Global multiplier on all reducible ingredient quantities. Use for server-modified craft rates."
+              >Craft Modifier:</label
+            >
+            <input
+              type="number"
+              id="craft-resource-mod"
+              value="1.0"
+              min="0"
+              step="0.05"
+              style="width: 75px"
+              oninput="recalc()" />
+          </div>
+          <div class="setting">
+            <label
+              title="When checked, the crafting table upgrade modifier also reduces labor calories (our default). Uncheck to match calculators that leave labor unaffected by table upgrades."
+              >Table mod affects labor:</label
+            >
+            <input type="checkbox" id="table-mod-labor" checked onchange="recalc()" style="width: auto" />
+          </div>
+        </div>
+        <div class="calc-search">
+          <div class="autocomplete-wrapper" style="flex: 1">
+            <input
+              type="text"
+              id="calc-input"
+              placeholder="Search for an item… (Enter to price)"
+              oninput="calcAutocomplete()"
+              onkeydown="calcKeydown(event)"
+              autocomplete="off" />
+            <div class="autocomplete-list" id="calc-autocomplete" style="display: none"></div>
+          </div>
+          <select id="calc-recipe-select" style="display: none" onchange="recalc()"></select>
+          <div class="qty-input-row">
+            <label
+              style="
+                white-space: nowrap;
+                text-transform: none;
+                letter-spacing: 0;
+                font-size: 0.85rem;
+                color: var(--text);
+              "
+              >Qty:</label
+            >
+            <input
+              type="number"
+              id="calc-qty"
+              value="1"
+              min="1"
+              step="1"
+              style="width: 70px; padding: 9px 8px"
+              oninput="recalc()" />
+          </div>
+          <button class="primary" onclick="lookupItem()">Price It</button>
+        </div>
+        <div class="calc-result" id="calc-result">
+          <div class="placeholder-msg">
+            <div style="font-size: 0.95rem; color: var(--text-bright); margin-bottom: 10px">
+              Price any item instantly
+            </div>
+            <div style="line-height: 1.6">
+              Click any item in the <strong>Recipe Database</strong> list on the left — its credit price will appear
+              here automatically.
+            </div>
+            <div style="margin-top: 10px; color: var(--text-dim)">
+              Or type an item name above and press <kbd>Enter</kbd> to look it up.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Import/Export Modal -->
+    <div class="modal-backdrop" id="modal-backdrop" onclick="closeModalIfBackdrop(event)">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="modal-title">Import / Export</h3>
+          <button onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="tab-row">
+            <button class="tab-btn active" onclick="switchTab('import')">Import JSON</button>
+            <button class="tab-btn" onclick="switchTab('export')">Export JSON</button>
+            <button class="tab-btn" onclick="switchTab('schema')">Schema Help</button>
+          </div>
+
+          <div class="tab-panel active" id="tab-import">
+            <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 10px">
+              Paste a JSON array of item recipes below. Items will be merged into your database (existing items with the
+              same name will be overwritten).
+            </p>
+            <textarea id="import-textarea" placeholder="Paste JSON here…"></textarea>
+            <div id="import-error" style="display: none; margin-top: 8px" class="error-box"></div>
+          </div>
+
+          <div class="tab-panel" id="tab-export">
+            <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 10px">
+              Copy this JSON to back up or share your recipe database (includes skills &amp; tables).
+            </p>
+            <textarea id="export-textarea" readonly></textarea>
+          </div>
+
+          <div class="tab-panel" id="tab-schema">
+            <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 10px">
+              Each item in the array must have a <code>recipes</code> array.
+            </p>
+            <div class="schema-hint">
+              [ { "name": "Wooden Chair", "defaultRecipeIdx": 0, "recipes": [{ "label": "Default", "skill": "Carpentry",
+              "craftingTable": "Workbench", "laborCalories": 200, "outputQty": 1, "ingredients": [{"name": "Wood Board",
+              "qty": 4}], "byproducts": [{"name": "Wood Scrap", "qty": 1}] }] } ]
+            </div>
+            <p style="font-size: 0.82rem; color: var(--text-dim); margin-top: 12px">
+              <strong>Tips:</strong><br />
+              • Raw materials should have <code>laborCalories</code> set to gather cost, with no ingredients.<br />
+              • Skill &amp; table names are matched case-insensitively to your Settings entries.<br />
+              • Byproducts offset net calorie cost — if a byproduct has its own recipe, its value is subtracted.
+            </p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button onclick="closeModal()">Close</button>
+          <button class="primary" id="modal-action-btn" onclick="doImport()">Import</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-backdrop" id="settings-modal-backdrop" onclick="closeSettingsIfBackdrop(event)">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>⚙ Skills &amp; Crafting Tables</h3>
+          <button onclick="closeSettings()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="info-box">
+            Skill levels (0–7) match the star rating shown in-game. Level 0 = not learned (100% labor). Level 7 = fully
+            specialised (50% labor). The <strong>Lavish</strong> checkbox applies an additional 5% reduction to
+            ingredient quantities. Table upgrade modules further reduce labor cost.
+          </div>
+          <div class="tab-row">
+            <button class="tab-btn active" id="stab-skills" onclick="switchSettingsTab('skills')">Skills</button>
+            <button class="tab-btn" id="stab-tables" onclick="switchSettingsTab('tables')">Crafting Tables</button>
+            <button class="tab-btn" id="stab-tags" onclick="switchSettingsTab('tags')">Item Tags</button>
+          </div>
+          <div id="settings-skills-panel" class="tab-panel active"></div>
+          <div id="settings-tables-panel" class="tab-panel"></div>
+          <div id="settings-tags-panel" class="tab-panel"></div>
+        </div>
+        <div class="modal-footer">
+          <button onclick="resetSettingsToDefaults()" style="margin-right: auto">↺ Reset to Vanilla Defaults</button>
+          <button onclick="closeSettings()">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal-backdrop help-modal" id="help-modal-backdrop" onclick="if (event.target === this) closeHelp();">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>? How to Use — Eco Calorie Price Calculator</h3>
+          <button onclick="closeHelp()">✕</button>
+        </div>
+        <div class="modal-body">
+          <nav class="help-toc">
+            <a href="#help-overview">Overview</a>
+            <a href="#help-quickstart">Quick Start</a>
+            <a href="#help-database">Recipe Database</a>
+            <a href="#help-editor">Item Editor</a>
+            <a href="#help-calculator">Calculator</a>
+            <a href="#help-skills">Skills &amp; Tables</a>
+            <a href="#help-tags">Item Tags</a>
+            <a href="#help-importexport">Import / Export</a>
+            <a href="#help-formula">Cost Formula</a>
+          </nav>
+          <div class="help-sections">
+            <div class="help-section" id="help-overview">
+              <h4>📋 Overview</h4>
+              <p style="font-size: 0.85rem; line-height: 1.6; color: var(--text)">
+                This tool calculates credit prices for crafted items in the game <strong>Eco</strong> using
+                calorie-based economics. You build a recipe database, configure your character's skills and crafting
+                table upgrades, then look up any item to see its fully-loaded cost — including all nested
+                sub-ingredients — converted to credits at your server's calorie rate.
+              </p>
+              <div class="help-note">
+                All data (recipes, skills, tables, tags) is stored in your browser's <strong>localStorage</strong>. Use
+                <strong>Export</strong> to back up your database and <strong>Import</strong> to restore or share it.
+              </div>
+            </div>
+
+            <div class="help-section" id="help-quickstart">
+              <h4>⚡ Quick Start</h4>
+              <div class="help-dl">
+                <div class="help-dt">1. Configure skills</div>
+                <div class="help-dd">
+                  Click <strong>⚙ Skills &amp; Tables</strong> and set each skill to your character's in-game star
+                  level.
+                </div>
+                <div class="help-dt">2. Add your recipes</div>
+                <div class="help-dd">
+                  Click <strong>+ New</strong> in the Recipe Database, or click <strong>↺ Seed Raws</strong> to
+                  pre-populate common raw materials. You can also <strong>Import</strong> a JSON export.
+                </div>
+                <div class="help-dt">3. Set the calorie rate</div>
+                <div class="help-dd">
+                  Enter your server's <strong>Credits per Calorie</strong> in the Calculator panel (e.g.
+                  <code>1.6</code> if 1000 cal = 1600 credits).
+                </div>
+                <div class="help-dt">4. Price an item</div>
+                <div class="help-dd">
+                  Click any item in the list — the Calculator instantly shows its credit price and full ingredient cost
+                  tree.
+                </div>
+              </div>
+            </div>
+
+            <div class="help-section" id="help-database">
+              <h4>📦 Recipe Database (Left Panel)</h4>
+              <div class="help-dl">
+                <div class="help-dt">Search</div>
+                <div class="help-dd">Filter the list by typing any part of an item name.</div>
+                <div class="help-dt">Group By</div>
+                <div class="help-dd">
+                  Sort the list alphabetically (A–Z), or group by Type (raw/crafted), Skill, or Crafting Table.
+                </div>
+                <div class="help-dt">+ New</div>
+                <div class="help-dd">Create a new blank item and open it in the editor.</div>
+                <div class="help-dt">↺ Seed Raws</div>
+                <div class="help-dd">
+                  Adds a built-in list of common raw materials (ores, wood, stone, etc.) to your database. Existing
+                  items are not overwritten. Set each raw material's <strong>Market Buy Price</strong> or
+                  <strong>Labor Calories</strong> to reflect your server's costs.
+                </div>
+                <div class="help-dt">Click an item</div>
+                <div class="help-dd">
+                  Opens the item in the editor <em>and</em> immediately runs the calculator for that item.
+                </div>
+                <div class="help-dt">Missing recipe (red)</div>
+                <div class="help-dd">
+                  If an ingredient has no recipe in the database, it appears red in the cost tree. Click it to create a
+                  new recipe pre-filled with that name.
+                </div>
+              </div>
+            </div>
+
+            <div class="help-section" id="help-editor">
+              <h4>✏️ Item Editor (Middle Panel)</h4>
+              <p style="font-size: 0.82rem; color: var(--text-dim); margin-bottom: 10px">
+                Fields apply to the item as a whole unless noted as per-recipe.
+              </p>
+              <div class="help-dl">
+                <div class="help-dt">Item Name</div>
+                <div class="help-dd">
+                  The item's display name. This is what other recipes reference when listing this as an ingredient.
+                </div>
+                <div class="help-dt">Market Buy Price</div>
+                <div class="help-dd">
+                  Fixed cost in credits per unit. When set, the calorie calculation is <strong>bypassed</strong> — the
+                  item is treated as a direct credit purchase. Leave blank to calculate cost from the recipe tree.
+                </div>
+                <div class="help-dt">Item Tags</div>
+                <div class="help-dd">
+                  Comma-separated tag names this item belongs to (e.g. <code>Ore, Metal</code>). Tags are virtual
+                  ingredient categories — another recipe can list <code>Ore</code> as an ingredient and the cost will be
+                  the average of all items tagged as Ore. See
+                  <a href="#help-tags" onclick="document.getElementById('help-tags').scrollIntoView()">Item Tags</a>.
+                </div>
+                <div class="help-dt">Multiple Recipes</div>
+                <div class="help-dd">
+                  An item can have multiple recipe variants (e.g. two wood types). Use the tabs above the form to switch
+                  between them. Click <strong>★ Set Default</strong> on the tab you want used in cost calculations.
+                </div>
+                <div class="help-dt">Recipe Label</div>
+                <div class="help-dd">
+                  <em>(per-recipe)</em> A name for this variant shown in the tab and in the calculator dropdown.
+                </div>
+                <div class="help-dt">Skill</div>
+                <div class="help-dd">
+                  <em>(per-recipe)</em> The skill required to craft this item. Must match a name in your Skills settings
+                  (case-insensitive). The skill's level determines the labor calorie multiplier.
+                </div>
+                <div class="help-dt">Crafting Table</div>
+                <div class="help-dd">
+                  <em>(per-recipe)</em> The table used to craft this item. Must match a name in your Tables settings.
+                  The table's upgrade module reduces ingredient quantities and optionally labor.
+                </div>
+                <div class="help-dt">Labor Calories</div>
+                <div class="help-dd">
+                  <em>(per-recipe)</em> Calories consumed per craft batch. For raw/gathered materials, set this to the
+                  gathering cost. Scaled by skill level and (optionally) table upgrade.
+                </div>
+                <div class="help-dt">Qty Produced per Craft</div>
+                <div class="help-dd">
+                  <em>(per-recipe)</em> How many units one craft produces. The calculator divides total cost by this
+                  number to get the per-unit price.
+                </div>
+                <div class="help-dt">Min. Skill Level</div>
+                <div class="help-dd">
+                  <em>(per-recipe)</em> Informational — the minimum skill level required to unlock this recipe in-game.
+                  Recipes below this threshold are flagged in the cost tree.
+                </div>
+                <div class="help-dt">Profit Override %</div>
+                <div class="help-dd">
+                  <em>(per-recipe)</em> Overrides the global Profit Margin for this specific item. Leave blank to use
+                  the global setting.
+                </div>
+                <div class="help-dt">Ingredients</div>
+                <div class="help-dd">
+                  Items consumed per craft. Each has a name, quantity, and a <strong>Red.</strong> (Reducible) checkbox.
+                  Reducible ingredients are scaled by the table upgrade, lavish workspace, and craft modifier. Uncheck
+                  for fixed costs that are never reduced.
+                </div>
+                <div class="help-dt">Byproducts</div>
+                <div class="help-dd">
+                  Items produced as a side effect. Their calorie value is <strong>subtracted</strong> from the total
+                  cost — if a byproduct has its own recipe, its full tree value is credited back.
+                </div>
+              </div>
+            </div>
+
+            <div class="help-section" id="help-calculator">
+              <h4>🧮 Calculator (Right Panel)</h4>
+              <div class="help-dl">
+                <div class="help-dt">Credits per Calorie</div>
+                <div class="help-dd">
+                  Your server's calorie-to-credit conversion rate. Example: if 1000 calories costs 1600 credits, enter
+                  <code>1.6</code>. This is the most important setting — all prices scale linearly with this value.
+                </div>
+                <div class="help-dt">Currency Symbol</div>
+                <div class="help-dd">
+                  Cosmetic label shown next to prices (e.g. <code>$</code>, <code>¢</code>, <code>G</code>).
+                </div>
+                <div class="help-dt">Profit Margin %</div>
+                <div class="help-dd">
+                  Percentage markup added on top of the base cost. A value of <code>20</code> means the suggested price
+                  is 20% above cost. Per-item overrides are available in the editor.
+                </div>
+                <div class="help-dt">Craft Modifier</div>
+                <div class="help-dd">
+                  Global multiplier applied to all reducible ingredient quantities. Use this for server-wide craft rate
+                  modifications (e.g. <code>0.5</code> if your server halves all resource costs). Does
+                  <strong>not</strong> affect non-reducible ingredients or labor.
+                </div>
+                <div class="help-dt">Table mod affects labor</div>
+                <div class="help-dd">
+                  When checked, the crafting table upgrade module reduces labor calories in addition to ingredient
+                  quantities. Uncheck to match calculators that only apply upgrades to ingredients.
+                </div>
+                <div class="help-dt">Search &amp; Qty</div>
+                <div class="help-dd">
+                  Type an item name and press <kbd>Enter</kbd> to price it. Use the Qty field to price a batch. If an
+                  item has multiple recipe variants, a dropdown appears to select which one to use.
+                </div>
+                <div class="help-dt">Copy button</div>
+                <div class="help-dd">Copies the final calculated price to your clipboard.</div>
+                <div class="help-dt">Cost tree</div>
+                <div class="help-dd">
+                  Expands the full ingredient breakdown. Each node shows the calorie cost and credit equivalent. Labor
+                  is shown in teal, byproducts in green (as savings), missing recipes in red. Click a missing recipe to
+                  create it.
+                </div>
+              </div>
+            </div>
+
+            <div class="help-section" id="help-skills">
+              <h4>⚙️ Skills &amp; Crafting Tables</h4>
+              <div class="help-dl">
+                <div class="help-dt">Skill Level (0–7)</div>
+                <div class="help-dd">
+                  Matches the star rating shown in-game. Level 0 = not learned (no labor reduction). Level 7 = fully
+                  specialised (50% labor). The multipliers are: <code>0→100%</code> <code>1→80%</code>
+                  <code>2→75%</code> <code>3→70%</code> <code>4→65%</code> <code>5→60%</code> <code>6→55%</code>
+                  <code>7→50%</code>
+                </div>
+                <div class="help-dt">Lavish Workspace</div>
+                <div class="help-dd">
+                  Check if your character has the Lavish Workspace talent active for that skill. Applies an additional
+                  <strong>−5%</strong> to all reducible ingredient quantities (not supported by all skills, e.g. Mining
+                  does not support it).
+                </div>
+                <div class="help-dt">Table Upgrade</div>
+                <div class="help-dd">
+                  Assign an upgrade module to each crafting table. Options range from <strong>No Upgrade</strong> (×1.0)
+                  through Basic I–IV, Advanced I–IV, up to <strong>Specialized</strong> (×0.50). The modifier reduces
+                  reducible ingredient quantities and, if "Table mod affects labor" is checked, also reduces labor
+                  calories.
+                </div>
+                <div class="help-dt">Reset to Vanilla Defaults</div>
+                <div class="help-dd">
+                  Resets all skills to the built-in list at level 1 and all tables to No Upgrade. Your recipe database
+                  and item tags are not affected.
+                </div>
+              </div>
+            </div>
+
+            <div class="help-section" id="help-tags">
+              <h4>🏷️ Item Tags</h4>
+              <p style="font-size: 0.85rem; line-height: 1.6; color: var(--text); margin-bottom: 10px">
+                Some Eco recipes accept any item from a category (e.g. "any Ore"). Item Tags model this — a tag is a
+                named group of items that can be used as an ingredient name in recipes.
+              </p>
+              <div class="help-dl">
+                <div class="help-dt">Creating tags</div>
+                <div class="help-dd">
+                  Open an item in the editor and type a tag name in the <strong>Item Tags</strong> field. The tag is
+                  created automatically and this item is added as a member. Multiple tags can be comma-separated.
+                </div>
+                <div class="help-dt">Using tags as ingredients</div>
+                <div class="help-dd">
+                  In another item's recipe, type the tag name in the ingredient list (it appears with a
+                  <code>[tag]</code> label in the autocomplete). The cost is the average of all member items' calculated
+                  costs.
+                </div>
+                <div class="help-dt">Tag market price override</div>
+                <div class="help-dd">
+                  In <strong>⚙ Skills &amp; Tables → Item Tags</strong>, you can set a market price override for a tag
+                  (in credits). When set, this overrides the member average — useful if you buy all ores at a fixed
+                  market price regardless of type.
+                </div>
+                <div class="help-dt">Tag display</div>
+                <div class="help-dd">
+                  Tags appear in purple in the cost tree with a badge showing "tag · avg of N members".
+                </div>
+              </div>
+            </div>
+
+            <div class="help-section" id="help-importexport">
+              <h4>💾 Import / Export</h4>
+              <div class="help-dl">
+                <div class="help-dt">Export</div>
+                <div class="help-dd">
+                  Opens a panel with your full database as JSON — items, skills, tables, and item tags. Copy and save
+                  this text to back up or share your setup.
+                </div>
+                <div class="help-dt">Import</div>
+                <div class="help-dd">
+                  Paste a JSON export to load a database. This <strong>replaces</strong> your current data. Use the
+                  <strong>Schema</strong> tab for the expected format.
+                </div>
+              </div>
+              <div class="help-note">
+                <strong>JSON format:</strong> An array of item objects. Each item needs at minimum a
+                <code>name</code> and a <code>recipes</code> array.<br /><br />
+                <code
+                  >[ { "name": "Wooden Chair", "recipes": [{ "label": "Default", "skill": "Carpentry", "craftingTable":
+                  "Workbench", "laborCalories": 200, "outputQty": 1, "ingredients": [{"name": "Wood Board", "qty": 4}],
+                  "byproducts": [] }] } ]</code
+                ><br /><br />
+                Raw materials have no <code>ingredients</code> and use <code>laborCalories</code> for the gathering
+                cost, or set a <code>marketPrice</code> on the item to use a fixed credit cost.
+              </div>
+            </div>
+
+            <div class="help-section" id="help-formula">
+              <h4>📐 Cost Calculation Formula</h4>
+              <p style="font-size: 0.85rem; line-height: 1.6; color: var(--text); margin-bottom: 8px">
+                Costs are calculated recursively — each ingredient's full tree is resolved before the parent item is
+                totalled.
+              </p>
+              <div class="help-formula">
+                reducible_mult = table_upgrade × lavish(0.95 if on) × craft_modifier<br />
+                labor_mult &nbsp;&nbsp;&nbsp;&nbsp;= skill_level_modifier × table_upgrade*<br />
+                <em>* only if "Table mod affects labor" is checked</em><br /><br />
+                ingredient_cal = Σ ( qty × reducible_mult × ingredient_cost_cal ) <em>← reducible</em><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; + Σ ( qty ×
+                ingredient_cost_cal ) <em>← non-reducible</em><br />
+                labor_cal &nbsp;&nbsp;&nbsp;&nbsp; = laborCalories × labor_mult × batches_needed<br />
+                byproduct_cal &nbsp;= Σ ( byproduct_qty × byproduct_cost_cal )<br /><br />
+                net_cal &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = ( labor_cal + ingredient_cal − byproduct_cal ) /
+                output_qty<br />
+                price &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= net_cal × credits_per_calorie × ( 1 + profit% /
+                100 )
+              </div>
+              <div class="help-note">
+                <strong>Market-priced items</strong> bypass the formula — their cost is
+                <code>market_price × credits_per_calorie⁻¹</code> calories (i.e. the credit cost converted back to
+                calories at the current rate).<br />
+                <strong>Tag ingredients</strong> cost the average of all member items' <code>net_cal</code> values, or
+                the tag's market price override if set.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button onclick="closeHelp()">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ═══════════════════════════════════════════
+      //  DATA STORE  (v2)
+      // ═══════════════════════════════════════════
+
+      const STORAGE_KEY_V2 = "eco_recipe_db_v2";
+      const STORAGE_SKILLS = "eco_skills_v3";
+      const STORAGE_TABLES = "eco_tables_v2";
+      const STORAGE_ITEM_TAGS = "eco_item_tags_v1";
+      const STORAGE_CALC_SETTINGS = "eco_calc_settings_v1";
+
+      // ── Skill level → labor modifier (index = level, matches Eco in-game values) ──
+      // Level 0 = skill not learned, Level 7 = fully specialised
+      const SKILL_MODIFIERS = [1.0, 0.8, 0.75, 0.7, 0.65, 0.6, 0.55, 0.5];
+
+      // ── Named upgrade modules for crafting tables ──
+      const UPGRADE_MODULES = {
+        none: { label: "No Upgrade", modifier: 1.0 },
+        "basic-1": { label: "Basic I", modifier: 0.92 },
+        "basic-2": { label: "Basic II", modifier: 0.85 },
+        "basic-3": { label: "Basic III", modifier: 0.8 },
+        "basic-4": { label: "Basic IV", modifier: 0.75 },
+        "advanced-1": { label: "Advanced I", modifier: 0.9 },
+        "advanced-2": { label: "Advanced II", modifier: 0.75 },
+        "advanced-3": { label: "Advanced III", modifier: 0.6 },
+        "advanced-4": { label: "Advanced IV", modifier: 0.55 },
+        specialized: { label: "Specialized", modifier: 0.5 },
+      };
+
+      // ── Vanilla Eco defaults ──────────────────────────────────────────────────────
+      // Skills: level 0 = not learned. Set to your character's in-game star level.
+      // Lavish: whether your character has the Lavish Workspace talent active.
+
+      const DEFAULT_SKILLS = [
+        // Gathering / Survival
+        { name: "Campfire Cooking", level: 1, lavish: false },
+        { name: "Farming", level: 1, lavish: false },
+        { name: "Gathering", level: 1, lavish: false },
+        { name: "Hunting", level: 1, lavish: false },
+        { name: "Logging", level: 1, lavish: false },
+        { name: "Mining", level: 1, lavish: false },
+        // Cooking
+        { name: "Baking", level: 1, lavish: false },
+        { name: "Butchery", level: 1, lavish: false },
+        { name: "Cooking", level: 1, lavish: false },
+        { name: "Advanced Cooking", level: 1, lavish: false },
+        { name: "Cutting Edge Cooking", level: 1, lavish: false },
+        { name: "Fertilizers", level: 1, lavish: false },
+        { name: "Milling", level: 1, lavish: false },
+        // Construction
+        { name: "Carpentry", level: 1, lavish: false },
+        { name: "Masonry", level: 1, lavish: false },
+        { name: "Advanced Masonry", level: 1, lavish: false },
+        { name: "Pottery", level: 1, lavish: false },
+        { name: "Glassworking", level: 1, lavish: false },
+        { name: "Shipwright", level: 1, lavish: false },
+        // Smithing / Industry
+        { name: "Blacksmith", level: 1, lavish: false },
+        { name: "Smelting", level: 1, lavish: false },
+        { name: "Advanced Smelting", level: 1, lavish: false },
+        { name: "Mechanics", level: 1, lavish: false },
+        { name: "Basic Engineering", level: 1, lavish: false },
+        { name: "Electronics", level: 1, lavish: false },
+        { name: "Industry", level: 1, lavish: false },
+        // Advanced
+        { name: "Oil Drilling", level: 1, lavish: false },
+        { name: "Composites", level: 1, lavish: false },
+        { name: "Paper Milling", level: 1, lavish: false },
+        { name: "Tailoring", level: 1, lavish: false },
+      ];
+
+      // Tables: upgrade = key from UPGRADE_MODULES
+      const DEFAULT_TABLES = [
+        // Early game
+        { name: "Campfire", upgrade: "none" },
+        { name: "Workbench", upgrade: "none" },
+        { name: "Research Table", upgrade: "none" },
+        // Food
+        { name: "Butcher Table", upgrade: "none" },
+        { name: "Kitchen", upgrade: "none" },
+        { name: "Cast Iron Stove", upgrade: "none" },
+        { name: "Industrial Stove", upgrade: "none" },
+        { name: "Bakery Oven", upgrade: "none" },
+        { name: "Mill", upgrade: "none" },
+        { name: "Industrial Mill", upgrade: "none" },
+        { name: "Composter", upgrade: "none" },
+        { name: "Fertilizer Station", upgrade: "none" },
+        // Carpentry / Construction
+        { name: "Carpentry Table", upgrade: "none" },
+        { name: "Sawmill", upgrade: "none" },
+        { name: "Wainwright Table", upgrade: "none" },
+        { name: "Masonry Table", upgrade: "none" },
+        { name: "Kiln", upgrade: "none" },
+        { name: "Cement Kiln", upgrade: "none" },
+        { name: "Glassworks", upgrade: "none" },
+        { name: "Pottery Table", upgrade: "none" },
+        // Smithing / Metalwork
+        { name: "Bloomery", upgrade: "none" },
+        { name: "Anvil", upgrade: "none" },
+        { name: "Blast Furnace", upgrade: "none" },
+        { name: "Electric Smelter", upgrade: "none" },
+        // Mechanical / Electronics
+        { name: "Tool Bench", upgrade: "none" },
+        { name: "Machinist Table", upgrade: "none" },
+        { name: "Electronics Assembly", upgrade: "none" },
+        { name: "Robotic Assembly Line", upgrade: "none" },
+        // Textiles
+        { name: "Tailoring Table", upgrade: "none" },
+        { name: "Loom", upgrade: "none" },
+        { name: "Advanced Tailoring Table", upgrade: "none" },
+        // Oil / Advanced
+        { name: "Fracking Equipment", upgrade: "none" },
+        { name: "Oil Refinery", upgrade: "none" },
+        { name: "Fiberglass Table", upgrade: "none" },
+        { name: "Shipyard", upgrade: "none" },
+      ];
+
+      // ── Common raw/gathered materials (seeded on first run when DB is empty) ──
+      const DEFAULT_RAWS = [
+        // Mining
+        { name: "Coal", skill: "Mining", marketPrice: 25 },
+        { name: "Copper Ore", skill: "Mining", marketPrice: 35 },
+        { name: "Gneiss", skill: "Mining", marketPrice: 45 },
+        { name: "Gold Ore", skill: "Mining", marketPrice: 35 },
+        { name: "Granite", skill: "Mining", marketPrice: 35 },
+        { name: "Iron Ore", skill: "Mining", marketPrice: 25 },
+        { name: "Limestone", skill: "Mining", marketPrice: 25 },
+        { name: "Sand", skill: "Mining", marketPrice: 15 },
+        { name: "Sandstone", skill: "Mining", marketPrice: 15 },
+        { name: "Shale", skill: "Mining", marketPrice: 15 },
+        // Logging
+        { name: "Birch Log", skill: "Logging", marketPrice: 24 },
+        { name: "Cedar Log", skill: "Logging", marketPrice: 24 },
+        { name: "Fir Log", skill: "Logging", marketPrice: 24 },
+        { name: "Redwood Log", skill: "Logging", marketPrice: 24 },
+        // Gathering
+        { name: "Crimini Mushrooms", skill: "Gathering", marketPrice: 30 },
+        { name: "Huckleberries", skill: "Gathering", marketPrice: 5 },
+        { name: "Plant Fibers", skill: "Gathering", marketPrice: 20 },
+        { name: "Prickly Pear Fruit", skill: "Gathering", marketPrice: 20 },
+        // Farming
+        { name: "Beet", skill: "Farming", marketPrice: 20 },
+        { name: "Tomato", skill: "Farming", marketPrice: 20 },
+        { name: "Wheat", skill: "Farming", marketPrice: 33.33 },
+        // Hunting
+        { name: "Bison Carcass", skill: "Hunting", marketPrice: 575 },
+        { name: "Hare Carcass", skill: "Hunting", marketPrice: 165 },
+        { name: "Medium Animal Carcass", skill: "Hunting", marketPrice: 350 },
+        { name: "Medium Wool Animal Carcass", skill: "Hunting", marketPrice: 400 },
+        { name: "Raw Meat", skill: "Hunting", marketPrice: 40 },
+        { name: "Small Animal Carcass", skill: "Hunting", marketPrice: 210 },
+        { name: "Tiny Fur Animal Carcass", skill: "Hunting", marketPrice: 140 },
+        { name: "Tiny Leather Animal Carcass", skill: "Hunting", marketPrice: 140 },
+        // Butchery
+        { name: "Leather", skill: "Butchery", marketPrice: 25 },
+        { name: "Wool", skill: "Butchery", marketPrice: 25 },
+        // Misc / no primary skill
+        { name: "Basalt", skill: "", marketPrice: 55 },
+        { name: "Ceiba Log", skill: "", marketPrice: 48 },
+        { name: "Fur", skill: "", marketPrice: 50 },
+        { name: "Joshua Log", skill: "", marketPrice: 24 },
+        { name: "Oak Log", skill: "", marketPrice: 28 },
+        { name: "Palm Log", skill: "", marketPrice: 24 },
+        { name: "Saguaro Rib", skill: "", marketPrice: 26.66 },
+        { name: "Slag", skill: "", marketPrice: 45 },
+        { name: "Spruce Log", skill: "", marketPrice: 24 },
+      ];
+
+      // ── Default item tag categories seeded alongside DEFAULT_RAWS ──
+      const DEFAULT_ITEM_TAGS = [
+        { name: "Ore", memberNames: ["Iron Ore", "Gold Ore", "Copper Ore", "Coal"] },
+        { name: "Stone", memberNames: ["Sandstone", "Basalt", "Gneiss", "Granite", "Limestone"] },
+        {
+          name: "Wood",
+          memberNames: [
+            "Spruce Log",
+            "Birch Log",
+            "Cedar Log",
+            "Ceiba Log",
+            "Fir Log",
+            "Joshua Log",
+            "Oak Log",
+            "Redwood Log",
+            "Saguaro Rib",
+          ],
+        },
+      ];
+
+      // db: { [name_lower]: { name, marketPrice, defaultRecipeIdx, recipes: [{id, label, skill, craftingTable, laborCalories, outputQty, ingredients, byproducts}] } }
+      let db = {};
+      let skills = {}; // { [name_lower]: { name, level (0-7), lavish (bool) } }
+      let tables = {}; // { [name_lower]: { name, upgrade (key of UPGRADE_MODULES) } }
+      let itemTags = {}; // { [name_lower]: { name, marketPrice: null|number, memberNames: string[] } }
+
+      let editState = null; // { name, origKey, defaultRecipeIdx, currentRecipeIdx, recipes[] }
+      let selectedKey = null;
+
+      // ── Load / Save ──────────────────────────────
+
+      function loadDb() {
+        try {
+          const raw2 = localStorage.getItem(STORAGE_KEY_V2);
+          if (raw2) {
+            db = JSON.parse(raw2);
+            return;
+          }
+        } catch (e) {}
+        // Seed with common raw materials on first run
+        db = {};
+        for (const raw of DEFAULT_RAWS) {
+          db[dbKey(raw.name)] = normaliseItem({
+            name: raw.name,
+            marketPrice: raw.marketPrice ?? null,
+            defaultRecipeIdx: 0,
+            recipes: [
+              {
+                label: "Default",
+                skill: raw.skill || "",
+                craftingTable: "",
+                laborCalories: 0,
+                outputQty: 1,
+                ingredients: [],
+                byproducts: [],
+                profitOverride: -1,
+                minLevel: 0,
+              },
+            ],
+          });
+        }
+        saveDb();
+      }
+
+      function saveDb() {
+        localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(db));
+      }
+
+      function clearDatabase() {
+        const count = Object.keys(db).length;
+        if (count === 0) {
+          alert("Database is already empty.");
+          return;
+        }
+        if (
+          !confirm(`Remove all ${count} item${count !== 1 ? "s" : ""} from the recipe database? This cannot be undone.`)
+        )
+          return;
+        db = {};
+        saveDb();
+        editState = null;
+        selectedKey = null;
+        renderList();
+        renderEditor();
+        document.getElementById("calc-result").innerHTML = "";
+      }
+
+      function seedDefaultRaws() {
+        let added = 0;
+        for (const raw of DEFAULT_RAWS) {
+          const key = dbKey(raw.name);
+          if (!db[key]) {
+            db[key] = normaliseItem({
+              name: raw.name,
+              marketPrice: raw.marketPrice ?? null,
+              defaultRecipeIdx: 0,
+              recipes: [
+                {
+                  label: "Default",
+                  skill: raw.skill || "",
+                  craftingTable: "",
+                  laborCalories: 0,
+                  outputQty: 1,
+                  ingredients: [],
+                  byproducts: [],
+                  profitOverride: -1,
+                  minLevel: 0,
+                },
+              ],
+            });
+            added++;
+          }
+        }
+        // Also seed default item tags (add missing tags/members without overwriting existing)
+        let tagsChanged = false;
+        for (const defTag of DEFAULT_ITEM_TAGS) {
+          const tk = dbKey(defTag.name);
+          if (!itemTags[tk]) {
+            itemTags[tk] = { name: defTag.name, marketPrice: null, memberNames: [] };
+            tagsChanged = true;
+          }
+          for (const member of defTag.memberNames) {
+            if (!itemTags[tk].memberNames.includes(member)) {
+              itemTags[tk].memberNames.push(member);
+              tagsChanged = true;
+            }
+          }
+        }
+        if (tagsChanged) saveItemTags();
+        if (added === 0) {
+          alert("All default raw materials are already in your database.");
+          return;
+        }
+        saveDb();
+        renderList();
+        alert(`Added ${added} default raw material${added !== 1 ? "s" : ""} to your database.`);
+      }
+
+      function loadSkills() {
+        try {
+          const raw = localStorage.getItem(STORAGE_SKILLS);
+          if (raw) {
+            skills = JSON.parse(raw);
+            return;
+          }
+        } catch (e) {}
+        // Seed with vanilla defaults on first run
+        skills = {};
+        for (const s of DEFAULT_SKILLS) {
+          skills[dbKey(s.name)] = { name: s.name, level: s.level, lavish: s.lavish };
+        }
+        saveSkills();
+      }
+
+      function saveSkills() {
+        localStorage.setItem(STORAGE_SKILLS, JSON.stringify(skills));
+      }
+
+      function loadTables() {
+        try {
+          const raw = localStorage.getItem(STORAGE_TABLES);
+          if (raw) {
+            tables = JSON.parse(raw);
+            return;
+          }
+        } catch (e) {}
+        // Seed with vanilla defaults on first run
+        tables = {};
+        for (const t of DEFAULT_TABLES) {
+          tables[dbKey(t.name)] = { name: t.name, upgrade: t.upgrade };
+        }
+        saveTables();
+      }
+
+      function saveTables() {
+        localStorage.setItem(STORAGE_TABLES, JSON.stringify(tables));
+      }
+
+      function loadItemTags() {
+        try {
+          const raw = localStorage.getItem(STORAGE_ITEM_TAGS);
+          if (raw) {
+            itemTags = JSON.parse(raw);
+            return;
+          }
+        } catch (e) {}
+        itemTags = {};
+        for (const defTag of DEFAULT_ITEM_TAGS) {
+          itemTags[dbKey(defTag.name)] = { name: defTag.name, marketPrice: null, memberNames: [...defTag.memberNames] };
+        }
+        saveItemTags();
+      }
+
+      function saveItemTags() {
+        localStorage.setItem(STORAGE_ITEM_TAGS, JSON.stringify(itemTags));
+      }
+
+      function saveCalcSettings() {
+        localStorage.setItem(
+          STORAGE_CALC_SETTINGS,
+          JSON.stringify({
+            credPerCal: document.getElementById("cred-per-cal").value,
+            currencySymbol: document.getElementById("currency-symbol").value,
+            marginPct: document.getElementById("margin-pct").value,
+            craftResourceMod: document.getElementById("craft-resource-mod").value,
+            tableModLabor: document.getElementById("table-mod-labor").checked,
+          })
+        );
+      }
+
+      function loadCalcSettings() {
+        try {
+          const raw = localStorage.getItem(STORAGE_CALC_SETTINGS);
+          if (!raw) return;
+          const s = JSON.parse(raw);
+          if (s.credPerCal != null) document.getElementById("cred-per-cal").value = s.credPerCal;
+          if (s.currencySymbol != null) document.getElementById("currency-symbol").value = s.currencySymbol;
+          if (s.marginPct != null) document.getElementById("margin-pct").value = s.marginPct;
+          if (s.craftResourceMod != null) document.getElementById("craft-resource-mod").value = s.craftResourceMod;
+          if (s.tableModLabor != null) document.getElementById("table-mod-labor").checked = !!s.tableModLabor;
+        } catch (e) {}
+      }
+
+      function dbKey(name) {
+        return String(name).trim().toLowerCase();
+      }
+
+      function genId() {
+        return Math.random().toString(36).slice(2, 9);
+      }
+
+      // ── Import normalisation ─────────────────────
+
+      function normaliseItem(item) {
+        const recipes = item.recipes.map((r) => ({
+          id: r.id || genId(),
+          label: r.label || "Default",
+          skill: r.skill || "",
+          craftingTable: r.craftingTable || "",
+          laborCalories: Number(r.laborCalories) || 0,
+          outputQty: Number(r.outputQty) || 1,
+          ingredients: (r.ingredients || []).map((i) => ({
+            name: String(i.name),
+            qty: Number(i.qty) || 1,
+            reducible: i.reducible !== false,
+          })),
+          byproducts: (r.byproducts || []).map((b) => ({
+            name: String(b.name),
+            qty: Number(b.qty) || 1,
+            reducible: b.reducible !== false,
+          })),
+          profitOverride: typeof r.profitOverride === "number" ? r.profitOverride : -1,
+          minLevel: Math.min(7, Math.max(0, Number(r.minLevel) || 0)),
+        }));
+        return {
+          name: item.name,
+          marketPrice: typeof item.marketPrice === "number" && item.marketPrice >= 0 ? item.marketPrice : null,
+          defaultRecipeIdx: item.defaultRecipeIdx || 0,
+          recipes,
+        };
+      }
+
+      // ── Skills / Tables helpers ──────────────────
+
+      function ensureSkill(name) {
+        if (!name) return;
+        const k = dbKey(name);
+        if (!skills[k]) {
+          skills[k] = { name: name.trim(), level: 1, lavish: false };
+          saveSkills();
+        }
+      }
+
+      function ensureTable(name) {
+        if (!name) return;
+        const k = dbKey(name);
+        if (!tables[k]) {
+          tables[k] = { name: name.trim(), upgrade: "none" };
+          saveTables();
+        }
+      }
+
+      // ═══════════════════════════════════════════
+      //  LIST PANEL
+      // ═══════════════════════════════════════════
+
+      let groupBy = "none";
+      const collapsedGroups = new Set();
+
+      function setGroupBy(mode) {
+        groupBy = mode;
+        ["none", "type", "skill", "table"].forEach((m) => {
+          document.getElementById("grp-" + m).classList.toggle("active", m === mode);
+        });
+        renderList();
+      }
+
+      function toggleGroup(el) {
+        const key = el.dataset.gkey;
+        if (collapsedGroups.has(key)) {
+          collapsedGroups.delete(key);
+        } else {
+          collapsedGroups.add(key);
+        }
+        const isCollapsed = collapsedGroups.has(key);
+        el.querySelector(".folder-chevron").classList.toggle("collapsed", isCollapsed);
+        el.nextElementSibling.classList.toggle("collapsed", isCollapsed);
+      }
+
+      function renderList() {
+        const filter = document.getElementById("list-search").value.toLowerCase();
+        const list = document.getElementById("item-list");
+        const allItems = Object.values(db)
+          .filter((i) => i.name.toLowerCase().includes(filter))
+          .sort((a, b) => a.name.localeCompare(b.name));
+
+        document.getElementById("item-count").textContent = `${Object.keys(db).length} items`;
+
+        if (allItems.length === 0) {
+          list.innerHTML =
+            Object.keys(db).length === 0
+              ? `<div class="empty-state">No recipes yet.<br>Click <strong>+ New</strong> to add your first item,<br>or <strong>Import</strong> to load a database.<br><br><button onclick="seedDefaultRaws()" style="margin-top:4px">↺ Seed Default Raw Materials</button></div>`
+              : `<div class="empty-state">No items match your search.</div>`;
+          return;
+        }
+
+        const sym = document.getElementById("currency-symbol")?.value || "¢";
+
+        function itemCard(item) {
+          const defRecipe = item.recipes[item.defaultRecipeIdx || 0] || item.recipes[0];
+          const isRaw = !defRecipe.ingredients || defRecipe.ingredients.length === 0;
+          const recipeCount = item.recipes.length;
+          const meta = isRaw
+            ? `Raw material — ${defRecipe.laborCalories} cal to gather`
+            : `${defRecipe.ingredients.length} ingredient(s) — ${defRecipe.laborCalories} cal labor`;
+          const node = calcNode(item.name, null, 1, {});
+          const isMarket = item.marketPrice !== null && item.marketPrice >= 0;
+          const calText = isMarket
+            ? `${sym}${formatCredits(item.marketPrice)}/unit`
+            : node.error
+              ? "? cal"
+              : `${formatNum(Math.round(node.netCal))} cal`;
+          const cls = dbKey(item.name) === selectedKey ? "item-card selected" : "item-card";
+          const recipeTag = recipeCount > 1 ? `<span class="tag recipe-count">${recipeCount} recipes</span>` : "";
+          const marketTag = isMarket ? `<span class="tag market">market</span>` : "";
+          return `<div class="${cls}" onclick="selectItem('${esc(item.name)}')">
+      <div>
+        <div class="item-card-name">${esc(item.name)}${recipeTag}${marketTag}</div>
+        <div class="item-card-meta">${esc(meta)}</div>
+      </div>
+      <div class="item-card-cal">${calText}</div>
+    </div>`;
+        }
+
+        if (groupBy === "none") {
+          list.innerHTML = allItems.map(itemCard).join("");
+          return;
+        }
+
+        // Determine group key for an item
+        function getGroupKey(item) {
+          const defRecipe = item.recipes[item.defaultRecipeIdx || 0] || item.recipes[0];
+          if (groupBy === "type") {
+            const isRaw = !defRecipe.ingredients || defRecipe.ingredients.length === 0;
+            // Prefix \x00 sorts "Raw Materials" before everything else
+            return isRaw ? "\x00Raw Materials" : "Crafted Items";
+          }
+          if (groupBy === "skill") return defRecipe.skill || "\xffUngrouped";
+          if (groupBy === "table") return defRecipe.craftingTable || "\xffUngrouped";
+          return "All";
+        }
+
+        // Build groups map
+        const groups = {};
+        for (const item of allItems) {
+          const key = getGroupKey(item);
+          if (!groups[key]) groups[key] = [];
+          groups[key].push(item);
+        }
+
+        const sortedKeys = Object.keys(groups).sort((a, b) => a.localeCompare(b));
+
+        list.innerHTML = sortedKeys
+          .map((key) => {
+            // Strip the sort-order prefix used on "Raw Materials" / "Ungrouped"
+            const displayName = key.replace(/^[\x00\xff]/, "");
+            const items = groups[key];
+            // Stable key for collapse state — just use the full raw key
+            const gKey = key;
+            const isCollapsed = collapsedGroups.has(gKey);
+            return `<div class="folder">
+      <div class="folder-header" data-gkey="${esc(gKey)}" onclick="toggleGroup(this)">
+        <span class="folder-chevron${isCollapsed ? " collapsed" : ""}">▾</span>
+        <span class="folder-name">${esc(displayName)}</span>
+        <span class="folder-count">${items.length}</span>
+      </div>
+      <div class="folder-body${isCollapsed ? " collapsed" : ""}">
+        ${items.map(itemCard).join("")}
+      </div>
+    </div>`;
+          })
+          .join("");
+      }
+
+      function esc(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      // ═══════════════════════════════════════════
+      //  ITEM SELECTION & EDITOR
+      // ═══════════════════════════════════════════
+
+      function selectItem(name) {
+        selectedKey = dbKey(name);
+        const item = db[selectedKey];
+        if (!item) return;
+        // Deep clone into editState
+        editState = {
+          name: item.name,
+          origKey: selectedKey,
+          marketPrice: item.marketPrice ?? null,
+          defaultRecipeIdx: item.defaultRecipeIdx || 0,
+          currentRecipeIdx: item.defaultRecipeIdx || 0,
+          recipes: item.recipes.map((r) => ({
+            ...r,
+            ingredients: r.ingredients.map((i) => ({ ...i })),
+            byproducts: (r.byproducts || []).map((b) => ({ ...b })),
+          })),
+        };
+        renderList();
+        renderEditor();
+        // Auto-populate the calculator with this item's price
+        document.getElementById("calc-input").value = item.name;
+        lookupItem();
+      }
+
+      function newItem() {
+        selectedKey = null;
+        editState = {
+          name: "",
+          origKey: null,
+          marketPrice: null,
+          defaultRecipeIdx: 0,
+          currentRecipeIdx: 0,
+          recipes: [
+            {
+              id: genId(),
+              label: "Default",
+              skill: "",
+              craftingTable: "",
+              laborCalories: 0,
+              outputQty: 1,
+              ingredients: [],
+              byproducts: [],
+              profitOverride: -1,
+              minLevel: 0,
+            },
+          ],
+        };
+        renderList();
+        renderEditor();
+      }
+
+      function newItemWithName(name) {
+        selectedKey = null;
+        editState = {
+          name: name,
+          origKey: null,
+          marketPrice: null,
+          defaultRecipeIdx: 0,
+          currentRecipeIdx: 0,
+          recipes: [
+            {
+              id: genId(),
+              label: "Default",
+              skill: "",
+              craftingTable: "",
+              laborCalories: 0,
+              outputQty: 1,
+              ingredients: [],
+              byproducts: [],
+              profitOverride: -1,
+              minLevel: 0,
+            },
+          ],
+        };
+        renderList();
+        renderEditor();
+      }
+
+      function cancelEdit() {
+        editState = null;
+        selectedKey = null;
+        renderList();
+        document.getElementById("form-body").innerHTML =
+          `<div class="empty-state">Select an item from the list<br>or click <strong>+ New</strong> to create one.</div>`;
+        document.getElementById("form-actions").style.display = "none";
+        document.getElementById("btn-delete").style.display = "none";
+        document.getElementById("form-title").textContent = "Item Editor";
+        document.getElementById("recipe-tabs-section").style.display = "none";
+      }
+
+      function renderEditor() {
+        if (!editState) return;
+        document.getElementById("form-title").textContent = editState.origKey ? `Edit: ${editState.name}` : "New Item";
+        document.getElementById("form-actions").style.display = "flex";
+        document.getElementById("btn-delete").style.display = editState.origKey ? "inline-block" : "none";
+        document.getElementById("recipe-tabs-section").style.display = "block";
+        renderRecipeTabs();
+        renderRecipeForm(editState.currentRecipeIdx);
+      }
+
+      function renderRecipeTabs() {
+        const tabsEl = document.getElementById("recipe-tabs");
+        const actionsEl = document.getElementById("recipe-tab-actions");
+        const cur = editState.currentRecipeIdx;
+        const def = editState.defaultRecipeIdx;
+
+        tabsEl.innerHTML =
+          editState.recipes
+            .map((r, i) => {
+              const star = i === def ? '<span class="tab-star">★</span>' : "";
+              const active = i === cur ? "active" : "";
+              return `<button class="recipe-tab ${active}" onclick="switchRecipeTab(${i})">${star}${esc(r.label || `Recipe ${i + 1}`)}</button>`;
+            })
+            .join("") + `<button class="recipe-tab-add" onclick="addRecipe()">＋</button>`;
+
+        // Tab action buttons
+        const isDefault = cur === def;
+        const canDelete = editState.recipes.length > 1;
+        actionsEl.innerHTML = `
+    ${!isDefault ? `<button onclick="setDefaultRecipe()" title="Mark this recipe as the default used in the list &amp; calculator">★ Set Default</button>` : `<span style="font-size:0.72rem; color:var(--warn)">★ Default recipe</span>`}
+    ${canDelete ? `<button class="danger" onclick="deleteRecipe()">Remove Recipe</button>` : ""}
+  `;
+      }
+
+      function switchRecipeTab(idx) {
+        if (!editState) return;
+        // Save current form values into editState before switching
+        flushFormToState();
+        editState.currentRecipeIdx = idx;
+        renderRecipeTabs();
+        renderRecipeForm(idx);
+      }
+
+      function addRecipe() {
+        if (!editState) return;
+        flushFormToState();
+        const newRecipe = {
+          id: genId(),
+          label: `Recipe ${editState.recipes.length + 1}`,
+          skill: "",
+          craftingTable: "",
+          laborCalories: 0,
+          outputQty: 1,
+          ingredients: [],
+          byproducts: [],
+          profitOverride: -1,
+          minLevel: 0,
+        };
+        editState.recipes.push(newRecipe);
+        editState.currentRecipeIdx = editState.recipes.length - 1;
+        renderRecipeTabs();
+        renderRecipeForm(editState.currentRecipeIdx);
+      }
+
+      function deleteRecipe() {
+        if (!editState || editState.recipes.length <= 1) return;
+        const cur = editState.currentRecipeIdx;
+        editState.recipes.splice(cur, 1);
+        if (editState.defaultRecipeIdx >= editState.recipes.length) {
+          editState.defaultRecipeIdx = editState.recipes.length - 1;
+        }
+        if (cur >= editState.recipes.length) {
+          editState.currentRecipeIdx = editState.recipes.length - 1;
+        }
+        renderRecipeTabs();
+        renderRecipeForm(editState.currentRecipeIdx);
+      }
+
+      function setDefaultRecipe() {
+        if (!editState) return;
+        editState.defaultRecipeIdx = editState.currentRecipeIdx;
+        renderRecipeTabs();
+      }
+
+      // ── Recipe Form ──────────────────────────────
+
+      function renderRecipeForm(idx) {
+        if (!editState) return;
+        const recipe = editState.recipes[idx];
+        const isNew = !editState.origKey;
+
+        document.getElementById("form-body").innerHTML = `
+    <div class="form-group">
+      <label>Item Name</label>
+      <input type="text" id="f-name" value="${esc(editState.name)}" placeholder="e.g. Wooden Chair">
+    </div>
+    <div class="form-group">
+      <label title="Optional: set a fixed market buy price in credits per unit. When set, calorie calculation is bypassed — this item's cost will be treated as a direct credit expense.">
+        Market Buy Price <span style="font-weight:400;text-transform:none;font-style:italic;font-size:0.72rem">(credits/unit — overrides calorie calc)</span>
+      </label>
+      <input type="number" id="f-market-price" min="0" step="0.01"
+             value="${editState.marketPrice !== null && editState.marketPrice >= 0 ? editState.marketPrice : ""}"
+             placeholder="Leave blank to calculate from recipe">
+    </div>
+    <div class="form-group">
+      <label title="Tags this item belongs to. Tags can be used as ingredient names in recipes — cost is averaged across all members.">
+        Item Tags <span style="font-weight:400;text-transform:none;font-style:italic;font-size:0.72rem">(comma-separated)</span>
+      </label>
+      <input type="text" id="f-tags"
+             value="${esc(
+               Object.values(itemTags)
+                 .filter((t) => (t.memberNames || []).some((m) => dbKey(m) === dbKey(editState.name)))
+                 .map((t) => t.name)
+                 .join(", ")
+             )}"
+             placeholder="e.g. Wood Boards, Lumber"
+             list="item-tags-datalist">
+      <datalist id="item-tags-datalist">${Object.values(itemTags)
+        .map((t) => `<option value="${esc(t.name)}">`)
+        .join("")}</datalist>
+      <div class="hint">Type to assign to existing tags or create new ones. Used as ingredient names in other recipes.</div>
+    </div>
+    <div class="form-group">
+      <label>Recipe Label</label>
+      <input type="text" id="f-label" value="${esc(recipe.label || "")}" placeholder="e.g. Default, Hardwood Variant">
+    </div>
+    <div class="form-group" style="display:flex; gap:10px">
+      <div style="flex:1">
+        <label>Skill</label>
+        <input type="text" id="f-skill" value="${esc(recipe.skill || "")}" placeholder="e.g. Carpentry" list="skills-datalist">
+        <datalist id="skills-datalist">${Object.values(skills)
+          .map((s) => `<option value="${esc(s.name)}">`)
+          .join("")}</datalist>
+      </div>
+      <div style="flex:1">
+        <label>Crafting Table</label>
+        <input type="text" id="f-table" value="${esc(recipe.craftingTable || "")}" placeholder="e.g. Workbench" list="tables-datalist">
+        <datalist id="tables-datalist">${Object.values(tables)
+          .map((t) => `<option value="${esc(t.name)}">`)
+          .join("")}</datalist>
+      </div>
+    </div>
+    <div class="form-group" style="display:flex; gap:10px">
+      <div style="flex:1">
+        <label>Labor Calories to Craft</label>
+        <input type="number" id="f-labor" value="${recipe.laborCalories}" min="0" step="1">
+      </div>
+      <div style="flex:1">
+        <label>Qty Produced per Craft</label>
+        <input type="number" id="f-qty" value="${recipe.outputQty || 1}" min="1" step="1">
+      </div>
+    </div>
+    <div class="form-group" style="display:flex; gap:10px">
+      <div style="flex:1">
+        <label title="Minimum skill level (0-7) required to use this recipe">Min. Skill Level</label>
+        <select id="f-minlevel">${SKILL_MODIFIERS.map(
+          (m, i) =>
+            `<option value="${i}"${(recipe.minLevel || 0) === i ? " selected" : ""}>Lv.${i}${i === 0 ? " (any)" : ""}</option>`
+        ).join("")}</select>
+      </div>
+      <div style="flex:1">
+        <label title="Override the global margin % for this recipe. Leave blank to use the global setting.">Profit Override %</label>
+        <input type="number" id="f-profit-override"
+               value="${recipe.profitOverride >= 0 ? recipe.profitOverride : ""}"
+               min="0" max="500" step="1" placeholder="Global (${parseFloat(document.getElementById("margin-pct")?.value) || 0}%)">
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="form-group">
+      <label>Ingredients</label>
+      <div id="ingredient-list"></div>
+      <button class="add-ingredient-btn" onclick="addIngredient()">+ Add Ingredient</button>
+      <div class="hint">Leave empty for raw/gathered materials.</div>
+    </div>
+    <hr class="divider">
+    <div class="form-group">
+      <label style="color:var(--accent2)">Byproducts <span style="font-weight:400; text-transform:none; font-style:italic; font-size:0.72rem">(offset net cost)</span></label>
+      <div id="byproduct-list"></div>
+      <button class="add-byproduct-btn" onclick="addByproduct()">+ Add Byproduct</button>
+      <div class="hint">Secondary items produced — their calorie value is subtracted from net cost.</div>
+    </div>
+    <datalist id="ingredients-datalist">
+      ${Object.values(db)
+        .map((i) => `<option value="${esc(i.name)}">`)
+        .join("")}
+      ${Object.values(itemTags)
+        .map((t) => `<option value="${esc(t.name)}" label="[tag] ${esc(t.name)}">`)
+        .join("")}
+    </datalist>
+  `;
+
+        renderIngredients();
+        renderByproducts();
+      }
+
+      // Read form DOM → editState (without re-rendering)
+      function flushFormToState() {
+        if (!editState) return;
+        const cur = editState.currentRecipeIdx;
+        const recipe = editState.recipes[cur];
+        const nameEl = document.getElementById("f-name");
+        if (nameEl) editState.name = nameEl.value.trim();
+        const mpEl = document.getElementById("f-market-price");
+        if (mpEl) {
+          const v = mpEl.value.trim();
+          editState.marketPrice = v === "" ? null : (parseFloat(v) ?? null);
+        }
+        const labelEl = document.getElementById("f-label");
+        if (labelEl) recipe.label = labelEl.value.trim() || `Recipe ${cur + 1}`;
+        const skillEl = document.getElementById("f-skill");
+        if (skillEl) recipe.skill = skillEl.value.trim();
+        const tableEl = document.getElementById("f-table");
+        if (tableEl) recipe.craftingTable = tableEl.value.trim();
+        const laborEl = document.getElementById("f-labor");
+        if (laborEl) recipe.laborCalories = parseFloat(laborEl.value) || 0;
+        const qtyEl = document.getElementById("f-qty");
+        if (qtyEl) recipe.outputQty = parseFloat(qtyEl.value) || 1;
+        const minLevelEl = document.getElementById("f-minlevel");
+        if (minLevelEl) recipe.minLevel = parseInt(minLevelEl.value) || 0;
+        const profitEl = document.getElementById("f-profit-override");
+        if (profitEl) recipe.profitOverride = profitEl.value.trim() === "" ? -1 : (parseFloat(profitEl.value) ?? -1);
+        // Ingredients and byproducts sync via oninput
+      }
+
+      // ── Ingredients ──────────────────────────────
+
+      function renderIngredients() {
+        const cur = editState.currentRecipeIdx;
+        const recipe = editState.recipes[cur];
+        const container = document.getElementById("ingredient-list");
+        if (!container) return;
+        const rows = recipe.ingredients;
+        if (rows.length === 0) {
+          container.innerHTML = "";
+          return;
+        }
+        container.innerHTML = rows
+          .map(
+            (row, i) => `
+    <div class="ingredient-row">
+      <input type="text" value="${esc(row.name)}" placeholder="Item or tag name"
+             list="ingredients-datalist"
+             oninput="editState.recipes[editState.currentRecipeIdx].ingredients[${i}].name = this.value">
+      <input type="number" value="${row.qty}" min="0" step="1" style="width:75px"
+             placeholder="Qty" oninput="editState.recipes[editState.currentRecipeIdx].ingredients[${i}].qty = parseFloat(this.value) || 1">
+      <label style="display:flex;align-items:center;gap:3px;font-size:0.7rem;color:var(--text-dim);text-transform:none;letter-spacing:0;white-space:nowrap;cursor:pointer" title="Reducible: affected by table upgrades and lavish workspace">
+        <input type="checkbox" ${row.reducible !== false ? "checked" : ""}
+               onchange="editState.recipes[editState.currentRecipeIdx].ingredients[${i}].reducible = this.checked"
+               style="width:12px;height:12px;accent-color:var(--accent)">Reducible
+      </label>
+      <button onclick="removeIngredient(${i})">✕</button>
+    </div>
+  `
+          )
+          .join("");
+      }
+
+      function addIngredient() {
+        if (!editState) return;
+        editState.recipes[editState.currentRecipeIdx].ingredients.push({ name: "", qty: 1, reducible: true });
+        renderIngredients();
+      }
+
+      function removeIngredient(i) {
+        if (!editState) return;
+        editState.recipes[editState.currentRecipeIdx].ingredients.splice(i, 1);
+        renderIngredients();
+      }
+
+      // ── Byproducts ───────────────────────────────
+
+      function renderByproducts() {
+        const cur = editState.currentRecipeIdx;
+        const recipe = editState.recipes[cur];
+        const container = document.getElementById("byproduct-list");
+        if (!container) return;
+        const rows = recipe.byproducts || [];
+        if (rows.length === 0) {
+          container.innerHTML = "";
+          return;
+        }
+        container.innerHTML = rows
+          .map(
+            (row, i) => `
+    <div class="byproduct-row">
+      <input type="text" value="${esc(row.name)}" placeholder="Byproduct name"
+             oninput="editState.recipes[editState.currentRecipeIdx].byproducts[${i}].name = this.value">
+      <input type="number" value="${row.qty}" min="0.01" step="0.01" style="width:75px"
+             placeholder="Qty" oninput="editState.recipes[editState.currentRecipeIdx].byproducts[${i}].qty = parseFloat(this.value) || 1">
+      <label style="display:flex;align-items:center;gap:3px;font-size:0.7rem;color:var(--accent2);text-transform:none;letter-spacing:0;white-space:nowrap;cursor:pointer" title="Reducible: affected by table upgrades and lavish workspace">
+        <input type="checkbox" ${row.reducible !== false ? "checked" : ""}
+               onchange="editState.recipes[editState.currentRecipeIdx].byproducts[${i}].reducible = this.checked"
+               style="width:12px;height:12px;accent-color:var(--accent2)">Reducible
+      </label>
+      <button onclick="removeByproduct(${i})">✕</button>
+    </div>
+  `
+          )
+          .join("");
+      }
+
+      function addByproduct() {
+        if (!editState) return;
+        if (!editState.recipes[editState.currentRecipeIdx].byproducts) {
+          editState.recipes[editState.currentRecipeIdx].byproducts = [];
+        }
+        editState.recipes[editState.currentRecipeIdx].byproducts.push({ name: "", qty: 1, reducible: true });
+        renderByproducts();
+      }
+
+      function removeByproduct(i) {
+        if (!editState) return;
+        editState.recipes[editState.currentRecipeIdx].byproducts.splice(i, 1);
+        renderByproducts();
+      }
+
+      // ── Save / Delete item ───────────────────────
+
+      function saveItem() {
+        if (!editState) return;
+        flushFormToState();
+
+        const name = editState.name;
+        if (!name) {
+          alert("Please enter an item name.");
+          return;
+        }
+
+        const key = dbKey(name);
+
+        // If renaming, remove old key
+        if (editState.origKey && editState.origKey !== key) {
+          delete db[editState.origKey];
+        }
+
+        // Register skills and tables used
+        for (const r of editState.recipes) {
+          if (r.skill) ensureSkill(r.skill);
+          if (r.craftingTable) ensureTable(r.craftingTable);
+        }
+
+        db[key] = {
+          name,
+          marketPrice: editState.marketPrice ?? null,
+          defaultRecipeIdx: editState.defaultRecipeIdx,
+          recipes: editState.recipes,
+        };
+        saveDb();
+
+        // Sync item tag memberships from the Tags field
+        const tagsInput = document.getElementById("f-tags");
+        if (tagsInput !== null) {
+          const origKey = editState.origKey;
+          const newTagNames = tagsInput.value
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean);
+          // Remove this item (by old or new key) from all existing tag memberships
+          for (const tag of Object.values(itemTags)) {
+            tag.memberNames = tag.memberNames.filter((m) => {
+              const mk = dbKey(m);
+              return mk !== key && (!origKey || mk !== origKey);
+            });
+          }
+          // Add item to each specified tag, creating the tag if it doesn't exist
+          for (const tagName of newTagNames) {
+            const tk = dbKey(tagName);
+            if (!itemTags[tk]) itemTags[tk] = { name: tagName, marketPrice: null, memberNames: [] };
+            if (!itemTags[tk].memberNames.includes(name)) itemTags[tk].memberNames.push(name);
+          }
+          saveItemTags();
+        }
+
+        editState.origKey = key;
+        editState.name = name;
+        selectedKey = key;
+
+        document.getElementById("form-title").textContent = `Edit: ${name}`;
+        document.getElementById("btn-delete").style.display = "inline-block";
+        renderList();
+        // Re-sync datalists
+        renderRecipeForm(editState.currentRecipeIdx);
+        renderRecipeTabs();
+      }
+
+      function deleteItem() {
+        if (!editState || !editState.origKey) return;
+        const item = db[editState.origKey];
+        if (!item) return;
+        if (!confirm(`Delete "${item.name}"?`)) return;
+        delete db[editState.origKey];
+        saveDb();
+        cancelEdit();
+      }
+
+      // ═══════════════════════════════════════════
+      //  CALCULATION ENGINE  (v2)
+      // ═══════════════════════════════════════════
+
+      /**
+       * calcNode(itemName, recipeIdx, qty, visited)
+       * Returns a node object:
+       *   { name, qty, recipe, skillMult, tableMult, laborCal, totalCal, bpCal, netCal,
+       *     ingNodes[], bpNodes[], isRaw, error? }
+       */
+      function calcNode(itemName, recipeIdx, qty, visited) {
+        const key = dbKey(itemName);
+
+        if (visited && visited[key]) {
+          return { name: itemName, qty, error: "circular", ingNodes: [], bpNodes: [] };
+        }
+
+        const item = db[key];
+        if (!item) {
+          // Check if it's a defined item tag
+          const tag = itemTags[key];
+          if (tag) {
+            const tagVisited = { ...(visited || {}), [key]: true };
+            if (tag.marketPrice !== null && tag.marketPrice >= 0) {
+              const netCal = tag.marketPrice * qty * calPerCredit;
+              return {
+                name: tag.name,
+                qty,
+                isTag: true,
+                isMarketPriced: true,
+                marketPricePerUnit: tag.marketPrice,
+                netCal,
+                totalCal: netCal,
+                bpCal: 0,
+                laborCal: 0,
+                memberCount: 0,
+                ingNodes: [],
+                bpNodes: [],
+              };
+            }
+            const memberNodes = (tag.memberNames || [])
+              .map((mName) => calcNode(mName, null, 1, tagVisited))
+              .filter((n) => !n.error);
+            if (memberNodes.length === 0) {
+              return { name: tag.name, qty, error: "missing", ingNodes: [], bpNodes: [] };
+            }
+            const avgCalPerUnit = memberNodes.reduce((s, n) => s + n.netCal, 0) / memberNodes.length;
+            return {
+              name: tag.name,
+              qty,
+              isTag: true,
+              netCal: avgCalPerUnit * qty,
+              totalCal: avgCalPerUnit * qty,
+              bpCal: 0,
+              laborCal: 0,
+              memberCount: memberNodes.length,
+              ingNodes: [],
+              bpNodes: [],
+            };
+          }
+          return { name: itemName, qty, error: "missing", ingNodes: [], bpNodes: [] };
+        }
+
+        // Market price short-circuit: use credit price instead of calorie calculation
+        if (item.marketPrice !== null && item.marketPrice >= 0) {
+          const netCal = item.marketPrice * qty * calPerCredit;
+          return {
+            name: item.name,
+            qty,
+            isMarketPriced: true,
+            marketPricePerUnit: item.marketPrice,
+            netCal,
+            totalCal: netCal,
+            bpCal: 0,
+            laborCal: 0,
+            ingNodes: [],
+            bpNodes: [],
+            isRaw: true,
+            recipe: item.recipes[item.defaultRecipeIdx || 0],
+          };
+        }
+
+        const rIdx = recipeIdx !== null && recipeIdx !== undefined ? recipeIdx : item.defaultRecipeIdx || 0;
+        const recipe = item.recipes[rIdx] || item.recipes[0];
+
+        const skillKey = recipe.skill ? dbKey(recipe.skill) : null;
+        const tableKey = recipe.craftingTable ? dbKey(recipe.craftingTable) : null;
+
+        const skillData = skillKey ? skills[skillKey] : null;
+        const skillLevel = skillData ? Math.min(7, Math.max(0, skillData.level || 0)) : 0;
+        const skillMult = SKILL_MODIFIERS[skillLevel];
+        const lavish = skillData ? !!skillData.lavish : false;
+
+        const tableData = tableKey ? tables[tableKey] : null;
+        const upgradeKey = tableData ? tableData.upgrade || "none" : "none";
+        const tableMult = (UPGRADE_MODULES[upgradeKey] || UPGRADE_MODULES.none).modifier;
+
+        const outputQty = recipe.outputQty || 1;
+        const batchesNeeded = qty / outputQty;
+
+        const laborTableMult = tableModAffectsLabor ? tableMult : 1.0;
+        const laborCal = (recipe.laborCalories || 0) * skillMult * laborTableMult * batchesNeeded;
+
+        const newVisited = { ...(visited || {}), [key]: true };
+
+        // Reducible modifier: table upgrade × lavish workspace × global craft resource modifier
+        // Non-reducible ingredients are fixed costs unaffected by any of these.
+        const lavishMult = lavish ? 0.95 : 1.0;
+        const reducibleMult = tableMult * lavishMult * craftResourceMod;
+
+        // Ingredient nodes
+        const ingNodes = (recipe.ingredients || []).map((ing) => {
+          const effQty = ing.reducible !== false ? ing.qty * batchesNeeded * reducibleMult : ing.qty * batchesNeeded;
+          return calcNode(ing.name, null, effQty, newVisited);
+        });
+
+        const ingCal = ingNodes.reduce((sum, n) => (n.error ? sum : sum + n.netCal), 0);
+        const totalCal = laborCal + ingCal;
+
+        // Byproduct nodes — upgrade and lavish also reduce byproduct quantities for reducible outputs
+        const bpNodes = (recipe.byproducts || []).map((bp) => {
+          const effQty =
+            bp.reducible !== false ? bp.qty * batchesNeeded * tableMult * lavishMult : bp.qty * batchesNeeded;
+          return calcNode(bp.name, null, effQty, {});
+        });
+
+        const bpCal = bpNodes.reduce((sum, n) => (n.error ? sum : sum + n.netCal), 0);
+        const netCal = totalCal - bpCal;
+
+        return {
+          name: item.name,
+          qty,
+          recipe,
+          skillLevel,
+          skillMult,
+          lavish,
+          upgradeKey,
+          tableMult,
+          laborCal,
+          totalCal,
+          bpCal,
+          netCal,
+          ingNodes,
+          bpNodes,
+          isRaw: (recipe.ingredients || []).length === 0,
+        };
+      }
+
+      function collectWarnings(node) {
+        const missing = [];
+        if (node.error === "missing") missing.push(node.name);
+        for (const child of node.ingNodes || []) missing.push(...collectWarnings(child));
+        for (const child of node.bpNodes || []) {
+          if (child.error === "missing") missing.push(child.name + " (byproduct)");
+        }
+        return [...new Set(missing)];
+      }
+
+      // ═══════════════════════════════════════════
+      //  CALCULATOR PANEL
+      // ═══════════════════════════════════════════
+
+      let currentCalcItem = "";
+      let craftResourceMod = 1.0; // updated from DOM before each calcNode call
+      let tableModAffectsLabor = true; // updated from DOM before each calcNode call
+      let calPerCredit = 1000; // updated from DOM before each calcNode call
+
+      function lookupItem() {
+        const name = document.getElementById("calc-input").value.trim();
+        currentCalcItem = name;
+        document.getElementById("calc-autocomplete").style.display = "none";
+
+        // Populate recipe selector
+        const sel = document.getElementById("calc-recipe-select");
+        sel.innerHTML = "";
+        sel.style.display = "none";
+
+        if (name) {
+          const item = db[dbKey(name)];
+          if (item && item.recipes.length > 1) {
+            item.recipes.forEach((r, i) => {
+              const opt = document.createElement("option");
+              opt.value = i;
+              opt.textContent = r.label || `Recipe ${i + 1}`;
+              if (i === (item.defaultRecipeIdx || 0)) opt.textContent += " ★";
+              sel.appendChild(opt);
+            });
+            sel.value = item.defaultRecipeIdx || 0;
+            sel.style.display = "inline-block";
+          }
+        }
+
+        recalc();
+      }
+
+      function recalc() {
+        saveCalcSettings();
+        const name = currentCalcItem;
+        if (!name) return;
+
+        const qty = parseFloat(document.getElementById("calc-qty").value) || 1;
+        calPerCredit = 1.0 / (parseFloat(document.getElementById("cred-per-cal").value) || 0.001);
+        const sym = document.getElementById("currency-symbol").value || "¢";
+        const marginPct = parseFloat(document.getElementById("margin-pct").value) || 0;
+
+        craftResourceMod = parseFloat(document.getElementById("craft-resource-mod").value) || 1.0;
+        tableModAffectsLabor = document.getElementById("table-mod-labor").checked;
+
+        const sel = document.getElementById("calc-recipe-select");
+        const recipeIdx = sel.style.display !== "none" ? parseInt(sel.value) : null;
+
+        const key = dbKey(name);
+        const item = db[key];
+        const resultDiv = document.getElementById("calc-result");
+
+        if (!item) {
+          resultDiv.innerHTML = `<div class="error-box">Item "<strong>${esc(name)}</strong>" is not in your recipe database.<br>Add it using the editor on the left, or check the spelling.</div>`;
+          return;
+        }
+
+        const node = calcNode(name, recipeIdx, qty, {});
+
+        if (node.error) {
+          resultDiv.innerHTML = `<div class="error-box">Could not calculate: ${node.error}</div>`;
+          return;
+        }
+
+        const warnings = collectWarnings(node);
+
+        const effectiveMargin = node.recipe.profitOverride >= 0 ? node.recipe.profitOverride : marginPct;
+        const baseCredits = node.netCal / calPerCredit;
+        const finalCredits = baseCredits * (1 + effectiveMargin / 100);
+        const netPerItem = node.netCal / qty;
+        const creditsPerItem = finalCredits / qty;
+
+        const bpLine =
+          node.bpCal > 0
+            ? `
+    <div class="stat-row">
+      <span class="stat-label">Byproduct offset</span>
+      <span class="stat-value deduct">−${formatNum(Math.round(node.bpCal))} cal</span>
+    </div>`
+            : "";
+
+        resultDiv.innerHTML = `
+    ${warnings.length > 0 ? `<div class="warn-box">⚠ Missing recipes for: ${warnings.map((w) => `<strong><span style="cursor:pointer;text-decoration:underline;text-decoration-style:dotted" onclick="newItemWithName('${esc(w)}')" title="Click to create this recipe">${esc(w)}</span></strong>`).join(", ")}. <em style="opacity:0.75;font-style:normal">Click a name to create its recipe.</em></div>` : ""}
+    <div class="result-card">
+      <div class="result-header">
+        <div>
+          <div class="result-item-name">${esc(item.name)}</div>
+          <div style="color:var(--text-dim); font-size:0.82rem; margin-top:4px">Qty: ${formatNum(qty)} × ${formatNum(Math.round(netPerItem))} cal each</div>
+          ${node.recipe.skill ? `<div style="font-size:0.75rem; color:var(--accent); margin-top:2px">Skill: ${esc(node.recipe.skill)} — Lv.${node.skillLevel}${node.lavish ? " + Lavish" : ""} (×${formatNum(node.skillMult)})${node.recipe.minLevel > 0 ? ` <span style="color:var(--text-dim)">· requires Lv.${node.recipe.minLevel}+</span>` : ""}</div>` : ""}
+          ${node.recipe.craftingTable ? `<div style="font-size:0.75rem; color:var(--warn); margin-top:1px">Table: ${esc(node.recipe.craftingTable)} — ${esc((UPGRADE_MODULES[node.upgradeKey] || UPGRADE_MODULES.none).label)} (×${formatNum(node.tableMult)})</div>` : ""}
+        </div>
+        <div class="result-price">
+          <div class="credits">${sym}${formatCredits(finalCredits)}</div>
+          <div class="per-item">for ${formatNum(qty)} item${qty !== 1 ? "s" : ""}</div>
+          ${qty !== 1 ? `<div class="per-item">${sym}${formatCredits(creditsPerItem)} each</div>` : ""}
+          <button class="copy-btn" onclick="copyPrice()" title="Copy price to clipboard">⧉ Copy price</button>
+        </div>
+      </div>
+      <div class="result-body">
+        <div class="stat-row">
+          <span class="stat-label">Gross calories (all ${formatNum(qty)})</span>
+          <span class="stat-value">${formatNum(Math.round(node.totalCal))} cal</span>
+        </div>
+        ${bpLine}
+        <div class="stat-row">
+          <span class="stat-label">Net calories (all ${formatNum(qty)})</span>
+          <span class="stat-value">${formatNum(Math.round(node.netCal))} cal</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Rate: ${formatNum(1 / calPerCredit)} ${sym}/cal</span>
+          <span class="stat-value highlight">${sym}${formatCredits(finalCredits)}</span>
+        </div>
+        ${effectiveMargin > 0 ? `<div class="stat-row"><span class="stat-label">Margin (${effectiveMargin}%${node.recipe.profitOverride >= 0 ? " — recipe override" : ""})</span><span class="stat-value">+${sym}${formatCredits(finalCredits - baseCredits)}</span></div>` : ""}
+      </div>
+    </div>
+    <div class="breakdown-section">
+      <div class="breakdown-title">Cost Tree (calories breakdown)</div>
+      <div class="tree-root">${renderTree(node, calPerCredit, sym)}</div>
+    </div>
+  `;
+      }
+
+      function renderTree(node, calPerCredit, sym) {
+        if (node.isMarketPriced) {
+          const qtyLabel = node.qty !== 1 ? ` ×${formatNum(node.qty)}` : "";
+          const totalCost = formatCredits(node.marketPricePerUnit * node.qty);
+          return `<div class="tree-item is-market${node.isTag ? " is-tag" : ""}">
+      <div>
+        <span class="tree-name">${esc(node.name)}${qtyLabel}</span>
+        ${node.isTag ? '<span class="tag item-tag">tag</span>' : ""}
+        <span class="tag market">market</span>
+      </div>
+      <span class="tree-cal">${sym}${formatCredits(node.marketPricePerUnit)}/ea &nbsp;·&nbsp; ${sym}${totalCost} total</span>
+    </div>`;
+        }
+
+        if (node.isTag) {
+          const qtyLabel = node.qty !== 1 ? ` ×${formatNum(node.qty)}` : "";
+          const netCredits = formatCredits(node.netCal / calPerCredit);
+          const avgCalPerUnit = node.memberCount > 0 ? Math.round(node.netCal / node.qty) : 0;
+          return `<div class="tree-item is-tag">
+      <div>
+        <span class="tree-name">${esc(node.name)}${qtyLabel}</span>
+        <span class="tag item-tag">tag · avg of ${node.memberCount}</span>
+      </div>
+      <span class="tree-cal">${formatNum(avgCalPerUnit)} cal &nbsp;·&nbsp; ${sym}${netCredits}</span>
+    </div>`;
+        }
+
+        if (node.error === "missing") {
+          const qtyLabel = node.qty !== 1 ? ` ×${formatNum(node.qty)}` : "";
+          return `<div class="tree-item is-raw" style="border:1px solid var(--danger);cursor:pointer" onclick="newItemWithName('${esc(node.name)}')" title="Click to create a recipe for '${esc(node.name)}'">
+      <span class="tree-name" style="color:var(--danger)">${esc(node.name)}${qtyLabel}</span>
+      <span class="tree-cal" style="color:var(--danger)">＋ create recipe</span>
+    </div>`;
+        }
+
+        if (node.error === "circular") {
+          const qtyLabel = node.qty !== 1 ? ` ×${formatNum(node.qty)}` : "";
+          return `<div class="tree-item is-raw" style="border:1px solid var(--warn)">
+      <span class="tree-name" style="color:var(--warn)">${esc(node.name)}${qtyLabel}</span>
+      <span class="tree-cal" style="color:var(--warn)">circular ref</span>
+    </div>`;
+        }
+
+        const netCredits = formatCredits(node.netCal / calPerCredit);
+        const qtyLabel = node.qty !== 1 ? ` ×${formatNum(node.qty)}` : "";
+
+        // Skill/table badges for the labor line
+        const skillBadge =
+          node.skillMult !== 1
+            ? `<span class="adj-badge skill">${esc(node.recipe.skill)} Lv.${node.skillLevel}${node.lavish ? "+L" : ""} ×${formatNum(node.skillMult)}</span>`
+            : "";
+        const tableBadge =
+          node.tableMult !== 1
+            ? `<span class="adj-badge table">${esc((UPGRADE_MODULES[node.upgradeKey] || UPGRADE_MODULES.none).label)} ×${formatNum(node.tableMult)}</span>`
+            : "";
+
+        const laborLine =
+          node.laborCal > 0
+            ? `
+    <div class="tree-node">
+      <div class="tree-item is-labor">
+        <span class="tree-name">Labor ${skillBadge}${tableBadge}</span>
+        <span class="tree-cal">+${formatNum(Math.round(node.laborCal))} cal</span>
+      </div>
+    </div>`
+            : "";
+
+        const ingHtml = (node.ingNodes || [])
+          .map(
+            (c) => `
+    <div class="tree-node">${renderTree(c, calPerCredit, sym)}</div>
+  `
+          )
+          .join("");
+
+        // Byproduct subtree
+        let bpHtml = "";
+        if (node.bpNodes && node.bpNodes.length > 0) {
+          const bpRows = node.bpNodes
+            .map((bp) => {
+              if (bp.error)
+                return `<div class="tree-node"><div class="tree-item is-byproduct">
+        <span class="tree-name">${esc(bp.name)}</span>
+        <span class="tree-cal" style="color:var(--text-dim)">no recipe</span>
+      </div></div>`;
+              const bpQty = bp.qty !== 1 ? ` ×${formatNum(bp.qty)}` : "";
+              return `<div class="tree-node"><div class="tree-item is-byproduct">
+        <span class="tree-name">${esc(bp.name)}${bpQty}</span>
+        <span class="tree-cal">−${formatNum(Math.round(bp.netCal))} cal</span>
+      </div></div>`;
+            })
+            .join("");
+          bpHtml = `<div class="tree-node"><div class="bp-section-label">Byproducts</div>${bpRows}</div>`;
+        }
+
+        return `
+    <div class="tree-item ${node.isRaw ? "is-raw" : ""}">
+      <div>
+        <span class="tree-name">${esc(node.name)}${qtyLabel}</span>
+        ${node.isRaw ? '<span class="tag">raw</span>' : ""}
+      </div>
+      <span class="tree-cal">${formatNum(Math.round(node.netCal))} cal &nbsp;·&nbsp; ${sym}${netCredits}</span>
+    </div>
+    ${laborLine}
+    ${ingHtml}
+    ${bpHtml}
+  `;
+      }
+
+      // ═══════════════════════════════════════════
+      //  AUTOCOMPLETE
+      // ═══════════════════════════════════════════
+
+      let acFocusIdx = -1;
+
+      function calcAutocomplete() {
+        const val = document.getElementById("calc-input").value.toLowerCase();
+        const list = document.getElementById("calc-autocomplete");
+        currentCalcItem = "";
+
+        if (!val) {
+          list.style.display = "none";
+          return;
+        }
+
+        const matches = Object.values(db)
+          .filter((i) => i.name.toLowerCase().includes(val))
+          .slice(0, 10);
+
+        if (matches.length === 0) {
+          list.style.display = "none";
+          return;
+        }
+
+        acFocusIdx = -1;
+        list.innerHTML = matches
+          .map((m) => `<div class="autocomplete-item" onclick="selectAC('${esc(m.name)}')">${esc(m.name)}</div>`)
+          .join("");
+        list.style.display = "block";
+      }
+
+      function calcKeydown(e) {
+        const list = document.getElementById("calc-autocomplete");
+        const items = list.querySelectorAll(".autocomplete-item");
+        if (e.key === "ArrowDown") {
+          acFocusIdx = Math.min(acFocusIdx + 1, items.length - 1);
+          updateACFocus(items);
+        } else if (e.key === "ArrowUp") {
+          acFocusIdx = Math.max(acFocusIdx - 1, -1);
+          updateACFocus(items);
+        } else if (e.key === "Enter") {
+          if (acFocusIdx >= 0 && items[acFocusIdx]) {
+            selectAC(items[acFocusIdx].textContent);
+          } else {
+            lookupItem();
+          }
+        } else if (e.key === "Escape") {
+          list.style.display = "none";
+        }
+      }
+
+      function updateACFocus(items) {
+        items.forEach((el, i) => el.classList.toggle("focused", i === acFocusIdx));
+      }
+
+      function selectAC(name) {
+        document.getElementById("calc-input").value = name;
+        document.getElementById("calc-autocomplete").style.display = "none";
+        currentCalcItem = name;
+        lookupItem();
+      }
+
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest(".autocomplete-wrapper")) {
+          document.getElementById("calc-autocomplete").style.display = "none";
+        }
+      });
+
+      // ═══════════════════════════════════════════
+      //  IMPORT / EXPORT MODAL
+      // ═══════════════════════════════════════════
+
+      let currentTab = "import";
+
+      function openImport() {
+        document.getElementById("import-textarea").value = "";
+        document.getElementById("import-error").style.display = "none";
+        document.getElementById("modal-backdrop").classList.add("open");
+        switchTab("import");
+      }
+
+      function openExport() {
+        document.getElementById("modal-backdrop").classList.add("open");
+        const exportData = {
+          db: Object.values(db).sort((a, b) => a.name.localeCompare(b.name)),
+          skills: Object.values(skills),
+          tables: Object.values(tables),
+          itemTags: Object.values(itemTags),
+          calcSettings: {
+            credPerCal: document.getElementById("cred-per-cal").value,
+            currencySymbol: document.getElementById("currency-symbol").value,
+            marginPct: document.getElementById("margin-pct").value,
+            craftResourceMod: document.getElementById("craft-resource-mod").value,
+            tableModLabor: document.getElementById("table-mod-labor").checked,
+          },
+        };
+        document.getElementById("export-textarea").value = JSON.stringify(exportData, null, 2);
+        switchTab("export");
+      }
+
+      function closeModal() {
+        document.getElementById("modal-backdrop").classList.remove("open");
+      }
+
+      function closeModalIfBackdrop(e) {
+        if (e.target === document.getElementById("modal-backdrop")) closeModal();
+      }
+
+      function switchTab(tab) {
+        currentTab = tab;
+        document.querySelectorAll("#modal-backdrop .tab-btn").forEach((btn, i) => {
+          const tabs = ["import", "export", "schema"];
+          btn.classList.toggle("active", tabs[i] === tab);
+        });
+        document.querySelectorAll("#modal-backdrop .tab-panel").forEach((p) => p.classList.remove("active"));
+        document.getElementById("tab-" + tab).classList.add("active");
+        const actionBtn = document.getElementById("modal-action-btn");
+        if (tab === "import") {
+          actionBtn.style.display = "inline-block";
+        } else {
+          actionBtn.style.display = "none";
+        }
+      }
+
+      function doImport() {
+        const raw = document.getElementById("import-textarea").value.trim();
+        const errBox = document.getElementById("import-error");
+        errBox.style.display = "none";
+
+        let parsed;
+        try {
+          parsed = JSON.parse(raw);
+        } catch (e) {
+          errBox.textContent = "Invalid JSON: " + e.message;
+          errBox.style.display = "block";
+          return;
+        }
+
+        // Support wrapper format { db, skills, tables } or plain array
+        let items,
+          importedSkills = null,
+          importedTables = null,
+          importedItemTags = null;
+        if (Array.isArray(parsed)) {
+          items = parsed;
+        } else if (parsed && Array.isArray(parsed.db)) {
+          items = parsed.db;
+          importedSkills = parsed.skills;
+          importedTables = parsed.tables;
+          importedItemTags = parsed.itemTags;
+        } else {
+          errBox.textContent = 'Expected a JSON array or an export object with a "db" array.';
+          errBox.style.display = "block";
+          return;
+        }
+
+        let imported = 0;
+        const errors = [];
+
+        for (const item of items) {
+          if (!item.name || typeof item.name !== "string") {
+            errors.push('Item missing "name" field');
+            continue;
+          }
+          if (!Array.isArray(item.recipes) || item.recipes.length === 0) {
+            errors.push(`"${item.name}" is missing a "recipes" array`);
+            continue;
+          }
+          db[dbKey(item.name)] = normaliseItem(item);
+          imported++;
+        }
+
+        // Import skills
+        if (Array.isArray(importedSkills)) {
+          for (const s of importedSkills) {
+            if (s.name)
+              skills[dbKey(s.name)] = {
+                name: s.name,
+                level: Math.min(7, Math.max(0, Number(s.level) || 0)),
+                lavish: !!s.lavish,
+              };
+          }
+          saveSkills();
+        }
+
+        // Import tables
+        if (Array.isArray(importedTables)) {
+          for (const t of importedTables) {
+            if (t.name)
+              tables[dbKey(t.name)] = { name: t.name, upgrade: UPGRADE_MODULES[t.upgrade] ? t.upgrade : "none" };
+          }
+          saveTables();
+        }
+
+        // Import item tags
+        if (Array.isArray(importedItemTags)) {
+          for (const t of importedItemTags) {
+            if (t.name)
+              itemTags[dbKey(t.name)] = {
+                name: t.name,
+                marketPrice: typeof t.marketPrice === "number" && t.marketPrice >= 0 ? t.marketPrice : null,
+                memberNames: Array.isArray(t.memberNames) ? t.memberNames : [],
+              };
+          }
+          saveItemTags();
+        }
+
+        // Import calculator settings
+        const cs = parsed.calcSettings;
+        if (cs && typeof cs === "object") {
+          if (cs.credPerCal != null) document.getElementById("cred-per-cal").value = cs.credPerCal;
+          if (cs.currencySymbol != null) document.getElementById("currency-symbol").value = cs.currencySymbol;
+          if (cs.marginPct != null) document.getElementById("margin-pct").value = cs.marginPct;
+          if (cs.craftResourceMod != null) document.getElementById("craft-resource-mod").value = cs.craftResourceMod;
+          if (cs.tableModLabor != null) document.getElementById("table-mod-labor").checked = !!cs.tableModLabor;
+          saveCalcSettings();
+        }
+
+        saveDb();
+        renderList();
+
+        if (errors.length > 0) {
+          errBox.textContent = `Imported ${imported} items with errors:\n${errors.join("\n")}`;
+          errBox.style.display = "block";
+        } else {
+          closeModal();
+          alert(`Successfully imported ${imported} item${imported !== 1 ? "s" : ""}.`);
+        }
+      }
+
+      // ═══════════════════════════════════════════
+      //  SETTINGS MODAL (Skills & Tables)
+      // ═══════════════════════════════════════════
+
+      let currentSettingsTab = "skills";
+
+      function openHelp() {
+        document.getElementById("help-modal-backdrop").classList.add("open");
+      }
+
+      function closeHelp() {
+        document.getElementById("help-modal-backdrop").classList.remove("open");
+      }
+
+      function openHelp() {
+        document.getElementById("help-modal-backdrop").classList.add("open");
+      }
+
+      function closeHelp() {
+        document.getElementById("help-modal-backdrop").classList.remove("open");
+      }
+
+      function openSettings() {
+        document.getElementById("settings-modal-backdrop").classList.add("open");
+        switchSettingsTab("skills");
+      }
+
+      function closeSettings() {
+        document.getElementById("settings-modal-backdrop").classList.remove("open");
+        // Re-render calc if open, in case multipliers changed
+        if (currentCalcItem) recalc();
+        renderList();
+      }
+
+      function closeSettingsIfBackdrop(e) {
+        if (e.target === document.getElementById("settings-modal-backdrop")) closeSettings();
+      }
+
+      function resetSettingsToDefaults() {
+        if (
+          !confirm("Reset all skills and crafting tables to vanilla Eco defaults? Your current % values will be lost.")
+        )
+          return;
+        skills = {};
+        for (const s of DEFAULT_SKILLS) {
+          skills[dbKey(s.name)] = { name: s.name, level: s.level, lavish: s.lavish };
+        }
+        saveSkills();
+        tables = {};
+        for (const t of DEFAULT_TABLES) {
+          tables[dbKey(t.name)] = { name: t.name, upgrade: t.upgrade };
+        }
+        saveTables();
+        // Re-render whichever tab is active
+        if (currentSettingsTab === "skills") renderSkillsSettings();
+        else renderTablesSettings();
+      }
+
+      function switchSettingsTab(tab) {
+        currentSettingsTab = tab;
+        document.getElementById("stab-skills").classList.toggle("active", tab === "skills");
+        document.getElementById("stab-tables").classList.toggle("active", tab === "tables");
+        document.getElementById("stab-tags").classList.toggle("active", tab === "tags");
+        document.getElementById("settings-skills-panel").classList.toggle("active", tab === "skills");
+        document.getElementById("settings-tables-panel").classList.toggle("active", tab === "tables");
+        document.getElementById("settings-tags-panel").classList.toggle("active", tab === "tags");
+        if (tab === "skills") renderSkillsSettings();
+        else if (tab === "tables") renderTablesSettings();
+        else renderTagsSettings();
+      }
+
+      // ── Helpers ──────────────────────────────────
+      function skillModifierLabel(level) {
+        return `${Math.round(SKILL_MODIFIERS[level] * 100)}% labor`;
+      }
+
+      function upgradeSel(currentKey, onchangeFn) {
+        return `<select onchange="${onchangeFn}">${Object.entries(UPGRADE_MODULES)
+          .map(
+            ([k, m]) =>
+              `<option value="${k}"${k === currentKey ? " selected" : ""}>${esc(m.label)} — ${Math.round(m.modifier * 100)}%</option>`
+          )
+          .join("")}</select>`;
+      }
+
+      // ── Skills panel ─────────────────────────────
+      function renderSkillsSettings() {
+        const panel = document.getElementById("settings-skills-panel");
+        const rows = Object.values(skills).sort((a, b) => a.name.localeCompare(b.name));
+        panel.innerHTML = `
+    <table class="settings-table">
+      <thead><tr><th>Skill Name</th><th>Level (0–7)</th><th>Lavish</th><th></th></tr></thead>
+      <tbody>${rows.map(skillRow).join("")}</tbody>
+    </table>
+    <button style="margin-top:10px; width:100%; border-style:dashed" onclick="addSkillRow()">+ Add Skill</button>
+  `;
+      }
+
+      function skillRow(s) {
+        const k = dbKey(s.name);
+        const level = Math.min(7, Math.max(0, s.level || 0));
+        const levelOpts = SKILL_MODIFIERS.map(
+          (m, i) => `<option value="${i}"${i === level ? " selected" : ""}>Lv.${i} — ${Math.round(m * 100)}%</option>`
+        ).join("");
+        return `<tr>
+    <td><input type="text" value="${esc(s.name)}" onchange="renameSkill('${esc(k)}', this.value)"></td>
+    <td><select onchange="setSkillLevel('${esc(k)}', parseInt(this.value))">${levelOpts}</select></td>
+    <td style="text-align:center"><input type="checkbox" ${s.lavish ? "checked" : ""}
+        onchange="setSkillLavish('${esc(k)}', this.checked)" title="Lavish Workspace (−5% ingredients)"></td>
+    <td><button class="danger" onclick="deleteSkill('${esc(k)}')">✕</button></td>
+  </tr>`;
+      }
+
+      function addSkillRow() {
+        const name = "New Skill " + (Object.keys(skills).length + 1);
+        const k = dbKey(name);
+        skills[k] = { name, level: 1, lavish: false };
+        saveSkills();
+        renderSkillsSettings();
+      }
+
+      function renameSkill(oldKey, newName) {
+        newName = newName.trim();
+        if (!newName) return;
+        const newKey = dbKey(newName);
+        if (newKey === oldKey) {
+          skills[oldKey].name = newName;
+          saveSkills();
+          return;
+        }
+        const s = skills[oldKey];
+        delete skills[oldKey];
+        skills[newKey] = { ...s, name: newName };
+        saveSkills();
+      }
+
+      function setSkillLevel(key, level) {
+        if (!skills[key]) return;
+        skills[key].level = Math.min(7, Math.max(0, level || 0));
+        saveSkills();
+      }
+
+      function setSkillLavish(key, checked) {
+        if (!skills[key]) return;
+        skills[key].lavish = !!checked;
+        saveSkills();
+      }
+
+      function deleteSkill(key) {
+        delete skills[key];
+        saveSkills();
+        renderSkillsSettings();
+      }
+
+      // ── Tables panel ─────────────────────────────
+      function renderTablesSettings() {
+        const panel = document.getElementById("settings-tables-panel");
+        const rows = Object.values(tables).sort((a, b) => a.name.localeCompare(b.name));
+        panel.innerHTML = `
+    <table class="settings-table">
+      <thead><tr><th>Table Name</th><th>Upgrade Module</th><th></th></tr></thead>
+      <tbody>${rows.map(tableRow).join("")}</tbody>
+    </table>
+    <button style="margin-top:10px; width:100%; border-style:dashed" onclick="addTableRow()">+ Add Crafting Table</button>
+  `;
+      }
+
+      function tableRow(t) {
+        const k = dbKey(t.name);
+        const curUpgrade = t.upgrade || "none";
+        return `<tr>
+    <td><input type="text" value="${esc(t.name)}" onchange="renameTable('${esc(k)}', this.value)"></td>
+    <td>${upgradeSel(curUpgrade, `setTableUpgrade('${esc(k)}', this.value)`)}</td>
+    <td><button class="danger" onclick="deleteTable('${esc(k)}')">✕</button></td>
+  </tr>`;
+      }
+
+      function addTableRow() {
+        const name = "New Table " + (Object.keys(tables).length + 1);
+        const k = dbKey(name);
+        tables[k] = { name, upgrade: "none" };
+        saveTables();
+        renderTablesSettings();
+      }
+
+      function renameTable(oldKey, newName) {
+        newName = newName.trim();
+        if (!newName) return;
+        const newKey = dbKey(newName);
+        if (newKey === oldKey) {
+          tables[oldKey].name = newName;
+          saveTables();
+          return;
+        }
+        const t = tables[oldKey];
+        delete tables[oldKey];
+        tables[newKey] = { ...t, name: newName };
+        saveTables();
+      }
+
+      function setTableUpgrade(key, upgradeKey) {
+        if (!tables[key]) return;
+        tables[key].upgrade = UPGRADE_MODULES[upgradeKey] ? upgradeKey : "none";
+        saveTables();
+      }
+
+      function deleteTable(key) {
+        delete tables[key];
+        saveTables();
+        renderTablesSettings();
+      }
+
+      // ── Item Tags panel ──────────────────────────
+      function renderTagsSettings() {
+        const panel = document.getElementById("settings-tags-panel");
+        const tags = Object.values(itemTags).sort((a, b) => a.name.localeCompare(b.name));
+        const allItemNames = Object.values(db)
+          .map((i) => `<option value="${esc(i.name)}">`)
+          .join("");
+
+        panel.innerHTML = `
+    <div class="info-box" style="margin-bottom:14px">
+      Item tags let you use a category of items as a recipe ingredient (e.g. "Wood Boards" accepts Birch Board, Fir Board, etc.).
+      Tag cost = average calorie cost of all member items, or a fixed market price override.
+      Type a tag name in any ingredient field to use it.
+    </div>
+    <datalist id="tag-add-datalist">${allItemNames}</datalist>
+    ${tags.length === 0 ? `<div class="empty-state" style="padding:24px">No tags yet. Click <strong>+ Add Tag</strong> to create one.</div>` : tags.map(tagCard).join("")}
+    <button style="width:100%; border-style:dashed; margin-top:8px" onclick="addTagRow()">+ Add Tag</button>
+  `;
+      }
+
+      function tagCard(t) {
+        const k = dbKey(t.name);
+        const members = t.memberNames || [];
+        const chipsHtml = members
+          .map(
+            (m, i) =>
+              `<span class="tag-member-chip">${esc(m)}<button class="chip-remove" onclick="removeTagMember('${esc(k)}',${i})" title="Remove">×</button></span>`
+          )
+          .join("");
+        const marketVal = t.marketPrice !== null && t.marketPrice >= 0 ? t.marketPrice : "";
+
+        // Compute display avg if possible
+        let avgLabel = "";
+        if (members.length > 0 && (t.marketPrice === null || t.marketPrice < 0)) {
+          const nodes = members.map((m) => calcNode(m, null, 1, {})).filter((n) => !n.error);
+          if (nodes.length > 0) {
+            const avg = nodes.reduce((s, n) => s + n.netCal, 0) / nodes.length;
+            avgLabel = `<span style="font-size:0.75rem; color:var(--text-dim); margin-left:6px">avg: ${formatNum(Math.round(avg))} cal</span>`;
+          }
+        }
+
+        return `
+    <div class="tag-card">
+      <div class="tag-card-header">
+        <input type="text" value="${esc(t.name)}" style="flex:1; font-weight:600; min-width:120px"
+               onchange="renameTag('${esc(k)}', this.value)" placeholder="Tag name">
+        <label style="display:flex; align-items:center; gap:5px; text-transform:none; letter-spacing:0; font-size:0.82rem; margin:0; white-space:nowrap">
+          <span style="color:var(--text-dim)">Market override:</span>
+          <input type="number" min="0" step="0.01" style="width:90px"
+                 value="${marketVal}" placeholder="Use avg"
+                 onchange="setTagMarketPrice('${esc(k)}', this.value)">
+        </label>
+        ${avgLabel}
+        <button class="danger" onclick="deleteTag('${esc(k)}')">✕ Remove</button>
+      </div>
+      <div style="font-size:0.72rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px">Member Items</div>
+      <div class="tag-members">
+        ${chipsHtml}
+        <span style="display:inline-flex; gap:4px; align-items:center">
+          <input type="text" id="tag-add-input-${esc(k)}" placeholder="Add item…"
+                 style="font-size:0.8rem; padding:3px 8px; width:160px"
+                 list="tag-add-datalist"
+                 onkeydown="if(event.key==='Enter'){event.preventDefault();addTagMember('${esc(k)}');}">
+          <button onclick="addTagMember('${esc(k)}')">+ Add</button>
+        </span>
+      </div>
+    </div>
+  `;
+      }
+
+      function addTagRow() {
+        const name = "New Tag " + (Object.keys(itemTags).length + 1);
+        const k = dbKey(name);
+        itemTags[k] = { name, marketPrice: null, memberNames: [] };
+        saveItemTags();
+        renderTagsSettings();
+      }
+
+      function renameTag(oldKey, newName) {
+        newName = newName.trim();
+        if (!newName) return;
+        const newKey = dbKey(newName);
+        if (newKey === oldKey) {
+          itemTags[oldKey].name = newName;
+          saveItemTags();
+          return;
+        }
+        const t = itemTags[oldKey];
+        delete itemTags[oldKey];
+        itemTags[newKey] = { ...t, name: newName };
+        saveItemTags();
+      }
+
+      function setTagMarketPrice(key, value) {
+        if (!itemTags[key]) return;
+        const v = String(value).trim();
+        itemTags[key].marketPrice = v === "" ? null : (parseFloat(v) ?? null);
+        saveItemTags();
+      }
+
+      function deleteTag(key) {
+        if (!confirm(`Delete tag "${itemTags[key]?.name}"?`)) return;
+        delete itemTags[key];
+        saveItemTags();
+        renderTagsSettings();
+      }
+
+      function addTagMember(tagKey) {
+        const input = document.getElementById("tag-add-input-" + tagKey);
+        if (!input) return;
+        const name = input.value.trim();
+        if (!name || !itemTags[tagKey]) return;
+        if (!itemTags[tagKey].memberNames.includes(name)) {
+          itemTags[tagKey].memberNames.push(name);
+          saveItemTags();
+          renderTagsSettings();
+        }
+        input.value = "";
+      }
+
+      function removeTagMember(tagKey, idx) {
+        if (!itemTags[tagKey]) return;
+        itemTags[tagKey].memberNames.splice(idx, 1);
+        saveItemTags();
+        renderTagsSettings();
+      }
+
+      // ═══════════════════════════════════════════
+      //  UTILITIES
+      // ═══════════════════════════════════════════
+
+      function formatNum(n) {
+        if (n === null || n === undefined || isNaN(n)) return "?";
+        return Number(n).toLocaleString(undefined, { maximumFractionDigits: 2 });
+      }
+
+      function formatCredits(n) {
+        if (n === null || isNaN(n)) return "?";
+        return Number(n).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      // ═══════════════════════════════════════════
+      //  COPY PRICE
+      // ═══════════════════════════════════════════
+
+      function copyPrice() {
+        const creditsEl = document.querySelector(".result-price .credits");
+        if (!creditsEl) return;
+        const text = creditsEl.textContent.trim();
+        navigator.clipboard
+          .writeText(text)
+          .then(() => {
+            const btn = document.querySelector(".copy-btn");
+            if (btn) {
+              btn.textContent = "✓ Copied!";
+              btn.classList.add("copied");
+              setTimeout(() => {
+                btn.textContent = "⧉ Copy price";
+                btn.classList.remove("copied");
+              }, 1800);
+            }
+          })
+          .catch(() => {
+            // Fallback for browsers without clipboard API
+            const range = document.createRange();
+            range.selectNode(creditsEl);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+          });
+      }
+
+      // ═══════════════════════════════════════════
+      //  INIT
+      // ═══════════════════════════════════════════
+
+      loadDb();
+      loadSkills();
+      loadTables();
+      loadItemTags();
+      loadCalcSettings();
+      renderList();
+
+      // ── Panel resize handles ──────────────────────
+      (function initResizeHandles() {
+        const panelLeft = document.querySelector(".panel-left");
+        const panelMid = document.querySelector(".panel-mid");
+        const handleLeft = document.getElementById("resize-handle-left");
+        const handleMid = document.getElementById("resize-handle-mid");
+        const STORAGE_PANEL_WIDTHS = "eco_panel_widths_v1";
+
+        // Restore saved widths
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_PANEL_WIDTHS));
+          if (saved) {
+            if (saved.left) panelLeft.style.width = saved.left;
+            if (saved.mid) panelMid.style.width = saved.mid;
+          }
+        } catch (e) {}
+
+        function saveWidths() {
+          localStorage.setItem(
+            STORAGE_PANEL_WIDTHS,
+            JSON.stringify({
+              left: panelLeft.style.width || panelLeft.offsetWidth + "px",
+              mid: panelMid.style.width || panelMid.offsetWidth + "px",
+            })
+          );
+        }
+
+        function startResize(panel, handle, e) {
+          e.preventDefault();
+          const startX = e.clientX;
+          const startWidth = panel.offsetWidth;
+          handle.classList.add("is-dragging");
+          document.body.style.cursor = "col-resize";
+          document.body.style.userSelect = "none";
+
+          function onMove(e) {
+            const newWidth = Math.max(180, startWidth + (e.clientX - startX));
+            panel.style.width = newWidth + "px";
+          }
+          function onUp() {
+            handle.classList.remove("is-dragging");
+            document.body.style.cursor = "";
+            document.body.style.userSelect = "";
+            saveWidths();
+            document.removeEventListener("mousemove", onMove);
+            document.removeEventListener("mouseup", onUp);
+          }
+          document.addEventListener("mousemove", onMove);
+          document.addEventListener("mouseup", onUp);
+        }
+
+        handleLeft.addEventListener("mousedown", (e) => startResize(panelLeft, handleLeft, e));
+        handleMid.addEventListener("mousedown", (e) => startResize(panelMid, handleMid, e));
+      })();
+    </script>
+  </body>
+</html>

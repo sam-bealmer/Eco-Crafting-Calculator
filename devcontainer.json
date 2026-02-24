@@ -1,0 +1,88 @@
+{
+  "name": "HTML Dev",
+
+  // Debian 12 base, same as keypad-gen-6 pattern
+  "image": "mcr.microsoft.com/devcontainers/base:debian-12",
+
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    },
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": false
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Formatting
+        "esbenp.prettier-vscode",
+        // Linting
+        "dbaeumer.vscode-eslint",
+        "mkaufman.HTMLHint",
+        // HTML/CSS quality of life
+        "formulahendry.auto-rename-tag",
+        "Zignd.html-css-class-completion",
+        "naumovs.color-highlight",
+        // Inline error display
+        "usernamehw.errorlens",
+        // Live reload in browser
+        "ritwickdey.liveserver",
+        // Claude Code
+        "Anthropic.claude-code"
+      ],
+      "settings": {
+        // Prettier as default formatter for all web file types
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "[html]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode",
+          "editor.formatOnSave": true
+        },
+        "[css]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode",
+          "editor.formatOnSave": true
+        },
+        "[javascript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode",
+          "editor.formatOnSave": true
+        },
+        "[json]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode",
+          "editor.formatOnSave": true
+        },
+        // ESLint
+        "eslint.validate": ["javascript", "html"],
+        // Live Server
+        "liveServer.settings.donotShowInfoMsg": true,
+        "liveServer.settings.donotVerifyTags": true,
+        // Editor
+        "editor.rulers": [120],
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "editor.detectIndentation": false,
+        "editor.bracketPairColorization.enabled": true,
+        "editor.guides.bracketPairs": "active",
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true,
+        "files.trimFinalNewlines": true,
+        // Git
+        "git.autofetch": true,
+        "git.confirmSync": false,
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+
+  "postCreateCommand": "sudo chown -R vscode:vscode /home/vscode/.cache 2>/dev/null || true; bash .devcontainer/setup.sh",
+
+  "remoteUser": "vscode",
+
+  "containerUser": "vscode",
+
+  "postStartCommand": "git config --global --unset-all safe.directory || true; git config --global --add safe.directory '*' || true",
+
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}"
+}
