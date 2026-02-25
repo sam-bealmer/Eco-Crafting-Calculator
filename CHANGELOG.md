@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-02-25
+
 ### Added
 
 - Tag next to title for current Eco Version
@@ -35,4 +37,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - App fetches the four JSON files in parallel on first run to seed localStorage; falls back to hardcoded defaults if offline
 
 [Unreleased]: https://github.com/sam-bealmer/Eco-Crafting-Calculator/compare/v1.0.0...HEAD
+[1.0.1]: https://github.com/sam-bealmer/Eco-Crafting-Calculator/releases/tag/v1.0.1
 [1.0.0]: https://github.com/sam-bealmer/Eco-Crafting-Calculator/releases/tag/v1.0.0
