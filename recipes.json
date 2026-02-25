@@ -1,0 +1,722 @@
+[
+  {
+    "name": "Coal",
+    "marketPrice": 25,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Mining",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Copper Ore",
+    "marketPrice": 35,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Mining",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Gneiss",
+    "marketPrice": 45,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Mining",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Gold Ore",
+    "marketPrice": 35,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Mining",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Granite",
+    "marketPrice": 35,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Mining",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Iron Ore",
+    "marketPrice": 25,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Mining",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Limestone",
+    "marketPrice": 25,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Mining",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Sand",
+    "marketPrice": 15,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Sandstone",
+    "marketPrice": 15,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Mining",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Shale",
+    "marketPrice": 15,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Mining",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Birch Log",
+    "marketPrice": 24,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Logging",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Cedar Log",
+    "marketPrice": 24,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Logging",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Fir Log",
+    "marketPrice": 24,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Logging",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Redwood Log",
+    "marketPrice": 24,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Logging",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Crimini Mushrooms",
+    "marketPrice": 30,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Gathering",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Huckleberries",
+    "marketPrice": 5,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Gathering",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Plant Fibers",
+    "marketPrice": 20,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Gathering",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Prickly Pear Fruit",
+    "marketPrice": 20,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Gathering",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Beet",
+    "marketPrice": 20,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Farming",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Tomato",
+    "marketPrice": 20,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Farming",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Wheat",
+    "marketPrice": 33.33,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Farming",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Bison Carcass",
+    "marketPrice": 575,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Hunting",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Hare Carcass",
+    "marketPrice": 165,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Hunting",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Medium Animal Carcass",
+    "marketPrice": 350,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Hunting",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Medium Wool Animal Carcass",
+    "marketPrice": 400,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Hunting",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Raw Meat",
+    "marketPrice": 40,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Hunting",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Small Animal Carcass",
+    "marketPrice": 210,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Hunting",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Tiny Fur Animal Carcass",
+    "marketPrice": 140,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Hunting",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Tiny Leather Animal Carcass",
+    "marketPrice": 140,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Hunting",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Leather",
+    "marketPrice": 25,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Butchery",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Wool",
+    "marketPrice": 25,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Butchery",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Basalt",
+    "marketPrice": 55,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Mining",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Ceiba Log",
+    "marketPrice": 48,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Logging",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Fur",
+    "marketPrice": 50,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Joshua Log",
+    "marketPrice": 24,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Logging",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Oak Log",
+    "marketPrice": 28,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Logging",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Palm Log",
+    "marketPrice": 24,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Logging",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Saguaro Rib",
+    "marketPrice": 26.66,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Logging",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Slag",
+    "marketPrice": 45,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  },
+  {
+    "name": "Spruce Log",
+    "marketPrice": 24,
+    "defaultRecipeIdx": 0,
+    "recipes": [
+      {
+        "label": "Default",
+        "skill": "Logging",
+        "craftingTable": "",
+        "laborCalories": 0,
+        "outputQty": 1,
+        "ingredients": [],
+        "byproducts": [],
+        "profitOverride": -1,
+        "minLevel": 0
+      }
+    ]
+  }
+]

@@ -4134,12 +4134,83 @@
       //  INIT
       // ═══════════════════════════════════════════
 
-      loadDb();
-      loadSkills();
-      loadTables();
-      loadItemTags();
-      loadCalcSettings();
-      renderList();
+      async function initApp() {
+        const isReturningUser = !!localStorage.getItem(STORAGE_KEY_V2);
+
+        if (!isReturningUser) {
+          // Show a brief loading message while fetching default data
+          const listEl = document.getElementById("item-list");
+          if (listEl) listEl.innerHTML = '<p style="padding:1rem;color:var(--text-muted)">Loading defaults…</p>';
+
+          const [recipesRes, skillsRes, tablesRes, tagsRes] = await Promise.allSettled([
+            fetch("recipes.json"),
+            fetch("skills.json"),
+            fetch("tables.json"),
+            fetch("item-tags.json"),
+          ]);
+
+          // Seed recipes (db)
+          if (recipesRes.status === "fulfilled" && recipesRes.value.ok) {
+            try {
+              const items = await recipesRes.value.json();
+              const seedDb = {};
+              for (const item of items) {
+                seedDb[dbKey(item.name)] = normaliseItem(item);
+              }
+              localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(seedDb));
+            } catch (e) {}
+          }
+
+          // Seed skills
+          if (skillsRes.status === "fulfilled" && skillsRes.value.ok) {
+            try {
+              const items = await skillsRes.value.json();
+              const seedSkills = {};
+              for (const s of items) {
+                seedSkills[dbKey(s.name)] = { name: s.name, level: s.level, lavish: s.lavish };
+              }
+              localStorage.setItem(STORAGE_SKILLS, JSON.stringify(seedSkills));
+            } catch (e) {}
+          }
+
+          // Seed tables
+          if (tablesRes.status === "fulfilled" && tablesRes.value.ok) {
+            try {
+              const items = await tablesRes.value.json();
+              const seedTables = {};
+              for (const t of items) {
+                seedTables[dbKey(t.name)] = { name: t.name, upgrade: t.upgrade };
+              }
+              localStorage.setItem(STORAGE_TABLES, JSON.stringify(seedTables));
+            } catch (e) {}
+          }
+
+          // Seed item tags
+          if (tagsRes.status === "fulfilled" && tagsRes.value.ok) {
+            try {
+              const items = await tagsRes.value.json();
+              const seedTags = {};
+              for (const tag of items) {
+                seedTags[dbKey(tag.name)] = {
+                  name: tag.name,
+                  marketPrice: tag.marketPrice ?? null,
+                  memberNames: [...tag.memberNames],
+                };
+              }
+              localStorage.setItem(STORAGE_ITEM_TAGS, JSON.stringify(seedTags));
+            } catch (e) {}
+          }
+        }
+
+        loadDb();
+        loadSkills();
+        loadTables();
+        loadItemTags();
+        loadCalcSettings();
+        renderList();
+      }
+
+      initApp();
 
       // ── Panel resize handles ──────────────────────
       (function initResizeHandles() {
