@@ -7,12 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.1] - 2026-02-25
+## [1.1.0] - 2026-02-25
 
 ### Added
 
 - Tag next to title for current Eco Version
 - Button to link to source code repository
+- Contributing guide in CONTRIBUTING.md
+- Pull request template in .github/pull_request_template.md
+
+### Changed
+
+- Replaced "Labor Calories" to "Labor Points". Math remains the same
+
+### Fixed
+
+- Fixed viewport height so "Save Item" button no longer cut off by viewport
 
 ## [1.0.0] - 2026-02-25
 
@@ -36,6 +46,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `recipes.json`, `skills.json`, `tables.json`, `item-tags.json` — default data extracted into standalone files for easier patching between Eco game updates
 - App fetches the four JSON files in parallel on first run to seed localStorage; falls back to hardcoded defaults if offline
 
-[Unreleased]: https://github.com/sam-bealmer/Eco-Crafting-Calculator/compare/v1.0.0...HEAD
-[1.0.1]: https://github.com/sam-bealmer/Eco-Crafting-Calculator/releases/tag/v1.0.1
+[Unreleased]: https://github.com/sam-bealmer/Eco-Crafting-Calculator/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/sam-bealmer/Eco-Crafting-Calculator/releases/tag/v1.1.0
 [1.0.0]: https://github.com/sam-bealmer/Eco-Crafting-Calculator/releases/tag/v1.0.0
