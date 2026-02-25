@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Tag next to title for current Eco Version
+- Button to link to source code repository
+
 ## [1.0.0] - 2026-02-25
 
 ### Added
