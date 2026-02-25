@@ -1,4 +1,4 @@
-Is # Changelog
+# Changelog
 
 All notable changes to this project will be documented in this file.
 
@@ -7,10 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.0] - 2026-02-25
+### Added
+
+## [1.0.0] - 2026-02-26
 
 ### Added
 
+- `recipes.json`, `skills.json`, `tables.json`, `item-tags.json` — default data extracted from the app into standalone files for easier patching
+- App fetches the four JSON files in parallel on first run to seed localStorage, with a brief "Loading defaults…" indicator
+- Hardcoded defaults remain as offline fallback if any fetch fails
 - Recipe database with create, edit, and delete support
 - Multiple recipes per item with configurable default
 - Ingredients and byproducts per recipe, with reducible flag
