@@ -4,6 +4,6 @@
 ### Node modules
 node_modules/
 
-### OS
+### OS Files
 .DS_Store
 Thumbs.db
