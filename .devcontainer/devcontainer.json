@@ -21,7 +21,7 @@
         "esbenp.prettier-vscode",
         // Linting
         "dbaeumer.vscode-eslint",
-        "mkaufman.HTMLHint",
+        "HTMLHint.vscode-htmlhint",
         // HTML/CSS quality of life
         "formulahendry.auto-rename-tag",
         "Zignd.html-css-class-completion",

@@ -1,0 +1,19 @@
+[
+  { "name": "Ore", "marketPrice": null, "memberNames": ["Iron Ore", "Gold Ore", "Copper Ore", "Coal"] },
+  { "name": "Stone", "marketPrice": null, "memberNames": ["Sandstone", "Basalt", "Gneiss", "Granite", "Limestone"] },
+  {
+    "name": "Wood",
+    "marketPrice": null,
+    "memberNames": [
+      "Spruce Log",
+      "Birch Log",
+      "Cedar Log",
+      "Ceiba Log",
+      "Fir Log",
+      "Joshua Log",
+      "Oak Log",
+      "Redwood Log",
+      "Saguaro Rib"
+    ]
+  }
+]
