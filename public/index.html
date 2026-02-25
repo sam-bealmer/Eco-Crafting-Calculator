@@ -67,8 +67,8 @@
       .main-layout {
         display: flex;
         flex: 1;
+        min-height: 0;
         gap: 0;
-        height: calc(100vh - 57px);
       }
 
       /* ── Resize handles ── */
@@ -349,6 +349,7 @@
       .panel-mid {
         width: 400px;
         min-width: 200px;
+        min-height: 0;
         background: var(--bg);
         display: flex;
         flex-direction: column;
@@ -1096,17 +1097,6 @@
         accent-color: var(--accent2);
       }
 
-      .pct-cell {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-      }
-
-      .pct-cell span {
-        color: var(--text-dim);
-        font-size: 0.8rem;
-      }
-
       .info-box {
         background: rgba(91, 156, 246, 0.08);
         border: 1px solid rgba(91, 156, 246, 0.25);
@@ -1402,9 +1392,28 @@
         </div>
       </div>
       <div style="display: flex; gap: 8px; align-items: center">
-        <a href="https://github.com/sam-bealmer/Eco-Crafting-Calculator" target="_blank" rel="noopener noreferrer" style="font-size: 0.85rem; padding: 6px 14px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: var(--radius); cursor: pointer; text-decoration: none; white-space: nowrap; transition: all 0.15s; display: inline-flex; align-items: center;">↗ Source Code</a>
+        <a
+          href="https://github.com/sam-bealmer/Eco-Crafting-Calculator"
+          target="_blank"
+          rel="noopener noreferrer"
+          style="
+            font-size: 0.85rem;
+            padding: 6px 14px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: var(--radius);
+            cursor: pointer;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+          "
+          >↗ Source Code</a
+        >
         <button onclick="openHelp()" style="font-size: 0.85rem; padding: 6px 14px">? Help</button>
-        <button onclick="openChangelog()" style="font-size: 0.85rem; padding: 6px 14px">📋 v1.0.0</button>
+        <button onclick="openChangelog()" style="font-size: 0.85rem; padding: 6px 14px">📋 v1.1.0</button>
         <button onclick="openSettings()" style="font-size: 0.85rem; padding: 6px 14px">⚙ Skills &amp; Tables</button>
       </div>
     </header>
@@ -1614,12 +1623,12 @@
             </p>
             <div class="schema-hint">
               [ { "name": "Wooden Chair", "defaultRecipeIdx": 0, "recipes": [{ "label": "Default", "skill": "Carpentry",
-              "craftingTable": "Workbench", "laborCalories": 200, "outputQty": 1, "ingredients": [{"name": "Wood Board",
+              "craftingTable": "Workbench", "laborPoints": 200, "outputQty": 1, "ingredients": [{"name": "Wood Board",
               "qty": 4}], "byproducts": [{"name": "Wood Scrap", "qty": 1}] }] } ]
             </div>
             <p style="font-size: 0.82rem; color: var(--text-dim); margin-top: 12px">
               <strong>Tips:</strong><br />
-              • Raw materials should have <code>laborCalories</code> set to gather cost, with no ingredients.<br />
+              • Raw materials should have <code>laborPoints</code> set to gather cost, with no ingredients.<br />
               • Skill &amp; table names are matched case-insensitively to your Settings entries.<br />
               • Byproducts offset net calorie cost — if a byproduct has its own recipe, its value is subtracted.
             </p>
@@ -1791,10 +1800,11 @@
                   <em>(per-recipe)</em> The table used to craft this item. Must match a name in your Tables settings.
                   The table's upgrade module reduces ingredient quantities and optionally labor.
                 </div>
-                <div class="help-dt">Labor Calories</div>
+                <div class="help-dt">Labor Points</div>
                 <div class="help-dd">
-                  <em>(per-recipe)</em> Calories consumed per craft batch. For raw/gathered materials, set this to the
-                  gathering cost. Scaled by skill level and (optionally) table upgrade.
+                  <em>(per-recipe)</em> Labor points consumed per craft batch (as shown in the Eco recipe UI). Treated
+                  as 1:1 with calories. For raw/gathered materials, set this to the gathering cost. Scaled by skill
+                  level and (optionally) table upgrade.
                 </div>
                 <div class="help-dt">Qty Produced per Craft</div>
                 <div class="help-dd">
@@ -1950,11 +1960,11 @@
                 <code>name</code> and a <code>recipes</code> array.<br /><br />
                 <code
                   >[ { "name": "Wooden Chair", "recipes": [{ "label": "Default", "skill": "Carpentry", "craftingTable":
-                  "Workbench", "laborCalories": 200, "outputQty": 1, "ingredients": [{"name": "Wood Board", "qty": 4}],
+                  "Workbench", "laborPoints": 200, "outputQty": 1, "ingredients": [{"name": "Wood Board", "qty": 4}],
                   "byproducts": [] }] } ]</code
                 ><br /><br />
-                Raw materials have no <code>ingredients</code> and use <code>laborCalories</code> for the gathering
-                cost, or set a <code>marketPrice</code> on the item to use a fixed credit cost.
+                Raw materials have no <code>ingredients</code> and use <code>laborPoints</code> for the gathering cost,
+                or set a <code>marketPrice</code> on the item to use a fixed credit cost.
               </div>
             </div>
 
@@ -1971,7 +1981,7 @@
                 ingredient_cal = Σ ( qty × reducible_mult × ingredient_cost_cal ) <em>← reducible</em><br />
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; + Σ ( qty ×
                 ingredient_cost_cal ) <em>← non-reducible</em><br />
-                labor_cal &nbsp;&nbsp;&nbsp;&nbsp; = laborCalories × labor_mult × batches_needed<br />
+                labor_cal &nbsp;&nbsp;&nbsp;&nbsp; = laborPoints × labor_mult × batches_needed<br />
                 byproduct_cal &nbsp;= Σ ( byproduct_qty × byproduct_cost_cal )<br /><br />
                 net_cal &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = ( labor_cal + ingredient_cal − byproduct_cal ) /
                 output_qty<br />
@@ -1995,7 +2005,10 @@
     </div>
 
     <!-- Changelog Modal -->
-    <div class="modal-backdrop changelog-modal" id="changelog-modal-backdrop" onclick="if (event.target === this) closeChangelog();">
+    <div
+      class="modal-backdrop changelog-modal"
+      id="changelog-modal-backdrop"
+      onclick="if (event.target === this) closeChangelog();">
       <div class="modal">
         <div class="modal-header">
           <h3>📋 Release Notes</h3>
@@ -2013,9 +2026,22 @@
       //  DATA STORE  (v2)
       // ═══════════════════════════════════════════
 
-      const APP_VERSION = "1.0.0";
+      const APP_VERSION = "1.1.0";
 
       const CHANGELOG = [
+        {
+          version: "1.1.0",
+          date: "2026-02-25",
+          sections: {
+            Added: [
+              "Tag next to title for currently supported Eco version",
+              "Button to link to source code repository",
+              "Minor git support improvements (e.g. CONTRIBUTING guide, issue templates)",
+            ],
+            Changed: ["Repalced 'Labor Calories' to 'Labor Points'. Math remains the same"],
+            Fixed: ["Bug where 'Save Item' button was cut off by the viewport"],
+          },
+        },
         {
           version: "1.0.0",
           date: "2026-02-25",
@@ -2043,6 +2069,7 @@
       ];
 
       const STORAGE_KEY_V2 = "eco_recipe_db_v2";
+      const STORAGE_KEY_V3 = "eco_recipe_db_v3";
       const STORAGE_SKILLS = "eco_skills_v3";
       const STORAGE_TABLES = "eco_tables_v2";
       const STORAGE_ITEM_TAGS = "eco_item_tags_v1";
@@ -2225,7 +2252,7 @@
         },
       ];
 
-      // db: { [name_lower]: { name, marketPrice, defaultRecipeIdx, recipes: [{id, label, skill, craftingTable, laborCalories, outputQty, ingredients, byproducts}] } }
+      // db: { [name_lower]: { name, marketPrice, defaultRecipeIdx, recipes: [{id, label, skill, craftingTable, laborPoints, outputQty, ingredients, byproducts}] } }
       let db = {};
       let skills = {}; // { [name_lower]: { name, level (0-7), lavish (bool) } }
       let tables = {}; // { [name_lower]: { name, upgrade (key of UPGRADE_MODULES) } }
@@ -2238,9 +2265,24 @@
 
       function loadDb() {
         try {
+          const raw3 = localStorage.getItem(STORAGE_KEY_V3);
+          if (raw3) {
+            db = JSON.parse(raw3);
+            return;
+          }
+
           const raw2 = localStorage.getItem(STORAGE_KEY_V2);
           if (raw2) {
             db = JSON.parse(raw2);
+            for (const item of Object.values(db)) {
+              for (const recipe of item.recipes || []) {
+                if (recipe.laborCalories !== undefined) {
+                  recipe.laborPoints = recipe.laborCalories;
+                  delete recipe.laborCalories;
+                }
+              }
+            }
+            saveDb();
             return;
           }
         } catch (e) {}
@@ -2256,7 +2298,7 @@
                 label: "Default",
                 skill: raw.skill || "",
                 craftingTable: "",
-                laborCalories: 0,
+                laborPoints: 0,
                 outputQty: 1,
                 ingredients: [],
                 byproducts: [],
@@ -2270,7 +2312,7 @@
       }
 
       function saveDb() {
-        localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(db));
+        localStorage.setItem(STORAGE_KEY_V3, JSON.stringify(db));
       }
 
       function clearDatabase() {
@@ -2306,7 +2348,7 @@
                   label: "Default",
                   skill: raw.skill || "",
                   craftingTable: "",
-                  laborCalories: 0,
+                  laborPoints: 0,
                   outputQty: 1,
                   ingredients: [],
                   byproducts: [],
@@ -2444,7 +2486,7 @@
           label: r.label || "Default",
           skill: r.skill || "",
           craftingTable: r.craftingTable || "",
-          laborCalories: Number(r.laborCalories) || 0,
+          laborPoints: Number(r.laborPoints ?? r.laborCalories) || 0,
           outputQty: Number(r.outputQty) || 1,
           ingredients: (r.ingredients || []).map((i) => ({
             name: String(i.name),
@@ -2521,11 +2563,12 @@
           .filter((i) => i.name.toLowerCase().includes(filter))
           .sort((a, b) => a.name.localeCompare(b.name));
 
-        document.getElementById("item-count").textContent = `${Object.keys(db).length} items`;
+        const dbCount = Object.keys(db).length;
+        document.getElementById("item-count").textContent = `${dbCount} items`;
 
         if (allItems.length === 0) {
           list.innerHTML =
-            Object.keys(db).length === 0
+            dbCount === 0
               ? `<div class="empty-state">No recipes yet.<br>Click <strong>+ New</strong> to add your first item,<br>or <strong>Import</strong> to load a database.<br><br><button onclick="seedDefaultRaws()" style="margin-top:4px">↺ Seed Default Raw Materials</button></div>`
               : `<div class="empty-state">No items match your search.</div>`;
           return;
@@ -2538,8 +2581,8 @@
           const isRaw = !defRecipe.ingredients || defRecipe.ingredients.length === 0;
           const recipeCount = item.recipes.length;
           const meta = isRaw
-            ? `Raw material — ${defRecipe.laborCalories} cal to gather`
-            : `${defRecipe.ingredients.length} ingredient(s) — ${defRecipe.laborCalories} cal labor`;
+            ? `Raw material — ${defRecipe.laborPoints} labor pts to gather`
+            : `${defRecipe.ingredients.length} ingredient(s) — ${defRecipe.laborPoints} labor pts`;
           const node = calcNode(item.name, null, 1, {});
           const isMarket = item.marketPrice !== null && item.marketPrice >= 0;
           const calText = isMarket
@@ -2660,7 +2703,7 @@
               label: "Default",
               skill: "",
               craftingTable: "",
-              laborCalories: 0,
+              laborPoints: 0,
               outputQty: 1,
               ingredients: [],
               byproducts: [],
@@ -2687,7 +2730,7 @@
               label: "Default",
               skill: "",
               craftingTable: "",
-              laborCalories: 0,
+              laborPoints: 0,
               outputQty: 1,
               ingredients: [],
               byproducts: [],
@@ -2763,7 +2806,7 @@
           label: `Recipe ${editState.recipes.length + 1}`,
           skill: "",
           craftingTable: "",
-          laborCalories: 0,
+          laborPoints: 0,
           outputQty: 1,
           ingredients: [],
           byproducts: [],
@@ -2856,8 +2899,8 @@
     </div>
     <div class="form-group" style="display:flex; gap:10px">
       <div style="flex:1">
-        <label>Labor Calories to Craft</label>
-        <input type="number" id="f-labor" value="${recipe.laborCalories}" min="0" step="1">
+        <label>Labor Points to Craft</label>
+        <input type="number" id="f-labor" value="${recipe.laborPoints}" min="0" step="1">
       </div>
       <div style="flex:1">
         <label>Qty Produced per Craft</label>
@@ -2926,7 +2969,7 @@
         const tableEl = document.getElementById("f-table");
         if (tableEl) recipe.craftingTable = tableEl.value.trim();
         const laborEl = document.getElementById("f-labor");
-        if (laborEl) recipe.laborCalories = parseFloat(laborEl.value) || 0;
+        if (laborEl) recipe.laborPoints = parseFloat(laborEl.value) || 0;
         const qtyEl = document.getElementById("f-qty");
         if (qtyEl) recipe.outputQty = parseFloat(qtyEl.value) || 1;
         const minLevelEl = document.getElementById("f-minlevel");
@@ -3208,7 +3251,7 @@
         const batchesNeeded = qty / outputQty;
 
         const laborTableMult = tableModAffectsLabor ? tableMult : 1.0;
-        const laborCal = (recipe.laborCalories || 0) * skillMult * laborTableMult * batchesNeeded;
+        const laborCal = (recipe.laborPoints || 0) * skillMult * laborTableMult * batchesNeeded;
 
         const newVisited = { ...(visited || {}), [key]: true };
 
@@ -3574,8 +3617,6 @@
       //  IMPORT / EXPORT MODAL
       // ═══════════════════════════════════════════
 
-      let currentTab = "import";
-
       function openImport() {
         document.getElementById("import-textarea").value = "";
         document.getElementById("import-error").style.display = "none";
@@ -3611,7 +3652,6 @@
       }
 
       function switchTab(tab) {
-        currentTab = tab;
         document.querySelectorAll("#modal-backdrop .tab-btn").forEach((btn, i) => {
           const tabs = ["import", "export", "schema"];
           btn.classList.toggle("active", tabs[i] === tab);
@@ -3820,10 +3860,6 @@
       }
 
       // ── Helpers ──────────────────────────────────
-      function skillModifierLabel(level) {
-        return `${Math.round(SKILL_MODIFIERS[level] * 100)}% labor`;
-      }
-
       function upgradeSel(currentKey, onchangeFn) {
         return `<select onchange="${onchangeFn}">${Object.entries(UPGRADE_MODULES)
           .map(
