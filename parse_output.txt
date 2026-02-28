@@ -1,0 +1,13 @@
+Items: 981
+  - with ingredients (crafted): 944
+  - no ingredients (raw mats):  37
+Total recipes: 1117
+Skills: 33
+Tables: 67
+Tags:   81
+Unknown table refs in recipes: none
+
+Sample item: Automatic Loom
+  [Industry @ Electric Machinist Table] labor=600 qty=1
+    + 20x Steel Plate
+    + 10x Basic Circuit
