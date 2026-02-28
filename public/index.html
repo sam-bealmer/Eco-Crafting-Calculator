@@ -1614,6 +1614,69 @@
       }
 
       .issues-badge[data-hidden="true"] { display: none; }
+
+      /* ── View toggle (Items / Tags) ── */
+      .view-toggle {
+        display: flex;
+        padding: 6px 16px;
+        gap: 4px;
+        border-bottom: 1px solid var(--border);
+      }
+      .view-toggle-btn {
+        font-size: 0.72rem;
+        padding: 3px 10px;
+        border-radius: 4px;
+        flex: 1;
+        text-align: center;
+      }
+      .view-toggle-btn.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+
+      /* ── Tag list cards ── */
+      .tag-card {
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.1s;
+      }
+      .tag-card:hover { background: var(--hover); }
+      .tag-card.selected { background: var(--selected); }
+      .tag-card-name { font-weight: 600; flex: 1; font-size: 0.88rem; }
+      .tag-card-count {
+        font-size: 0.7rem;
+        color: var(--text-dim);
+        background: var(--bg3);
+        border-radius: 8px;
+        padding: 1px 7px;
+      }
+      .tag-card-price {
+        font-size: 0.75rem;
+        color: var(--accent);
+      }
+
+      /* ── Tag detail panel ── */
+      .tag-detail-body { padding: 16px; overflow-y: auto; flex: 1; }
+      .tag-member-list { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+      .tag-member {
+        padding: 6px 10px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: border-color 0.1s;
+      }
+      .tag-member:hover { border-color: var(--accent); color: var(--text-bright); }
+      .tag-member-price { margin-left: auto; font-size: 0.75rem; color: var(--accent); }
     </style>
   </head>
   <body>
@@ -1682,10 +1745,14 @@
             <button class="primary" onclick="newItem()">+ New</button>
           </div>
         </div>
+        <div class="view-toggle">
+          <button class="view-toggle-btn active" id="view-items-btn" onclick="setListView('items')">Items</button>
+          <button class="view-toggle-btn" id="view-tags-btn" onclick="setListView('tags')">🏷 Tags</button>
+        </div>
         <div class="search-bar">
           <input type="text" id="list-search" placeholder="Filter items…" oninput="renderList()" />
         </div>
-        <div class="group-bar">
+        <div class="group-bar" id="group-bar">
           <span class="group-label">Group:</span>
           <button class="group-btn active" id="grp-none" onclick="setGroupBy('none')">A–Z</button>
           <button class="group-btn" id="grp-type" onclick="setGroupBy('type')">Type</button>
@@ -1737,6 +1804,14 @@
           <button class="primary" onclick="saveItem()">Save Item</button>
           <button onclick="cancelEdit()">Cancel</button>
         </div>
+      </div>
+
+      <!-- TAG DETAIL (shown when a tag is selected in Tags view) -->
+      <div class="panel-mid" id="tag-detail-panel" style="display:none">
+        <div class="panel-header">
+          <h2 id="tag-detail-title">Tag Detail</h2>
+        </div>
+        <div class="tag-detail-body" id="tag-detail-body"></div>
       </div>
 
       <div class="resize-handle" id="resize-handle-mid"></div>
@@ -2511,6 +2586,8 @@
       let currentPage = localStorage.getItem("eco_current_page_v1") || "pricer";
       let collapsedTreeNodes = new Set(); // keys: "itemName:depth"
       let showingIssuesFilter = false; // whether issues filter is active in recipe list
+      let showTagsView = false;        // whether the left panel shows tags instead of items
+      let selectedTagName = null;      // currently selected tag name
       const STORAGE_PAGE = "eco_current_page_v1";
 
       // Apply initial page immediately
@@ -2817,7 +2894,10 @@
         const list = document.getElementById("item-list");
 
         const dbCount = Object.keys(db).length;
-        document.getElementById("item-count").textContent = `${dbCount} items`;
+        document.getElementById("item-count").textContent =
+          showTagsView ? `${Object.keys(itemTags).length} tags` : `${dbCount} items`;
+
+        if (showTagsView) { renderTagList(); return; }
 
         const sym = document.getElementById("currency-symbol")?.value || "¢";
 
@@ -4802,7 +4882,7 @@
               <div style="margin-top:4px">${itemTagsList}</div>
             </div>
             <div style="display:flex; gap:6px">
-              <button class="success" onclick="pricerThis('${esc(item.name)}')">⚡ Price It</button>
+              <button class="success" onclick="pricerThis('${esc(item.name)}', ${detailRecipeIdx})">⚡ Price It</button>
               <button onclick="editThis('${esc(item.name)}')">✎ Edit</button>
             </div>
           </div>
@@ -4836,11 +4916,19 @@
         _renderDetailContent(item, idx);
       }
 
-      function pricerThis(name) {
+      function pricerThis(name, recipeIdx) {
         switchPage("pricer");
         document.getElementById("calc-input").value = name;
         currentCalcItem = name;
-        lookupItem();
+        lookupItem(); // populates dropdown defaulting to item.defaultRecipeIdx
+        // If a specific recipe tab was requested (e.g. from detail view), override the selection
+        if (recipeIdx !== undefined && recipeIdx !== null) {
+          const sel = document.getElementById("calc-recipe-select");
+          if (sel.style.display !== "none" && sel.options[recipeIdx]) {
+            sel.value = recipeIdx;
+            recalc();
+          }
+        }
       }
 
       function editThis(name) {
@@ -4927,6 +5015,145 @@
         const badge = document.getElementById("issues-badge");
         if (badge) badge.style.outline = showingIssuesFilter ? "2px solid var(--warn)" : "";
         renderList();
+      }
+
+      // ═══════════════════════════════════════════
+      //  TAGS VIEW
+      // ═══════════════════════════════════════════
+
+      function setListView(view) {
+        showTagsView = view === "tags";
+        showingIssuesFilter = false;
+
+        document.getElementById("view-items-btn").classList.toggle("active", !showTagsView);
+        document.getElementById("view-tags-btn").classList.toggle("active", showTagsView);
+
+        // group-bar only makes sense for items
+        const groupBar = document.getElementById("group-bar");
+        if (groupBar) groupBar.style.display = showTagsView ? "none" : "";
+
+        // update search placeholder
+        const search = document.getElementById("list-search");
+        if (search) search.placeholder = showTagsView ? "Filter tags…" : "Filter items…";
+
+        if (!showTagsView) {
+          // returning to items view — hide tag detail, show item editor
+          document.getElementById("tag-detail-panel").style.display = "none";
+          document.querySelector(".panel-mid").style.display = "";
+          selectedTagName = null;
+        }
+
+        renderList();
+      }
+
+      function renderTagList() {
+        const list = document.getElementById("item-list");
+        const filter = (document.getElementById("list-search")?.value || "").toLowerCase();
+
+        const tags = Object.values(itemTags)
+          .filter((t) => t.name.toLowerCase().includes(filter))
+          .sort((a, b) => a.name.localeCompare(b.name));
+
+        if (tags.length === 0) {
+          list.innerHTML = `<div class="empty-state">No tags match your search.</div>`;
+          return;
+        }
+
+        list.innerHTML = tags
+          .map((tag) => {
+            const priceLabel =
+              tag.marketPrice !== null && tag.marketPrice >= 0
+                ? `<span class="tag-card-price">${tag.marketPrice.toFixed(2)}¢</span>`
+                : "";
+            const isSelected = tag.name === selectedTagName;
+            return `<div class="tag-card${isSelected ? " selected" : ""}" onclick="selectTag('${esc(tag.name)}')">
+              <span class="tag-card-name">${esc(tag.name)}</span>
+              ${priceLabel}
+              <span class="tag-card-count">${tag.memberNames.length}</span>
+            </div>`;
+          })
+          .join("");
+      }
+
+      function selectTag(name) {
+        selectedTagName = name;
+        const tag = itemTags[dbKey(name)];
+        if (!tag) return;
+
+        // swap panels — inherit the editor's current width so resize handle position stays consistent
+        const editorPanel = document.querySelector(".panel-mid");
+        const editorWidth = editorPanel.style.width || editorPanel.offsetWidth + "px";
+        editorPanel.style.display = "none";
+        const detailPanel = document.getElementById("tag-detail-panel");
+        detailPanel.style.width = editorWidth;
+        detailPanel.style.display = "";
+
+        document.getElementById("tag-detail-title").textContent = `🏷 ${tag.name}`;
+
+        const currentPrice = tag.marketPrice !== null && tag.marketPrice >= 0 ? tag.marketPrice : "";
+
+        const memberRows = tag.memberNames
+          .slice()
+          .sort()
+          .map((mName) => {
+            const item = db[dbKey(mName)];
+            const priceLabel = item && item.marketPrice !== null && item.marketPrice >= 0
+              ? `<span class="tag-member-price">${item.marketPrice.toFixed(2)}¢</span>`
+              : "";
+            return `<div class="tag-member" onclick="goToItem('${esc(mName)}')" title="View recipe for ${esc(mName)}">
+              ${esc(mName)}
+              ${priceLabel}
+            </div>`;
+          })
+          .join("");
+
+        document.getElementById("tag-detail-body").innerHTML = `
+          <div style="margin-bottom:16px">
+            <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:4px">Market price for this tag group</div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input type="number" id="tag-price-input" min="0" step="0.01"
+                placeholder="e.g. 1.50"
+                value="${currentPrice}"
+                style="width:120px"
+                oninput="setTagPrice('${esc(tag.name)}', this.value)" />
+              <span style="font-size:0.78rem;color:var(--text-dim)">calories</span>
+              ${currentPrice !== ""
+                ? `<button onclick="clearTagPrice('${esc(tag.name)}')" style="font-size:0.75rem;padding:2px 8px">✕ Clear</button>`
+                : ""}
+            </div>
+            <div style="font-size:0.75rem;color:var(--text-dim);margin-top:4px">
+              Setting a price here lets the calculator use this tag as a raw material cost when any of its members appear as an ingredient.
+            </div>
+          </div>
+          <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:6px;font-weight:600">
+            Members (${tag.memberNames.length})
+          </div>
+          <div class="tag-member-list">${memberRows}</div>`;
+
+        // re-render list to update selection highlight
+        renderList();
+      }
+
+      function setTagPrice(name, val) {
+        const key = dbKey(name);
+        if (!itemTags[key]) return;
+        const parsed = parseFloat(val);
+        itemTags[key].marketPrice = isNaN(parsed) || val === "" ? null : parsed;
+        localStorage.setItem(STORAGE_ITEM_TAGS, JSON.stringify(Object.values(itemTags)));
+      }
+
+      function clearTagPrice(name) {
+        const key = dbKey(name);
+        if (!itemTags[key]) return;
+        itemTags[key].marketPrice = null;
+        localStorage.setItem(STORAGE_ITEM_TAGS, JSON.stringify(Object.values(itemTags)));
+        selectTag(name); // re-render to remove the Clear button
+      }
+
+      function goToItem(name) {
+        // Switch to items view, navigate to item
+        setListView("items");
+        selectItem(dbKey(name));
       }
 
       // ═══════════════════════════════════════════
@@ -5119,6 +5346,7 @@
         const panelSkills = document.getElementById("panel-skills");
         const panelLeft = document.querySelector(".panel-left");
         const panelMid = document.querySelector(".panel-mid");
+        const panelTagDetail = document.getElementById("tag-detail-panel");
         const handleSkills = document.getElementById("resize-handle-skills");
         const handleLeft = document.getElementById("resize-handle-left");
         const handleMid = document.getElementById("resize-handle-mid");
@@ -5130,17 +5358,18 @@
           if (saved) {
             if (saved.skills) panelSkills.style.width = saved.skills;
             if (saved.left) panelLeft.style.width = saved.left;
-            if (saved.mid) panelMid.style.width = saved.mid;
+            if (saved.mid) { panelMid.style.width = saved.mid; panelTagDetail.style.width = saved.mid; }
           }
         } catch (e) {}
 
         function saveWidths() {
+          const visibleMid = panelTagDetail.style.display !== "none" ? panelTagDetail : panelMid;
           localStorage.setItem(
             STORAGE_PANEL_WIDTHS,
             JSON.stringify({
               skills: panelSkills.style.width || panelSkills.offsetWidth + "px",
               left: panelLeft.style.width || panelLeft.offsetWidth + "px",
-              mid: panelMid.style.width || panelMid.offsetWidth + "px",
+              mid: visibleMid.style.width || visibleMid.offsetWidth + "px",
             })
           );
         }
@@ -5171,7 +5400,10 @@
 
         handleSkills.addEventListener("mousedown", (e) => startResize(panelSkills, handleSkills, e));
         handleLeft.addEventListener("mousedown", (e) => startResize(panelLeft, handleLeft, e));
-        handleMid.addEventListener("mousedown", (e) => startResize(panelMid, handleMid, e));
+        handleMid.addEventListener("mousedown", (e) => {
+          const visibleMid = panelTagDetail.style.display !== "none" ? panelTagDetail : panelMid;
+          startResize(visibleMid, handleMid, e);
+        });
       })();
     </script>
   </body>
