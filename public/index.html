@@ -1375,23 +1375,321 @@
         color: var(--text-dim);
         font-style: normal;
       }
+
+      /* ── Page navigation tabs ── */
+      .page-tabs {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+      }
+
+      .page-tab {
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 5px 16px;
+        font-size: 0.88rem;
+        color: var(--text-dim);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+
+      .page-tab:hover {
+        border-color: var(--accent);
+        color: var(--text-bright);
+        background: transparent;
+      }
+
+      .page-tab.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+
+      /* ── Skills/Tables inline panel (Pricer page) ── */
+      .panel-skills {
+        width: 300px;
+        min-width: 200px;
+        max-width: 480px;
+        background: var(--surface);
+        display: none; /* hidden by default; shown via [data-page] rules */
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .skills-panel-body {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 10px 12px;
+      }
+
+      .skills-panel-body::-webkit-scrollbar { width: 5px; }
+      .skills-panel-body::-webkit-scrollbar-track { background: transparent; }
+      .skills-panel-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+      .panel-section-header {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 2px;
+        cursor: pointer;
+        user-select: none;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 8px;
+      }
+
+      .panel-section-title {
+        flex: 1;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .panel-section-chevron {
+        font-size: 0.65rem;
+        color: var(--text-dim);
+        transition: transform 0.15s;
+        display: inline-block;
+      }
+
+      .panel-section-chevron.collapsed {
+        transform: rotate(-90deg);
+      }
+
+      .panel-section-body.collapsed {
+        display: none;
+      }
+
+      /* Compact settings table in side panel */
+      .panel-skills .settings-table { margin-top: 0; }
+      .panel-skills .settings-table th { font-size: 0.68rem; padding: 4px 5px; }
+      .panel-skills .settings-table td { padding: 3px 4px; }
+      .panel-skills .settings-table input[type="text"],
+      .panel-skills .settings-table input[type="number"],
+      .panel-skills .settings-table select { font-size: 0.76rem; padding: 2px 4px; }
+
+      /* ── Page-based panel visibility ── */
+      /* Pricer page: skills panel + calculator, no recipe panels */
+      body[data-page="pricer"] .panel-skills { display: flex; }
+      body[data-page="pricer"] .panel-left { display: none; }
+      body[data-page="pricer"] .panel-mid { display: none; }
+      body[data-page="pricer"] #resize-handle-left { display: none; }
+      body[data-page="pricer"] #resize-handle-mid { display: none; }
+
+      /* Recipes page: recipe list + editor, no skills panel or calculator */
+      body[data-page="recipes"] .panel-skills { display: none; }
+      body[data-page="recipes"] #resize-handle-skills { display: none; }
+      body[data-page="recipes"] .panel-right { display: none; }
+      body[data-page="recipes"] #resize-handle-mid { display: none; }
+      /* Editor fills remaining width when calculator is hidden */
+      body[data-page="recipes"] .panel-mid { flex: 1; }
+
+      /* ── Collapsible tree ── */
+      .tree-toggle { cursor: pointer; user-select: none; }
+      .tree-chevron {
+        display: inline-block;
+        font-size: 0.6rem;
+        color: var(--text-dim);
+        margin-right: 3px;
+        transition: transform 0.15s;
+        min-width: 10px;
+      }
+      .tree-chevron.collapsed { transform: rotate(-90deg); }
+      .tree-children-wrap.collapsed { display: none; }
+
+      /* ── Read-only recipe detail view ── */
+      .detail-view {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 16px;
+      }
+      .detail-view::-webkit-scrollbar { width: 5px; }
+      .detail-view::-webkit-scrollbar-track { background: transparent; }
+      .detail-view::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+      .detail-recipe-tab-bar {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 10px;
+        overflow-x: auto;
+        padding-bottom: 2px;
+      }
+
+      .detail-recipe-tab {
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        padding: 4px 10px;
+        font-size: 0.78rem;
+        color: var(--text-dim);
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .detail-recipe-tab.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+
+      .detail-recipe-card {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 12px;
+        margin-bottom: 10px;
+      }
+
+      .detail-stat {
+        display: flex;
+        justify-content: space-between;
+        padding: 4px 0;
+        font-size: 0.83rem;
+        border-bottom: 1px solid rgba(61, 69, 97, 0.4);
+      }
+
+      .detail-stat:last-child { border-bottom: none; }
+      .detail-stat .ds-label { color: var(--text-dim); }
+
+      .detail-ing-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.82rem;
+        margin-top: 6px;
+      }
+
+      .detail-ing-table th {
+        text-align: left;
+        padding: 4px 6px;
+        color: var(--text-dim);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        border-bottom: 1px solid var(--border);
+        font-weight: 600;
+      }
+
+      .detail-ing-table td {
+        padding: 3px 6px;
+        border-bottom: 1px solid rgba(61, 69, 97, 0.3);
+      }
+
+      .detail-ing-table tr:last-child td { border-bottom: none; }
+
+      .uses-item {
+        display: block;
+        padding: 5px 10px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        font-size: 0.83rem;
+        cursor: pointer;
+        margin-bottom: 4px;
+        transition: border-color 0.15s;
+        color: var(--text);
+      }
+
+      .uses-item:hover {
+        border-color: var(--accent);
+        color: var(--text-bright);
+      }
+
+      /* ── Issue badge ── */
+      .issues-badge {
+        display: inline-block;
+        background: rgba(229, 192, 123, 0.15);
+        border: 1px solid var(--warn);
+        color: var(--warn);
+        border-radius: 10px;
+        padding: 1px 8px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        cursor: pointer;
+        margin-left: 4px;
+        vertical-align: middle;
+      }
+
+      .issues-badge[data-hidden="true"] { display: none; }
+
+      /* ── View toggle (Items / Tags) ── */
+      .view-toggle {
+        display: flex;
+        padding: 6px 16px;
+        gap: 4px;
+        border-bottom: 1px solid var(--border);
+      }
+      .view-toggle-btn {
+        font-size: 0.72rem;
+        padding: 3px 10px;
+        border-radius: 4px;
+        flex: 1;
+        text-align: center;
+      }
+      .view-toggle-btn.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+
+      /* ── Tag list cards ── */
+      .tag-card {
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.1s;
+      }
+      .tag-card:hover { background: var(--hover); }
+      .tag-card.selected { background: var(--selected); }
+      .tag-card-name { font-weight: 600; flex: 1; font-size: 0.88rem; }
+      .tag-card-count {
+        font-size: 0.7rem;
+        color: var(--text-dim);
+        background: var(--bg3);
+        border-radius: 8px;
+        padding: 1px 7px;
+      }
+      .tag-card-price {
+        font-size: 0.75rem;
+        color: var(--accent);
+      }
+
+      /* ── Tag detail panel ── */
+      .tag-detail-body { padding: 16px; overflow-y: auto; flex: 1; }
+      .tag-member-list { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+      .tag-member {
+        padding: 6px 10px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: border-color 0.1s;
+      }
+      .tag-member:hover { border-color: var(--accent); color: var(--text-bright); }
+      .tag-member-price { margin-left: auto; font-size: 0.75rem; color: var(--accent); }
     </style>
   </head>
   <body>
     <header>
-      <div>
+      <div style="display: flex; align-items: center; gap: 20px">
         <h1>Eco — Calorie Price Calculator <span class="tag">Eco v12.0.7</span></h1>
-        <div class="subtitle">
-          <span class="workflow-hint">
-            <span class="step">1. Add recipes</span>
-            <span class="arrow">▶</span>
-            <span class="step">2. Click any item</span>
-            <span class="arrow">▶</span>
-            <span class="step">3. See its credit price</span>
-          </span>
-        </div>
+        <nav class="page-tabs">
+          <button class="page-tab active" id="tab-pricer" onclick="switchPage('pricer')">⚡ Pricer</button>
+          <button class="page-tab" id="tab-recipes" onclick="switchPage('recipes')">📖 Recipes</button>
+        </nav>
       </div>
       <div style="display: flex; gap: 8px; align-items: center">
+        <button onclick="reloadFromJson()" style="font-size: 0.85rem; padding: 6px 14px" title="Replace database with data from the JSON files">↺ Reload JSON</button>
         <a
           href="https://github.com/sam-bealmer/Eco-Crafting-Calculator"
           target="_blank"
@@ -1413,16 +1711,28 @@
           >↗ Source Code</a
         >
         <button onclick="openHelp()" style="font-size: 0.85rem; padding: 6px 14px">? Help</button>
-        <button onclick="openChangelog()" style="font-size: 0.85rem; padding: 6px 14px">📋 v1.1.0</button>
-        <button onclick="openSettings()" style="font-size: 0.85rem; padding: 6px 14px">⚙ Skills &amp; Tables</button>
+        <button onclick="openChangelog()" style="font-size: 0.85rem; padding: 6px 14px">📋 v2.0.0</button>
       </div>
     </header>
 
     <div class="main-layout">
+      <!-- SKILLS PANEL: Pricer page left column -->
+      <div class="panel-skills" id="panel-skills">
+        <div class="panel-header">
+          <h2>Skills &amp; Tables</h2>
+          <button onclick="resetSettingsToDefaults()" title="Reset to vanilla Eco defaults" style="font-size:0.72rem; padding:3px 8px">↺ Reset</button>
+        </div>
+        <div class="skills-panel-body" id="skills-panel-body">
+          <!-- rendered by renderPricerPanel() -->
+        </div>
+      </div>
+
+      <div class="resize-handle" id="resize-handle-skills"></div>
+
       <!-- LEFT: Recipe Database -->
       <div class="panel-left">
         <div class="panel-header">
-          <h2>Recipe Database <span class="tag" id="item-count">0 items</span></h2>
+          <h2>Recipe Database <span class="tag" id="item-count">0 items</span><span class="issues-badge" id="issues-badge" data-hidden="true" onclick="toggleIssuesFilter()" title="Click to filter by issues"></span></h2>
           <div class="btn-group">
             <button onclick="openImport()">Import</button>
             <button onclick="openExport()">Export</button>
@@ -1435,10 +1745,14 @@
             <button class="primary" onclick="newItem()">+ New</button>
           </div>
         </div>
+        <div class="view-toggle">
+          <button class="view-toggle-btn active" id="view-items-btn" onclick="setListView('items')">Items</button>
+          <button class="view-toggle-btn" id="view-tags-btn" onclick="setListView('tags')">🏷 Tags</button>
+        </div>
         <div class="search-bar">
           <input type="text" id="list-search" placeholder="Filter items…" oninput="renderList()" />
         </div>
-        <div class="group-bar">
+        <div class="group-bar" id="group-bar">
           <span class="group-label">Group:</span>
           <button class="group-btn active" id="grp-none" onclick="setGroupBy('none')">A–Z</button>
           <button class="group-btn" id="grp-type" onclick="setGroupBy('type')">Type</button>
@@ -1490,6 +1804,14 @@
           <button class="primary" onclick="saveItem()">Save Item</button>
           <button onclick="cancelEdit()">Cancel</button>
         </div>
+      </div>
+
+      <!-- TAG DETAIL (shown when a tag is selected in Tags view) -->
+      <div class="panel-mid" id="tag-detail-panel" style="display:none">
+        <div class="panel-header">
+          <h2 id="tag-detail-title">Tag Detail</h2>
+        </div>
+        <div class="tag-detail-body" id="tag-detail-body"></div>
       </div>
 
       <div class="resize-handle" id="resize-handle-mid"></div>
@@ -1681,15 +2003,16 @@
           <nav class="help-toc">
             <a href="#help-overview">Overview</a>
             <a href="#help-quickstart">Quick Start</a>
-            <a href="#help-database">Recipe Database</a>
+            <a href="#help-layout">Layout</a>
+            <a href="#help-pricer">Pricer Page</a>
+            <a href="#help-recipes">Recipes Page</a>
             <a href="#help-editor">Item Editor</a>
-            <a href="#help-calculator">Calculator</a>
-            <a href="#help-skills">Skills &amp; Tables</a>
             <a href="#help-tags">Item Tags</a>
             <a href="#help-importexport">Import / Export</a>
             <a href="#help-formula">Cost Formula</a>
           </nav>
           <div class="help-sections">
+
             <div class="help-section" id="help-overview">
               <h4>📋 Overview</h4>
               <p style="font-size: 0.85rem; line-height: 1.6; color: var(--text)">
@@ -1701,6 +2024,7 @@
               <div class="help-note">
                 All data (recipes, skills, tables, tags) is stored in your browser's <strong>localStorage</strong>. Use
                 <strong>Export</strong> to back up your database and <strong>Import</strong> to restore or share it.
+                Use <strong>↺ Reload JSON</strong> in the header to re-fetch the latest recipe data from the JSON files.
               </div>
             </div>
 
@@ -1709,203 +2033,200 @@
               <div class="help-dl">
                 <div class="help-dt">1. Configure skills</div>
                 <div class="help-dd">
-                  Click <strong>⚙ Skills &amp; Tables</strong> and set each skill to your character's in-game star
-                  level.
+                  On the <strong>⚡ Pricer</strong> page, set each skill to your character's in-game star level using
+                  the <strong>Skills &amp; Tables</strong> panel on the left.
                 </div>
                 <div class="help-dt">2. Add your recipes</div>
                 <div class="help-dd">
-                  Click <strong>+ New</strong> in the Recipe Database, or click <strong>↺ Seed Raws</strong> to
-                  pre-populate common raw materials. You can also <strong>Import</strong> a JSON export.
+                  Switch to the <strong>📖 Recipes</strong> page. Click <strong>+ New</strong> to add an item, or
+                  <strong>↺ Seed Raws</strong> to pre-populate common raw materials. You can also
+                  <strong>Import</strong> a JSON export. By default, all vanilla recipes in the version listed in
+                  the header should be included.
                 </div>
                 <div class="help-dt">3. Set the calorie rate</div>
                 <div class="help-dd">
-                  Enter your server's <strong>Credits per Calorie</strong> in the Calculator panel (e.g.
-                  <code>1.6</code> if 1000 cal = 1600 credits).
+                  On the <strong>⚡ Pricer</strong> page, enter your server's <strong>Credits per Calorie</strong>
+                  in the calculator settings bar (e.g. <code>1.6</code> if 1000 cal = 1600 credits).
                 </div>
                 <div class="help-dt">4. Price an item</div>
                 <div class="help-dd">
-                  Click any item in the list — the Calculator instantly shows its credit price and full ingredient cost
-                  tree.
+                  Type an item name in the search box on the Pricer page and press <kbd>Enter</kbd>, or click any item
+                  in the Recipes list and press <strong>⚡ Price It</strong>.
                 </div>
               </div>
             </div>
 
-            <div class="help-section" id="help-database">
-              <h4>📦 Recipe Database (Left Panel)</h4>
+            <div class="help-section" id="help-layout">
+              <h4>🗂 Layout</h4>
+              <p style="font-size: 0.85rem; line-height: 1.6; color: var(--text); margin-bottom: 10px">
+                The app has two pages toggled by the tab bar in the header. Your last viewed page is remembered.
+              </p>
               <div class="help-dl">
-                <div class="help-dt">Search</div>
-                <div class="help-dd">Filter the list by typing any part of an item name.</div>
+                <div class="help-dt">⚡ Pricer</div>
+                <div class="help-dd">
+                  The main pricing view. Skills &amp; Tables are always visible on the left; the calculator and cost
+                  tree are on the right. Changes to skill levels or table upgrades immediately recalculate the current
+                  result.
+                </div>
+                <div class="help-dt">📖 Recipes</div>
+                <div class="help-dd">
+                  The recipe database. The left panel lists all items (or tags); the right panel shows a read-only
+                  detail view for the selected item, or the edit form if you click <strong>✎ Edit</strong>.
+                </div>
+                <div class="help-dt">↺ Reload JSON</div>
+                <div class="help-dd">
+                  Fetches the latest data from <code>recipes.json</code>, <code>skills.json</code>,
+                  <code>tables.json</code>, and <code>item-tags.json</code>, merging in any market prices and skill
+                  levels you have already set. Requires the app to be served over HTTP — it will not work when
+                  opened directly as a <code>file://</code> URL.
+                </div>
+              </div>
+            </div>
+
+            <div class="help-section" id="help-pricer">
+              <h4>🧮 Pricer Page</h4>
+              <div class="help-dl">
+                <div class="help-dt">Skills &amp; Tables panel</div>
+                <div class="help-dd">
+                  Always visible on the left of the Pricer page. Set each skill's star level (0–7) and lavish workspace
+                  checkbox, and assign upgrade modules to crafting tables. Any change immediately recalculates the
+                  current result. Click <strong>↺ Reset</strong> to restore all skills to level 1 and all tables to
+                  No Upgrade.
+                </div>
+                <div class="help-dt">Skill Level (0–7)</div>
+                <div class="help-dd">
+                  Matches the star rating shown in-game. Level 0 = not learned (100% labor). Level 7 = fully
+                  specialised (50% labor). Multipliers: <code>0→100%</code> <code>1→80%</code> <code>2→75%</code>
+                  <code>3→70%</code> <code>4→65%</code> <code>5→60%</code> <code>6→55%</code> <code>7→50%</code>
+                </div>
+                <div class="help-dt">Lavish Workspace</div>
+                <div class="help-dd">
+                  Applies an additional <strong>−5%</strong> to all reducible ingredient quantities for that skill.
+                </div>
+                <div class="help-dt">Table Upgrade</div>
+                <div class="help-dd">
+                  Ranges from <strong>No Upgrade</strong> (×1.0) through Basic I–IV, Advanced I–IV, up to
+                  <strong>Specialized</strong> (×0.50). Reduces reducible ingredient quantities and, if
+                  <em>Table mod affects labor</em> is checked, also reduces labor.
+                </div>
+                <div class="help-dt">Credits per Calorie</div>
+                <div class="help-dd">
+                  Your server's calorie-to-credit conversion rate. All prices scale linearly with this value.
+                </div>
+                <div class="help-dt">Currency Symbol</div>
+                <div class="help-dd">Cosmetic label shown next to prices (e.g. <code>$</code>, <code>¢</code>, <code>G</code>).</div>
+                <div class="help-dt">Profit Margin %</div>
+                <div class="help-dd">
+                  Percentage markup added on top of base cost. Per-item overrides are available in the editor.
+                </div>
+                <div class="help-dt">Craft Modifier</div>
+                <div class="help-dd">
+                  Global multiplier applied to all reducible ingredient quantities — useful for server-wide rate
+                  changes. Does <strong>not</strong> affect non-reducible ingredients or labor.
+                </div>
+                <div class="help-dt">Search &amp; Qty</div>
+                <div class="help-dd">
+                  Type an item name and press <kbd>Enter</kbd> to price it. Use the Qty field to price a batch. If an
+                  item has multiple recipe variants, a dropdown lets you choose which one to use.
+                </div>
+                <div class="help-dt">Cost tree</div>
+                <div class="help-dd">
+                  Shows the full recursive ingredient breakdown. Labor is shown in teal, byproducts in green (as
+                  savings), missing recipes in red. <strong>Click any parent node</strong> to collapse or expand its
+                  subtree. <strong>Ctrl+click</strong> collapses or expands the entire tree at once.
+                </div>
+              </div>
+            </div>
+
+            <div class="help-section" id="help-recipes">
+              <h4>📖 Recipes Page</h4>
+              <div class="help-dl">
+                <div class="help-dt">Items / Tags toggle</div>
+                <div class="help-dd">
+                  Switch the left panel between <strong>Items</strong> (recipe database) and <strong>🏷 Tags</strong>
+                  (item tag groups). The search bar filters whichever view is active.
+                </div>
                 <div class="help-dt">Group By</div>
                 <div class="help-dd">
-                  Sort the list alphabetically (A–Z), or group by Type (raw/crafted), Skill, or Crafting Table.
+                  In Items view, sort alphabetically (A–Z) or group by Type, Skill, or Crafting Table.
+                </div>
+                <div class="help-dt">Issues badge</div>
+                <div class="help-dd">
+                  The <strong>⚠ N issues</strong> badge appears when there are data quality problems. Click it to
+                  filter the list to two categories: <em>Missing Recipes</em> (ingredients referenced in recipes that
+                  have no entry in the database) and <em>Unpriced Raws</em> (raw materials with no market price and no
+                  labor cost set). Click a missing recipe card to create it pre-filled with that name.
+                </div>
+                <div class="help-dt">Item detail view</div>
+                <div class="help-dd">
+                  Clicking an item opens a <strong>read-only summary</strong> in the right panel showing recipe tabs,
+                  ingredient tables, byproducts, and a <em>What uses this?</em> reverse-ingredient lookup. From here
+                  you can:<br />
+                  • <strong>⚡ Price It</strong> — switch to the Pricer page and calculate its cost<br />
+                  • <strong>✎ Edit</strong> — open the full edit form
                 </div>
                 <div class="help-dt">+ New</div>
-                <div class="help-dd">Create a new blank item and open it in the editor.</div>
+                <div class="help-dd">Create a new blank item and open the editor.</div>
                 <div class="help-dt">↺ Seed Raws</div>
                 <div class="help-dd">
-                  Adds a built-in list of common raw materials (ores, wood, stone, etc.) to your database. Existing
-                  items are not overwritten. Set each raw material's <strong>Market Buy Price</strong> or
-                  <strong>Labor Calories</strong> to reflect your server's costs.
-                </div>
-                <div class="help-dt">Click an item</div>
-                <div class="help-dd">
-                  Opens the item in the editor <em>and</em> immediately runs the calculator for that item.
-                </div>
-                <div class="help-dt">Missing recipe (red)</div>
-                <div class="help-dd">
-                  If an ingredient has no recipe in the database, it appears red in the cost tree. Click it to create a
-                  new recipe pre-filled with that name.
+                  Adds common raw materials to the database without overwriting existing items. Set each raw's
+                  <strong>Market Buy Price</strong> or <strong>Labor Points</strong> to reflect your server's costs.
                 </div>
               </div>
             </div>
 
             <div class="help-section" id="help-editor">
-              <h4>✏️ Item Editor (Middle Panel)</h4>
+              <h4>✏️ Item Editor</h4>
               <p style="font-size: 0.82rem; color: var(--text-dim); margin-bottom: 10px">
-                Fields apply to the item as a whole unless noted as per-recipe.
+                Click <strong>✎ Edit</strong> in an item's detail view to open the editor. Fields apply to the item as
+                a whole unless noted as per-recipe.
               </p>
               <div class="help-dl">
                 <div class="help-dt">Item Name</div>
                 <div class="help-dd">
-                  The item's display name. This is what other recipes reference when listing this as an ingredient.
+                  The item's display name — what other recipes reference when listing this as an ingredient.
                 </div>
                 <div class="help-dt">Market Buy Price</div>
                 <div class="help-dd">
                   Fixed cost in credits per unit. When set, the calorie calculation is <strong>bypassed</strong> — the
-                  item is treated as a direct credit purchase. Leave blank to calculate cost from the recipe tree.
+                  item is treated as a direct credit purchase. Leave blank to calculate from the recipe tree.
                 </div>
                 <div class="help-dt">Item Tags</div>
                 <div class="help-dd">
-                  Comma-separated tag names this item belongs to (e.g. <code>Ore, Metal</code>). Tags are virtual
-                  ingredient categories — another recipe can list <code>Ore</code> as an ingredient and the cost will be
-                  the average of all items tagged as Ore. See
+                  Comma-separated tag names this item belongs to (e.g. <code>Ore, Metal</code>). See
                   <a href="#help-tags" onclick="document.getElementById('help-tags').scrollIntoView()">Item Tags</a>.
                 </div>
                 <div class="help-dt">Multiple Recipes</div>
                 <div class="help-dd">
-                  An item can have multiple recipe variants (e.g. two wood types). Use the tabs above the form to switch
-                  between them. Click <strong>★ Set Default</strong> on the tab you want used in cost calculations.
+                  An item can have multiple recipe variants (e.g. two different material options). Use the tabs to
+                  switch between them. Click <strong>★ Set Default</strong> on the tab you want used in cost
+                  calculations and as the initial selection in the Pricer dropdown.
                 </div>
                 <div class="help-dt">Recipe Label</div>
+                <div class="help-dd"><em>(per-recipe)</em> A name for this variant shown in the tab and Pricer dropdown.</div>
+                <div class="help-dt">Skill / Crafting Table</div>
                 <div class="help-dd">
-                  <em>(per-recipe)</em> A name for this variant shown in the tab and in the calculator dropdown.
-                </div>
-                <div class="help-dt">Skill</div>
-                <div class="help-dd">
-                  <em>(per-recipe)</em> The skill required to craft this item. Must match a name in your Skills settings
-                  (case-insensitive). The skill's level determines the labor calorie multiplier.
-                </div>
-                <div class="help-dt">Crafting Table</div>
-                <div class="help-dd">
-                  <em>(per-recipe)</em> The table used to craft this item. Must match a name in your Tables settings.
-                  The table's upgrade module reduces ingredient quantities and optionally labor.
+                  <em>(per-recipe)</em> Must match names in the Skills &amp; Tables panel (case-insensitive). The
+                  skill level and table upgrade determine the labor and ingredient modifiers.
                 </div>
                 <div class="help-dt">Labor Points</div>
                 <div class="help-dd">
-                  <em>(per-recipe)</em> Labor points consumed per craft batch (as shown in the Eco recipe UI). Treated
-                  as 1:1 with calories. For raw/gathered materials, set this to the gathering cost. Scaled by skill
-                  level and (optionally) table upgrade.
+                  <em>(per-recipe)</em> Labor consumed per craft batch, as shown in the Eco UI. Treated as 1:1 with
+                  calories. For raw materials, set this to the gathering cost.
                 </div>
-                <div class="help-dt">Qty Produced per Craft</div>
+                <div class="help-dt">Qty Produced / Min. Level / Profit Override</div>
                 <div class="help-dd">
-                  <em>(per-recipe)</em> How many units one craft produces. The calculator divides total cost by this
-                  number to get the per-unit price.
-                </div>
-                <div class="help-dt">Min. Skill Level</div>
-                <div class="help-dd">
-                  <em>(per-recipe)</em> Informational — the minimum skill level required to unlock this recipe in-game.
-                  Recipes below this threshold are flagged in the cost tree.
-                </div>
-                <div class="help-dt">Profit Override %</div>
-                <div class="help-dd">
-                  <em>(per-recipe)</em> Overrides the global Profit Margin for this specific item. Leave blank to use
-                  the global setting.
+                  <em>(per-recipe)</em> Units produced per batch; minimum skill level required; per-recipe profit
+                  margin override (overrides the global setting when set).
                 </div>
                 <div class="help-dt">Ingredients</div>
                 <div class="help-dd">
-                  Items consumed per craft. Each has a name, quantity, and a <strong>Red.</strong> (Reducible) checkbox.
-                  Reducible ingredients are scaled by the table upgrade, lavish workspace, and craft modifier. Uncheck
-                  for fixed costs that are never reduced.
+                  Items consumed per craft. The <strong>Red.</strong> checkbox marks reducible ingredients — those
+                  scaled by the table upgrade, lavish workspace, and craft modifier. Uncheck for fixed costs.
                 </div>
                 <div class="help-dt">Byproducts</div>
                 <div class="help-dd">
-                  Items produced as a side effect. Their calorie value is <strong>subtracted</strong> from the total
-                  cost — if a byproduct has its own recipe, its full tree value is credited back.
-                </div>
-              </div>
-            </div>
-
-            <div class="help-section" id="help-calculator">
-              <h4>🧮 Calculator (Right Panel)</h4>
-              <div class="help-dl">
-                <div class="help-dt">Credits per Calorie</div>
-                <div class="help-dd">
-                  Your server's calorie-to-credit conversion rate. Example: if 1000 calories costs 1600 credits, enter
-                  <code>1.6</code>. This is the most important setting — all prices scale linearly with this value.
-                </div>
-                <div class="help-dt">Currency Symbol</div>
-                <div class="help-dd">
-                  Cosmetic label shown next to prices (e.g. <code>$</code>, <code>¢</code>, <code>G</code>).
-                </div>
-                <div class="help-dt">Profit Margin %</div>
-                <div class="help-dd">
-                  Percentage markup added on top of the base cost. A value of <code>20</code> means the suggested price
-                  is 20% above cost. Per-item overrides are available in the editor.
-                </div>
-                <div class="help-dt">Craft Modifier</div>
-                <div class="help-dd">
-                  Global multiplier applied to all reducible ingredient quantities. Use this for server-wide craft rate
-                  modifications (e.g. <code>0.5</code> if your server halves all resource costs). Does
-                  <strong>not</strong> affect non-reducible ingredients or labor.
-                </div>
-                <div class="help-dt">Table mod affects labor</div>
-                <div class="help-dd">
-                  When checked, the crafting table upgrade module reduces labor calories in addition to ingredient
-                  quantities. Uncheck to match calculators that only apply upgrades to ingredients.
-                </div>
-                <div class="help-dt">Search &amp; Qty</div>
-                <div class="help-dd">
-                  Type an item name and press <kbd>Enter</kbd> to price it. Use the Qty field to price a batch. If an
-                  item has multiple recipe variants, a dropdown appears to select which one to use.
-                </div>
-                <div class="help-dt">Copy button</div>
-                <div class="help-dd">Copies the final calculated price to your clipboard.</div>
-                <div class="help-dt">Cost tree</div>
-                <div class="help-dd">
-                  Expands the full ingredient breakdown. Each node shows the calorie cost and credit equivalent. Labor
-                  is shown in teal, byproducts in green (as savings), missing recipes in red. Click a missing recipe to
-                  create it.
-                </div>
-              </div>
-            </div>
-
-            <div class="help-section" id="help-skills">
-              <h4>⚙️ Skills &amp; Crafting Tables</h4>
-              <div class="help-dl">
-                <div class="help-dt">Skill Level (0–7)</div>
-                <div class="help-dd">
-                  Matches the star rating shown in-game. Level 0 = not learned (no labor reduction). Level 7 = fully
-                  specialised (50% labor). The multipliers are: <code>0→100%</code> <code>1→80%</code>
-                  <code>2→75%</code> <code>3→70%</code> <code>4→65%</code> <code>5→60%</code> <code>6→55%</code>
-                  <code>7→50%</code>
-                </div>
-                <div class="help-dt">Lavish Workspace</div>
-                <div class="help-dd">
-                  Check if your character has the Lavish Workspace talent active for that skill. Applies an additional
-                  <strong>−5%</strong> to all reducible ingredient quantities (not supported by all skills, e.g. Mining
-                  does not support it).
-                </div>
-                <div class="help-dt">Table Upgrade</div>
-                <div class="help-dd">
-                  Assign an upgrade module to each crafting table. Options range from <strong>No Upgrade</strong> (×1.0)
-                  through Basic I–IV, Advanced I–IV, up to <strong>Specialized</strong> (×0.50). The modifier reduces
-                  reducible ingredient quantities and, if "Table mod affects labor" is checked, also reduces labor
-                  calories.
-                </div>
-                <div class="help-dt">Reset to Vanilla Defaults</div>
-                <div class="help-dd">
-                  Resets all skills to the built-in list at level 1 and all tables to No Upgrade. Your recipe database
-                  and item tags are not affected.
+                  Side-effect outputs whose calorie value is <strong>subtracted</strong> from the total cost.
                 </div>
               </div>
             </div>
@@ -1914,29 +2235,33 @@
               <h4>🏷️ Item Tags</h4>
               <p style="font-size: 0.85rem; line-height: 1.6; color: var(--text); margin-bottom: 10px">
                 Some Eco recipes accept any item from a category (e.g. "any Ore"). Item Tags model this — a tag is a
-                named group of items that can be used as an ingredient name in recipes.
+                named group of items that can be used as an ingredient name in a recipe.
               </p>
               <div class="help-dl">
-                <div class="help-dt">Creating tags</div>
+                <div class="help-dt">Viewing tags</div>
+                <div class="help-dd">
+                  On the <strong>📖 Recipes</strong> page, click the <strong>🏷 Tags</strong> toggle to see all tag
+                  groups. Click a tag to view its members and set a market price for the group.
+                </div>
+                <div class="help-dt">Assigning items to tags</div>
                 <div class="help-dd">
                   Open an item in the editor and type a tag name in the <strong>Item Tags</strong> field. The tag is
-                  created automatically and this item is added as a member. Multiple tags can be comma-separated.
+                  created automatically and the item is added as a member. Multiple tags are comma-separated.
                 </div>
                 <div class="help-dt">Using tags as ingredients</div>
                 <div class="help-dd">
-                  In another item's recipe, type the tag name in the ingredient list (it appears with a
-                  <code>[tag]</code> label in the autocomplete). The cost is the average of all member items' calculated
-                  costs.
+                  In a recipe's ingredient list, type the tag name (it appears with a <code>[tag]</code> label in
+                  autocomplete). The cost is the average of all member items' calculated costs.
                 </div>
                 <div class="help-dt">Tag market price override</div>
                 <div class="help-dd">
-                  In <strong>⚙ Skills &amp; Tables → Item Tags</strong>, you can set a market price override for a tag
-                  (in credits). When set, this overrides the member average — useful if you buy all ores at a fixed
-                  market price regardless of type.
+                  In the Tags view, click a tag and set a <strong>Market price</strong> for the group. When set, this
+                  replaces the member average — useful when you buy all items of a category at a fixed market price.
                 </div>
-                <div class="help-dt">Tag display</div>
+                <div class="help-dt">Tag display in cost tree</div>
                 <div class="help-dd">
-                  Tags appear in purple in the cost tree with a badge showing "tag · avg of N members".
+                  Tags appear in purple with a "tag · avg of N" badge. Market-priced tags show a "market" badge
+                  instead.
                 </div>
               </div>
             </div>
@@ -1951,18 +2276,16 @@
                 </div>
                 <div class="help-dt">Import</div>
                 <div class="help-dd">
-                  Paste a JSON export to load a database. This <strong>replaces</strong> your current data. Use the
-                  <strong>Schema</strong> tab for the expected format.
+                  Paste a JSON export to load a database. This <strong>merges</strong> into your current data (existing
+                  items are overwritten by the import). Use the <strong>Schema</strong> tab for the expected format.
                 </div>
               </div>
               <div class="help-note">
                 <strong>JSON format:</strong> An array of item objects. Each item needs at minimum a
                 <code>name</code> and a <code>recipes</code> array.<br /><br />
-                <code
-                  >[ { "name": "Wooden Chair", "recipes": [{ "label": "Default", "skill": "Carpentry", "craftingTable":
-                  "Workbench", "laborPoints": 200, "outputQty": 1, "ingredients": [{"name": "Wood Board", "qty": 4}],
-                  "byproducts": [] }] } ]</code
-                ><br /><br />
+                <code>[ { "name": "Wooden Chair", "recipes": [{ "label": "Default", "skill": "Carpentry",
+                "craftingTable": "Workbench", "laborPoints": 200, "outputQty": 1,
+                "ingredients": [{"name": "Wood Board", "qty": 4}], "byproducts": [] }] } ]</code><br /><br />
                 Raw materials have no <code>ingredients</code> and use <code>laborPoints</code> for the gathering cost,
                 or set a <code>marketPrice</code> on the item to use a fixed credit cost.
               </div>
@@ -1971,8 +2294,7 @@
             <div class="help-section" id="help-formula">
               <h4>📐 Cost Calculation Formula</h4>
               <p style="font-size: 0.85rem; line-height: 1.6; color: var(--text); margin-bottom: 8px">
-                Costs are calculated recursively — each ingredient's full tree is resolved before the parent item is
-                totalled.
+                Costs are calculated recursively — each ingredient's full tree is resolved before the parent is totalled.
               </p>
               <div class="help-formula">
                 reducible_mult = table_upgrade × lavish(0.95 if on) × craft_modifier<br />
@@ -1990,12 +2312,12 @@
               </div>
               <div class="help-note">
                 <strong>Market-priced items</strong> bypass the formula — their cost is
-                <code>market_price × credits_per_calorie⁻¹</code> calories (i.e. the credit cost converted back to
-                calories at the current rate).<br />
+                <code>market_price × credits_per_calorie⁻¹</code> calories.<br />
                 <strong>Tag ingredients</strong> cost the average of all member items' <code>net_cal</code> values, or
                 the tag's market price override if set.
               </div>
             </div>
+
           </div>
         </div>
         <div class="modal-footer">
@@ -2026,9 +2348,41 @@
       //  DATA STORE  (v2)
       // ═══════════════════════════════════════════
 
-      const APP_VERSION = "1.1.0";
+      const APP_VERSION = "2.0.0";
 
       const CHANGELOG = [
+        {
+          version: "2.0.0",
+          date: "2026-02-28",
+          sections: {
+            Added: [
+              "Two-page layout: ⚡ Pricer and 📖 Recipes tabs; last viewed page is remembered",
+              "Skills & Tables panel always visible as a side panel on the Pricer page",
+              "Auto-recalc when skill level, lavish setting, or table upgrade changes on Pricer page",
+              "↺ Reload JSON button to reload all data files without clearing market prices or skill levels",
+              "Collapsible ingredient cost tree — click nodes to collapse/expand; Ctrl+click for all",
+              "Recipe detail read-only view with recipe tabs, ingredient tables, byproducts, and 'What uses this?' reverse lookup",
+              "⚡ Price It button in recipe detail — switches to Pricer using the currently viewed recipe tab",
+              "Issues badge (⚠ N issues) in recipe list — filters to missing recipes and unpriced raw materials",
+              "Items / Tags toggle in recipe list — Tags view shows all tag groups with member counts and market prices",
+              "Tag detail panel showing member items and a market price input for the tag group",
+            ],
+            Changed: [
+              "Recipe list now defaults to read-only detail view; edit form requires explicit ✎ Edit button",
+              "Skills & Tables moved from modal to inline panel on Pricer page",
+              "'Tool' item tag added to item-tags.json (previously excluded from parser) — 46 tool items",
+            ],
+            Fixed: [
+              "JSON data files were only fetched on first visit — returning visitors always saw stale data",
+              "Clear error shown when app opened via file:// protocol (fetch is blocked; instructs user to use HTTP server)",
+              "Issues filter showed nothing for missing-recipe items (those items don't exist in the database)",
+            ],
+            Removed: [
+              "Backwards compatibility with v1.x localStorage keys — existing saved data will not be loaded",
+              "laborCalories field alias in recipe data — use laborPoints only",
+            ],
+          },
+        },
         {
           version: "1.1.0",
           date: "2026-02-25",
@@ -2068,12 +2422,11 @@
         },
       ];
 
-      const STORAGE_KEY_V2 = "eco_recipe_db_v2";
-      const STORAGE_KEY_V3 = "eco_recipe_db_v3";
-      const STORAGE_SKILLS = "eco_skills_v3";
-      const STORAGE_TABLES = "eco_tables_v2";
-      const STORAGE_ITEM_TAGS = "eco_item_tags_v1";
-      const STORAGE_CALC_SETTINGS = "eco_calc_settings_v1";
+      const STORAGE_DB = "eco_recipe_db";
+      const STORAGE_SKILLS = "eco_skills";
+      const STORAGE_TABLES = "eco_tables";
+      const STORAGE_ITEM_TAGS = "eco_item_tags";
+      const STORAGE_CALC_SETTINGS = "eco_calc_settings";
 
       // ── Skill level → labor modifier (index = level, matches Eco in-game values) ──
       // Level 0 = skill not learned, Level 7 = fully specialised
@@ -2260,29 +2613,24 @@
 
       let editState = null; // { name, origKey, defaultRecipeIdx, currentRecipeIdx, recipes[] }
       let selectedKey = null;
+      let recipeViewMode = "view"; // "view" | "edit"
+      let currentPage = localStorage.getItem("eco_current_page") || "pricer";
+      let collapsedTreeNodes = new Set(); // keys: "itemName:depth"
+      let showingIssuesFilter = false; // whether issues filter is active in recipe list
+      let showTagsView = false;        // whether the left panel shows tags instead of items
+      let selectedTagName = null;      // currently selected tag name
+      const STORAGE_PAGE = "eco_current_page";
+
+      // Apply initial page immediately
+      document.body.setAttribute("data-page", currentPage);
 
       // ── Load / Save ──────────────────────────────
 
       function loadDb() {
         try {
-          const raw3 = localStorage.getItem(STORAGE_KEY_V3);
-          if (raw3) {
-            db = JSON.parse(raw3);
-            return;
-          }
-
-          const raw2 = localStorage.getItem(STORAGE_KEY_V2);
-          if (raw2) {
-            db = JSON.parse(raw2);
-            for (const item of Object.values(db)) {
-              for (const recipe of item.recipes || []) {
-                if (recipe.laborCalories !== undefined) {
-                  recipe.laborPoints = recipe.laborCalories;
-                  delete recipe.laborCalories;
-                }
-              }
-            }
-            saveDb();
+          const raw = localStorage.getItem(STORAGE_DB);
+          if (raw) {
+            db = JSON.parse(raw);
             return;
           }
         } catch (e) {}
@@ -2312,7 +2660,8 @@
       }
 
       function saveDb() {
-        localStorage.setItem(STORAGE_KEY_V3, JSON.stringify(db));
+        localStorage.setItem(STORAGE_DB, JSON.stringify(db));
+        updateIssuesBadge();
       }
 
       function clearDatabase() {
@@ -2486,7 +2835,7 @@
           label: r.label || "Default",
           skill: r.skill || "",
           craftingTable: r.craftingTable || "",
-          laborPoints: Number(r.laborPoints ?? r.laborCalories) || 0,
+          laborPoints: Number(r.laborPoints) || 0,
           outputQty: Number(r.outputQty) || 1,
           ingredients: (r.ingredients || []).map((i) => ({
             name: String(i.name),
@@ -2559,20 +2908,12 @@
       function renderList() {
         const filter = document.getElementById("list-search").value.toLowerCase();
         const list = document.getElementById("item-list");
-        const allItems = Object.values(db)
-          .filter((i) => i.name.toLowerCase().includes(filter))
-          .sort((a, b) => a.name.localeCompare(b.name));
 
         const dbCount = Object.keys(db).length;
-        document.getElementById("item-count").textContent = `${dbCount} items`;
+        document.getElementById("item-count").textContent =
+          showTagsView ? `${Object.keys(itemTags).length} tags` : `${dbCount} items`;
 
-        if (allItems.length === 0) {
-          list.innerHTML =
-            dbCount === 0
-              ? `<div class="empty-state">No recipes yet.<br>Click <strong>+ New</strong> to add your first item,<br>or <strong>Import</strong> to load a database.<br><br><button onclick="seedDefaultRaws()" style="margin-top:4px">↺ Seed Default Raw Materials</button></div>`
-              : `<div class="empty-state">No items match your search.</div>`;
-          return;
-        }
+        if (showTagsView) { renderTagList(); return; }
 
         const sym = document.getElementById("currency-symbol")?.value || "¢";
 
@@ -2600,6 +2941,80 @@
       </div>
       <div class="item-card-cal">${calText}</div>
     </div>`;
+        }
+
+        // ── Issues filter: separate view showing missing recipes + unpriced raws ──
+        if (showingIssuesFilter) {
+          const { missing, unpricedRaws } = computeIssues();
+
+          // "Missing recipe" items are NOT in db — render as special "Add Recipe" cards
+          const missingCards = [...missing]
+            .filter((n) => n.toLowerCase().includes(filter))
+            .sort()
+            .map(
+              (name) => `<div class="item-card" onclick="newItemWithName('${esc(name)}')" title="Click to create a recipe for this item">
+                <div>
+                  <div class="item-card-name" style="color:var(--danger)">${esc(name)}</div>
+                  <div class="item-card-meta">Used as ingredient — no recipe in database</div>
+                </div>
+                <div style="color:var(--danger);font-size:0.78rem;white-space:nowrap">+ Add Recipe</div>
+              </div>`
+            );
+
+          // "Unpriced raw" items ARE in db — use normal item cards
+          const unpricedCards = Object.values(db)
+            .filter((i) => unpricedRaws.has(i.name) && i.name.toLowerCase().includes(filter))
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map(itemCard);
+
+          if (missingCards.length === 0 && unpricedCards.length === 0) {
+            list.innerHTML = `<div class="empty-state">No issues match your search.</div>`;
+            return;
+          }
+
+          const missingSection =
+            missingCards.length > 0
+              ? `<div class="folder">
+                  <div class="folder-header" data-gkey="__missing__" onclick="toggleGroup(this)">
+                    <span class="folder-chevron${collapsedGroups.has("__missing__") ? " collapsed" : ""}">▾</span>
+                    <span class="folder-name" style="color:var(--danger)">Missing Recipes</span>
+                    <span class="folder-count">${missingCards.length}</span>
+                  </div>
+                  <div class="folder-body${collapsedGroups.has("__missing__") ? " collapsed" : ""}">
+                    ${missingCards.join("")}
+                  </div>
+                </div>`
+              : "";
+
+          const unpricedSection =
+            unpricedCards.length > 0
+              ? `<div class="folder">
+                  <div class="folder-header" data-gkey="__unpriced__" onclick="toggleGroup(this)">
+                    <span class="folder-chevron${collapsedGroups.has("__unpriced__") ? " collapsed" : ""}">▾</span>
+                    <span class="folder-name" style="color:var(--warn)">Unpriced Raws</span>
+                    <span class="folder-count">${unpricedCards.length}</span>
+                  </div>
+                  <div class="folder-body${collapsedGroups.has("__unpriced__") ? " collapsed" : ""}">
+                    ${unpricedCards.join("")}
+                  </div>
+                </div>`
+              : "";
+
+          list.innerHTML = missingSection + unpricedSection;
+          return;
+        }
+
+        // ── Normal list rendering ──
+        const allItems = Object.values(db)
+          .filter((i) => i.name.toLowerCase().includes(filter))
+          .sort((a, b) => a.name.localeCompare(b.name));
+
+        if (allItems.length === 0) {
+          list.innerHTML =
+            dbCount === 0
+              ? `<div class="empty-state">No recipes yet.<br>Click <strong>+ New</strong> to add your first item,<br>or <strong>Import</strong> to load a database.<br><br><button onclick="seedDefaultRaws()" style="margin-top:4px">↺ Seed Default Raw Materials</button></div>`
+              : `<div class="empty-state">No items match your search.</div>`;
+          return;
         }
 
         if (groupBy === "none") {
@@ -2669,28 +3084,24 @@
         selectedKey = dbKey(name);
         const item = db[selectedKey];
         if (!item) return;
-        // Deep clone into editState
-        editState = {
-          name: item.name,
-          origKey: selectedKey,
-          marketPrice: item.marketPrice ?? null,
-          defaultRecipeIdx: item.defaultRecipeIdx || 0,
-          currentRecipeIdx: item.defaultRecipeIdx || 0,
-          recipes: item.recipes.map((r) => ({
-            ...r,
-            ingredients: r.ingredients.map((i) => ({ ...i })),
-            byproducts: (r.byproducts || []).map((b) => ({ ...b })),
-          })),
-        };
         renderList();
-        renderEditor();
-        // Auto-populate the calculator with this item's price
+
+        // Show read-only detail view (on Recipes page) or just price it (on Pricer page)
+        if (currentPage === "recipes") {
+          recipeViewMode = "view";
+          renderRecipeDetail(name);
+        }
+
+        // Always auto-populate the calculator
         document.getElementById("calc-input").value = item.name;
+        collapsedTreeNodes.clear();
         lookupItem();
       }
 
       function newItem() {
+        switchPage("recipes");
         selectedKey = null;
+        recipeViewMode = "edit";
         editState = {
           name: "",
           origKey: null,
@@ -2717,7 +3128,9 @@
       }
 
       function newItemWithName(name) {
+        switchPage("recipes");
         selectedKey = null;
+        recipeViewMode = "edit";
         editState = {
           name: name,
           origKey: null,
@@ -2744,8 +3157,17 @@
       }
 
       function cancelEdit() {
+        // If we were editing an existing item, go back to its detail view
+        if (editState && editState.origKey) {
+          const name = editState.name;
+          editState = null;
+          recipeViewMode = "view";
+          renderRecipeDetail(name);
+          return;
+        }
         editState = null;
         selectedKey = null;
+        recipeViewMode = "view";
         renderList();
         document.getElementById("form-body").innerHTML =
           `<div class="empty-state">Select an item from the list<br>or click <strong>+ New</strong> to create one.</div>`;
@@ -3132,12 +3554,11 @@
         editState.name = name;
         selectedKey = key;
 
-        document.getElementById("form-title").textContent = `Edit: ${name}`;
-        document.getElementById("btn-delete").style.display = "inline-block";
         renderList();
-        // Re-sync datalists
-        renderRecipeForm(editState.currentRecipeIdx);
-        renderRecipeTabs();
+
+        // After saving, return to the read-only detail view
+        recipeViewMode = "view";
+        renderRecipeDetail(name);
       }
 
       function deleteItem() {
@@ -3147,7 +3568,16 @@
         if (!confirm(`Delete "${item.name}"?`)) return;
         delete db[editState.origKey];
         saveDb();
-        cancelEdit();
+        editState = null;
+        selectedKey = null;
+        recipeViewMode = "view";
+        renderList();
+        document.getElementById("form-body").innerHTML =
+          `<div class="empty-state">Select an item from the list<br>or click <strong>+ New</strong> to create one.</div>`;
+        document.getElementById("form-actions").style.display = "none";
+        document.getElementById("btn-delete").style.display = "none";
+        document.getElementById("form-title").textContent = "Item Editor";
+        document.getElementById("recipe-tabs-section").style.display = "none";
       }
 
       // ═══════════════════════════════════════════
@@ -3319,6 +3749,7 @@
 
       function lookupItem() {
         const name = document.getElementById("calc-input").value.trim();
+        if (name !== currentCalcItem) collapsedTreeNodes.clear();
         currentCalcItem = name;
         document.getElementById("calc-autocomplete").style.display = "none";
 
@@ -3435,7 +3866,11 @@
   `;
       }
 
-      function renderTree(node, calPerCredit, sym) {
+      function renderTree(node, calPerCredit, sym, depth) {
+        depth = depth || 0;
+        const nodeKey = `${dbKey(node.name)}:${depth}`;
+        const isCollapsed = collapsedTreeNodes.has(nodeKey);
+
         if (node.isMarketPriced) {
           const qtyLabel = node.qty !== 1 ? ` ×${formatNum(node.qty)}` : "";
           const totalCost = formatCredits(node.marketPricePerUnit * node.qty);
@@ -3464,7 +3899,7 @@
 
         if (node.error === "missing") {
           const qtyLabel = node.qty !== 1 ? ` ×${formatNum(node.qty)}` : "";
-          return `<div class="tree-item is-raw" style="border:1px solid var(--danger);cursor:pointer" onclick="newItemWithName('${esc(node.name)}')" title="Click to create a recipe for '${esc(node.name)}'">
+          return `<div class="tree-item is-raw" style="border:1px solid var(--danger);cursor:pointer" onclick="switchPage('recipes');newItemWithName('${esc(node.name)}')" title="Click to create a recipe for '${esc(node.name)}'">
       <span class="tree-name" style="color:var(--danger)">${esc(node.name)}${qtyLabel}</span>
       <span class="tree-cal" style="color:var(--danger)">＋ create recipe</span>
     </div>`;
@@ -3481,6 +3916,11 @@
         const netCredits = formatCredits(node.netCal / calPerCredit);
         const qtyLabel = node.qty !== 1 ? ` ×${formatNum(node.qty)}` : "";
 
+        const hasChildren = (node.ingNodes && node.ingNodes.length > 0) || (node.bpNodes && node.bpNodes.length > 0) || node.laborCal > 0;
+        const chevron = hasChildren
+          ? `<span class="tree-chevron${isCollapsed ? " collapsed" : ""}" data-nodekey="${esc(nodeKey)}" onclick="toggleTreeNode(event,this.dataset.nodekey)" title="Click to collapse/expand&#10;Ctrl+click to toggle all">▾</span>`
+          : `<span style="display:inline-block;min-width:13px"></span>`;
+
         // Skill/table badges for the labor line
         const skillBadge =
           node.skillMult !== 1
@@ -3493,8 +3933,7 @@
 
         const laborLine =
           node.laborCal > 0
-            ? `
-    <div class="tree-node">
+            ? `<div class="tree-node">
       <div class="tree-item is-labor">
         <span class="tree-name">Labor ${skillBadge}${tableBadge}</span>
         <span class="tree-cal">+${formatNum(Math.round(node.laborCal))} cal</span>
@@ -3503,11 +3942,7 @@
             : "";
 
         const ingHtml = (node.ingNodes || [])
-          .map(
-            (c) => `
-    <div class="tree-node">${renderTree(c, calPerCredit, sym)}</div>
-  `
-          )
+          .map((c) => `<div class="tree-node">${renderTree(c, calPerCredit, sym, depth + 1)}</div>`)
           .join("");
 
         // Byproduct subtree
@@ -3530,18 +3965,41 @@
           bpHtml = `<div class="tree-node"><div class="bp-section-label">Byproducts</div>${bpRows}</div>`;
         }
 
+        const childrenHtml = `<div class="tree-children-wrap${isCollapsed ? " collapsed" : ""}">${laborLine}${ingHtml}${bpHtml}</div>`;
+
         return `
     <div class="tree-item ${node.isRaw ? "is-raw" : ""}">
-      <div>
+      <div style="display:flex;align-items:center">
+        ${chevron}
         <span class="tree-name">${esc(node.name)}${qtyLabel}</span>
         ${node.isRaw ? '<span class="tag">raw</span>' : ""}
       </div>
       <span class="tree-cal">${formatNum(Math.round(node.netCal))} cal &nbsp;·&nbsp; ${sym}${netCredits}</span>
     </div>
-    ${laborLine}
-    ${ingHtml}
-    ${bpHtml}
+    ${childrenHtml}
   `;
+      }
+
+      function toggleTreeNode(e, nodeKey) {
+        e.stopPropagation();
+        if (e.ctrlKey || e.metaKey) {
+          // Ctrl+click: if anything is collapsed, expand all; otherwise collapse all
+          if (collapsedTreeNodes.size > 0) {
+            collapsedTreeNodes.clear();
+          } else {
+            // Collect all node keys from chevron data attributes
+            document.querySelectorAll(".tree-chevron[data-nodekey]").forEach((el) => {
+              collapsedTreeNodes.add(el.dataset.nodekey);
+            });
+          }
+        } else {
+          if (collapsedTreeNodes.has(nodeKey)) {
+            collapsedTreeNodes.delete(nodeKey);
+          } else {
+            collapsedTreeNodes.add(nodeKey);
+          }
+        }
+        if (currentCalcItem) recalc();
       }
 
       // ═══════════════════════════════════════════
@@ -3820,6 +4278,7 @@
         // Re-render calc if open, in case multipliers changed
         if (currentCalcItem) recalc();
         renderList();
+        renderPricerPanel();
       }
 
       function closeSettingsIfBackdrop(e) {
@@ -3844,6 +4303,8 @@
         // Re-render whichever tab is active
         if (currentSettingsTab === "skills") renderSkillsSettings();
         else renderTablesSettings();
+        renderPricerPanel();
+        if (currentCalcItem) recalc();
       }
 
       function switchSettingsTab(tab) {
@@ -3924,12 +4385,16 @@
         if (!skills[key]) return;
         skills[key].level = Math.min(7, Math.max(0, level || 0));
         saveSkills();
+        if (currentCalcItem) recalc();
+        renderList();
       }
 
       function setSkillLavish(key, checked) {
         if (!skills[key]) return;
         skills[key].lavish = !!checked;
         saveSkills();
+        if (currentCalcItem) recalc();
+        renderList();
       }
 
       function deleteSkill(key) {
@@ -3988,6 +4453,8 @@
         if (!tables[key]) return;
         tables[key].upgrade = UPGRADE_MODULES[upgradeKey] ? upgradeKey : "none";
         saveTables();
+        if (currentCalcItem) recalc();
+        renderList();
       }
 
       function deleteTable(key) {
@@ -4168,75 +4635,700 @@
       }
 
       // ═══════════════════════════════════════════
+      //  PAGE NAVIGATION
+      // ═══════════════════════════════════════════
+
+      function switchPage(page) {
+        currentPage = page;
+        localStorage.setItem(STORAGE_PAGE, page);
+        document.body.setAttribute("data-page", page);
+        document.getElementById("tab-pricer").classList.toggle("active", page === "pricer");
+        document.getElementById("tab-recipes").classList.toggle("active", page === "recipes");
+        if (page === "pricer") {
+          renderPricerPanel();
+          if (currentCalcItem) recalc();
+        }
+      }
+
+      // ═══════════════════════════════════════════
+      //  JSON RELOAD
+      // ═══════════════════════════════════════════
+
+      async function reloadFromJson() {
+        if (isFileProtocol()) {
+          alert(
+            "Cannot reload JSON files when index.html is opened via file://.\n\n" +
+            "Serve the public folder over HTTP instead:\n\n" +
+            "  python -m http.server 8080\n\n" +
+            "Then open http://localhost:8080/public/ in your browser."
+          );
+          return;
+        }
+
+        if (
+          !confirm(
+            "Reload all recipes, skills, tables, and tags from the JSON files?\n\nYour market prices and skill levels will be preserved."
+          )
+        )
+          return;
+
+        // Clear all storage keys so initApp fetches fresh data
+        localStorage.removeItem(STORAGE_DB);
+        localStorage.removeItem(STORAGE_SKILLS);
+        localStorage.removeItem(STORAGE_TABLES);
+        localStorage.removeItem(STORAGE_ITEM_TAGS);
+
+        const listEl = document.getElementById("item-list");
+        if (listEl) listEl.innerHTML = '<p style="padding:1rem;color:var(--text-dim)">Loading from JSON…</p>';
+
+        await initApp();
+
+        const count = Object.keys(db).length;
+        if (count <= 40) {
+          alert(
+            "Warning: only " + count + " items loaded — the JSON fetch may have failed.\n\n" +
+            "Check the browser console (F12) for network errors."
+          );
+        } else {
+          alert("Reload complete. " + count + " items loaded from JSON files.");
+        }
+      }
+
+      // ═══════════════════════════════════════════
+      //  PRICER SKILLS/TABLES PANEL
+      // ═══════════════════════════════════════════
+
+      const collapsedPricerSections = new Set();
+
+      function renderPricerPanel() {
+        const body = document.getElementById("skills-panel-body");
+        if (!body) return;
+
+        const skillsCollapsed = collapsedPricerSections.has("skills");
+        const tablesCollapsed = collapsedPricerSections.has("tables");
+
+        const skillRows = Object.values(skills)
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((s) => {
+            const k = dbKey(s.name);
+            const level = Math.min(7, Math.max(0, s.level || 0));
+            const levelOpts = SKILL_MODIFIERS.map(
+              (m, i) =>
+                `<option value="${i}"${i === level ? " selected" : ""}>Lv.${i} — ${Math.round(m * 100)}%</option>`
+            ).join("");
+            return `<tr>
+              <td style="max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap" title="${esc(s.name)}">${esc(s.name)}</td>
+              <td><select onchange="setPricerSkillLevel('${esc(k)}', parseInt(this.value))">${levelOpts}</select></td>
+              <td style="text-align:center"><input type="checkbox" ${s.lavish ? "checked" : ""}
+                  onchange="setPricerSkillLavish('${esc(k)}', this.checked)"
+                  title="Lavish Workspace (−5% ingredients)"
+                  style="width:14px;height:14px;accent-color:var(--accent2)"></td>
+            </tr>`;
+          })
+          .join("");
+
+        const tableRows = Object.values(tables)
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((t) => {
+            const k = dbKey(t.name);
+            const curUpgrade = t.upgrade || "none";
+            const opts = Object.entries(UPGRADE_MODULES)
+              .map(
+                ([uk, m]) =>
+                  `<option value="${uk}"${uk === curUpgrade ? " selected" : ""}>${esc(m.label)} — ${Math.round(m.modifier * 100)}%</option>`
+              )
+              .join("");
+            return `<tr>
+              <td style="max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap" title="${esc(t.name)}">${esc(t.name)}</td>
+              <td><select onchange="setPricerTableUpgrade('${esc(k)}', this.value)">${opts}</select></td>
+            </tr>`;
+          })
+          .join("");
+
+        body.innerHTML = `
+          <div class="panel-section-header" onclick="togglePricerSection('skills')">
+            <span class="panel-section-chevron${skillsCollapsed ? " collapsed" : ""}">▾</span>
+            <span class="panel-section-title">Skills</span>
+          </div>
+          <div class="panel-section-body${skillsCollapsed ? " collapsed" : ""}">
+            <table class="settings-table">
+              <thead><tr><th>Skill</th><th>Level</th><th title="Lavish Workspace">Lav.</th></tr></thead>
+              <tbody>${skillRows}</tbody>
+            </table>
+          </div>
+          <div style="margin-top:14px"></div>
+          <div class="panel-section-header" onclick="togglePricerSection('tables')">
+            <span class="panel-section-chevron${tablesCollapsed ? " collapsed" : ""}">▾</span>
+            <span class="panel-section-title">Crafting Tables</span>
+          </div>
+          <div class="panel-section-body${tablesCollapsed ? " collapsed" : ""}">
+            <table class="settings-table">
+              <thead><tr><th>Table</th><th>Upgrade</th></tr></thead>
+              <tbody>${tableRows}</tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      function togglePricerSection(key) {
+        if (collapsedPricerSections.has(key)) {
+          collapsedPricerSections.delete(key);
+        } else {
+          collapsedPricerSections.add(key);
+        }
+        renderPricerPanel();
+      }
+
+      function setPricerSkillLevel(key, level) {
+        if (!skills[key]) return;
+        skills[key].level = Math.min(7, Math.max(0, level || 0));
+        saveSkills();
+        if (currentCalcItem) recalc();
+        renderList();
+      }
+
+      function setPricerSkillLavish(key, checked) {
+        if (!skills[key]) return;
+        skills[key].lavish = !!checked;
+        saveSkills();
+        if (currentCalcItem) recalc();
+        renderList();
+      }
+
+      function setPricerTableUpgrade(key, upgradeKey) {
+        if (!tables[key]) return;
+        tables[key].upgrade = UPGRADE_MODULES[upgradeKey] ? upgradeKey : "none";
+        saveTables();
+        if (currentCalcItem) recalc();
+        renderList();
+      }
+
+      // ═══════════════════════════════════════════
+      //  RECIPE DETAIL VIEW (read-only)
+      // ═══════════════════════════════════════════
+
+      let detailRecipeIdx = 0;
+
+      function renderRecipeDetail(name) {
+        const key = dbKey(name);
+        const item = db[key];
+        if (!item) return;
+
+        detailRecipeIdx = item.defaultRecipeIdx || 0;
+        recipeViewMode = "view";
+
+        document.getElementById("form-title").textContent = item.name;
+        document.getElementById("form-actions").style.display = "none";
+        document.getElementById("btn-delete").style.display = "inline-block";
+        document.getElementById("recipe-tabs-section").style.display = "none";
+
+        _renderDetailContent(item, detailRecipeIdx);
+      }
+
+      function _renderDetailContent(item, rIdx) {
+        const recipe = item.recipes[rIdx] || item.recipes[0];
+        const sym = document.getElementById("currency-symbol")?.value || "¢";
+
+        // Tags this item belongs to
+        const itemTagsList = Object.values(itemTags)
+          .filter((t) => (t.memberNames || []).some((m) => dbKey(m) === dbKey(item.name)))
+          .map((t) => `<span class="tag item-tag">${esc(t.name)}</span>`)
+          .join("");
+
+        // Recipe tab bar
+        const tabBar =
+          item.recipes.length > 1
+            ? `<div class="detail-recipe-tab-bar">${item.recipes
+                .map(
+                  (r, i) =>
+                    `<button class="detail-recipe-tab${i === rIdx ? " active" : ""}" onclick="switchDetailTab('${esc(item.name)}', ${i})">${esc(r.label || `Recipe ${i + 1}`)}${i === item.defaultRecipeIdx ? " ★" : ""}</button>`
+                )
+                .join("")}</div>`
+            : "";
+
+        // Ingredients table
+        const ingsHtml =
+          recipe.ingredients && recipe.ingredients.length > 0
+            ? `<table class="detail-ing-table">
+                <thead><tr><th>Ingredient</th><th>Qty</th><th>Reducible</th></tr></thead>
+                <tbody>${recipe.ingredients
+                  .map(
+                    (ing) =>
+                      `<tr><td>${esc(ing.name)}</td><td>${formatNum(ing.qty)}</td><td>${ing.reducible !== false ? "✓" : "—"}</td></tr>`
+                  )
+                  .join("")}</tbody>
+              </table>`
+            : `<div style="font-size:0.82rem; color:var(--text-dim); font-style:italic">No ingredients (raw material)</div>`;
+
+        // Byproducts table
+        const bypsHtml =
+          recipe.byproducts && recipe.byproducts.length > 0
+            ? `<table class="detail-ing-table">
+                <thead><tr><th>Byproduct</th><th>Qty</th></tr></thead>
+                <tbody>${recipe.byproducts
+                  .map((bp) => `<tr><td>${esc(bp.name)}</td><td>${formatNum(bp.qty)}</td></tr>`)
+                  .join("")}</tbody>
+              </table>`
+            : "";
+
+        // "What uses this?" reverse lookup
+        const usedBy = Object.values(db).filter((other) =>
+          other.recipes.some((r) => (r.ingredients || []).some((ing) => dbKey(ing.name) === dbKey(item.name)))
+        );
+        const usedByHtml =
+          usedBy.length > 0
+            ? usedBy
+                .map(
+                  (u) =>
+                    `<div class="uses-item" onclick="selectItem('${esc(u.name)}')">${esc(u.name)} <span style="color:var(--text-dim);font-size:0.75rem">— ${u.recipes[u.defaultRecipeIdx || 0]?.craftingTable || "?"}</span></div>`
+                )
+                .join("")
+            : `<div style="font-size:0.82rem; color:var(--text-dim); font-style:italic">Not used as ingredient in any recipe</div>`;
+
+        const marketLine =
+          item.marketPrice !== null && item.marketPrice >= 0
+            ? `<div class="detail-stat"><span class="ds-label">Market Buy Price</span><span>${sym}${formatCredits(item.marketPrice)}/unit</span></div>`
+            : "";
+
+        document.getElementById("form-body").innerHTML = `
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; gap:8px; flex-wrap:wrap">
+            <div>
+              <div style="font-size:1.05rem; color:var(--text-bright); font-weight:600">${esc(item.name)}</div>
+              <div style="margin-top:4px">${itemTagsList}</div>
+            </div>
+            <div style="display:flex; gap:6px">
+              <button class="success" onclick="pricerThis('${esc(item.name)}', ${detailRecipeIdx})">⚡ Price It</button>
+              <button onclick="editThis('${esc(item.name)}')">✎ Edit</button>
+            </div>
+          </div>
+          ${marketLine ? `<div class="detail-recipe-card">${marketLine}</div>` : ""}
+          ${tabBar}
+          <div class="detail-recipe-card">
+            <div class="detail-stat"><span class="ds-label">Skill</span><span>${esc(recipe.skill || "—")}</span></div>
+            <div class="detail-stat"><span class="ds-label">Crafting Table</span><span>${esc(recipe.craftingTable || "—")}</span></div>
+            <div class="detail-stat"><span class="ds-label">Labor Points</span><span>${formatNum(recipe.laborPoints)}</span></div>
+            <div class="detail-stat"><span class="ds-label">Qty per Craft</span><span>${formatNum(recipe.outputQty)}</span></div>
+            <div class="detail-stat"><span class="ds-label">Min. Skill Level</span><span>${recipe.minLevel > 0 ? `Lv.${recipe.minLevel}+` : "Any"}</span></div>
+          </div>
+          <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-dim); font-weight:600; margin-bottom:6px">Ingredients</div>
+          ${ingsHtml}
+          ${
+            bypsHtml
+              ? `<div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--accent2); font-weight:600; margin:10px 0 6px">Byproducts</div>${bypsHtml}`
+              : ""
+          }
+          <hr class="divider" style="margin-top:14px">
+          <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-dim); font-weight:600; margin-bottom:8px">What Uses This?</div>
+          ${usedByHtml}
+        `;
+      }
+
+      function switchDetailTab(name, idx) {
+        const key = dbKey(name);
+        const item = db[key];
+        if (!item) return;
+        detailRecipeIdx = idx;
+        _renderDetailContent(item, idx);
+      }
+
+      function pricerThis(name, recipeIdx) {
+        switchPage("pricer");
+        document.getElementById("calc-input").value = name;
+        currentCalcItem = name;
+        lookupItem(); // populates dropdown defaulting to item.defaultRecipeIdx
+        // If a specific recipe tab was requested (e.g. from detail view), override the selection
+        if (recipeIdx !== undefined && recipeIdx !== null) {
+          const sel = document.getElementById("calc-recipe-select");
+          if (sel.style.display !== "none" && sel.options[recipeIdx]) {
+            sel.value = recipeIdx;
+            recalc();
+          }
+        }
+      }
+
+      function editThis(name) {
+        recipeViewMode = "edit";
+        const key = dbKey(name);
+        const item = db[key];
+        if (!item) return;
+        editState = {
+          name: item.name,
+          origKey: key,
+          marketPrice: item.marketPrice ?? null,
+          defaultRecipeIdx: item.defaultRecipeIdx || 0,
+          currentRecipeIdx: item.defaultRecipeIdx || 0,
+          recipes: item.recipes.map((r) => ({
+            ...r,
+            ingredients: r.ingredients.map((i) => ({ ...i })),
+            byproducts: (r.byproducts || []).map((b) => ({ ...b })),
+          })),
+        };
+        document.getElementById("form-title").textContent = `Edit: ${item.name}`;
+        document.getElementById("form-actions").style.display = "flex";
+        document.getElementById("btn-delete").style.display = "inline-block";
+        document.getElementById("recipe-tabs-section").style.display = "block";
+        renderRecipeTabs();
+        renderRecipeForm(editState.currentRecipeIdx);
+      }
+
+      // ═══════════════════════════════════════════
+      //  ISSUES / UNPRICED ITEMS
+      // ═══════════════════════════════════════════
+
+      function computeIssues() {
+        const allIngredientNames = new Set();
+        for (const item of Object.values(db)) {
+          for (const recipe of item.recipes) {
+            for (const ing of recipe.ingredients || []) {
+              if (ing.name) allIngredientNames.add(dbKey(ing.name));
+            }
+          }
+        }
+
+        const missing = new Set();
+        for (const ingKey of allIngredientNames) {
+          if (!db[ingKey] && !itemTags[ingKey]) {
+            // Find the display name from any recipe that uses it
+            for (const item of Object.values(db)) {
+              for (const recipe of item.recipes) {
+                for (const ing of recipe.ingredients || []) {
+                  if (dbKey(ing.name) === ingKey) missing.add(ing.name);
+                }
+              }
+            }
+          }
+        }
+
+        const unpricedRaws = new Set();
+        for (const item of Object.values(db)) {
+          const defRecipe = item.recipes[item.defaultRecipeIdx || 0] || item.recipes[0];
+          const isRaw = !defRecipe.ingredients || defRecipe.ingredients.length === 0;
+          if (isRaw && (item.marketPrice === null || item.marketPrice < 0) && (defRecipe.laborPoints || 0) === 0) {
+            unpricedRaws.add(item.name);
+          }
+        }
+
+        return { missing, unpricedRaws };
+      }
+
+      function updateIssuesBadge() {
+        const badge = document.getElementById("issues-badge");
+        if (!badge) return;
+        const { missing, unpricedRaws } = computeIssues();
+        const total = missing.size + unpricedRaws.size;
+        if (total === 0) {
+          badge.setAttribute("data-hidden", "true");
+          badge.textContent = "";
+        } else {
+          badge.setAttribute("data-hidden", "false");
+          badge.textContent = `⚠ ${total} issue${total !== 1 ? "s" : ""}`;
+        }
+      }
+
+      function toggleIssuesFilter() {
+        showingIssuesFilter = !showingIssuesFilter;
+        const badge = document.getElementById("issues-badge");
+        if (badge) badge.style.outline = showingIssuesFilter ? "2px solid var(--warn)" : "";
+        renderList();
+      }
+
+      // ═══════════════════════════════════════════
+      //  TAGS VIEW
+      // ═══════════════════════════════════════════
+
+      function setListView(view) {
+        showTagsView = view === "tags";
+        showingIssuesFilter = false;
+
+        document.getElementById("view-items-btn").classList.toggle("active", !showTagsView);
+        document.getElementById("view-tags-btn").classList.toggle("active", showTagsView);
+
+        // group-bar only makes sense for items
+        const groupBar = document.getElementById("group-bar");
+        if (groupBar) groupBar.style.display = showTagsView ? "none" : "";
+
+        // update search placeholder
+        const search = document.getElementById("list-search");
+        if (search) search.placeholder = showTagsView ? "Filter tags…" : "Filter items…";
+
+        if (!showTagsView) {
+          // returning to items view — hide tag detail, show item editor
+          document.getElementById("tag-detail-panel").style.display = "none";
+          document.querySelector(".panel-mid").style.display = "";
+          selectedTagName = null;
+        }
+
+        renderList();
+      }
+
+      function renderTagList() {
+        const list = document.getElementById("item-list");
+        const filter = (document.getElementById("list-search")?.value || "").toLowerCase();
+
+        const tags = Object.values(itemTags)
+          .filter((t) => t.name.toLowerCase().includes(filter))
+          .sort((a, b) => a.name.localeCompare(b.name));
+
+        if (tags.length === 0) {
+          list.innerHTML = `<div class="empty-state">No tags match your search.</div>`;
+          return;
+        }
+
+        list.innerHTML = tags
+          .map((tag) => {
+            const priceLabel =
+              tag.marketPrice !== null && tag.marketPrice >= 0
+                ? `<span class="tag-card-price">${tag.marketPrice.toFixed(2)}¢</span>`
+                : "";
+            const isSelected = tag.name === selectedTagName;
+            return `<div class="tag-card${isSelected ? " selected" : ""}" onclick="selectTag('${esc(tag.name)}')">
+              <span class="tag-card-name">${esc(tag.name)}</span>
+              ${priceLabel}
+              <span class="tag-card-count">${tag.memberNames.length}</span>
+            </div>`;
+          })
+          .join("");
+      }
+
+      function selectTag(name) {
+        selectedTagName = name;
+        const tag = itemTags[dbKey(name)];
+        if (!tag) return;
+
+        // swap panels — inherit the editor's current width so resize handle position stays consistent
+        const editorPanel = document.querySelector(".panel-mid");
+        const editorWidth = editorPanel.style.width || editorPanel.offsetWidth + "px";
+        editorPanel.style.display = "none";
+        const detailPanel = document.getElementById("tag-detail-panel");
+        detailPanel.style.width = editorWidth;
+        detailPanel.style.display = "";
+
+        document.getElementById("tag-detail-title").textContent = `🏷 ${tag.name}`;
+
+        const currentPrice = tag.marketPrice !== null && tag.marketPrice >= 0 ? tag.marketPrice : "";
+
+        const memberRows = tag.memberNames
+          .slice()
+          .sort()
+          .map((mName) => {
+            const item = db[dbKey(mName)];
+            const priceLabel = item && item.marketPrice !== null && item.marketPrice >= 0
+              ? `<span class="tag-member-price">${item.marketPrice.toFixed(2)}¢</span>`
+              : "";
+            return `<div class="tag-member" onclick="goToItem('${esc(mName)}')" title="View recipe for ${esc(mName)}">
+              ${esc(mName)}
+              ${priceLabel}
+            </div>`;
+          })
+          .join("");
+
+        document.getElementById("tag-detail-body").innerHTML = `
+          <div style="margin-bottom:16px">
+            <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:4px">Market price for this tag group</div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input type="number" id="tag-price-input" min="0" step="0.01"
+                placeholder="e.g. 1.50"
+                value="${currentPrice}"
+                style="width:120px"
+                oninput="setTagPrice('${esc(tag.name)}', this.value)" />
+              <span style="font-size:0.78rem;color:var(--text-dim)">calories</span>
+              ${currentPrice !== ""
+                ? `<button onclick="clearTagPrice('${esc(tag.name)}')" style="font-size:0.75rem;padding:2px 8px">✕ Clear</button>`
+                : ""}
+            </div>
+            <div style="font-size:0.75rem;color:var(--text-dim);margin-top:4px">
+              Setting a price here lets the calculator use this tag as a raw material cost when any of its members appear as an ingredient.
+            </div>
+          </div>
+          <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:6px;font-weight:600">
+            Members (${tag.memberNames.length})
+          </div>
+          <div class="tag-member-list">${memberRows}</div>`;
+
+        // re-render list to update selection highlight
+        renderList();
+      }
+
+      function setTagPrice(name, val) {
+        const key = dbKey(name);
+        if (!itemTags[key]) return;
+        const parsed = parseFloat(val);
+        itemTags[key].marketPrice = isNaN(parsed) || val === "" ? null : parsed;
+        localStorage.setItem(STORAGE_ITEM_TAGS, JSON.stringify(Object.values(itemTags)));
+      }
+
+      function clearTagPrice(name) {
+        const key = dbKey(name);
+        if (!itemTags[key]) return;
+        itemTags[key].marketPrice = null;
+        localStorage.setItem(STORAGE_ITEM_TAGS, JSON.stringify(Object.values(itemTags)));
+        selectTag(name); // re-render to remove the Clear button
+      }
+
+      function goToItem(name) {
+        // Switch to items view, navigate to item
+        setListView("items");
+        selectItem(dbKey(name));
+      }
+
+      // ═══════════════════════════════════════════
       //  INIT
       // ═══════════════════════════════════════════
 
+      function isFileProtocol() {
+        return location.protocol === "file:";
+      }
+
       async function initApp() {
-        const isReturningUser = !!localStorage.getItem(STORAGE_KEY_V2);
+        const listEl = document.getElementById("item-list");
 
-        if (!isReturningUser) {
-          // Show a brief loading message while fetching default data
-          const listEl = document.getElementById("item-list");
-          if (listEl) listEl.innerHTML = '<p style="padding:1rem;color:var(--text-muted)">Loading defaults…</p>';
-
-          const [recipesRes, skillsRes, tablesRes, tagsRes] = await Promise.allSettled([
-            fetch("recipes.json"),
-            fetch("skills.json"),
-            fetch("tables.json"),
-            fetch("item-tags.json"),
-          ]);
-
-          // Seed recipes (db)
-          if (recipesRes.status === "fulfilled" && recipesRes.value.ok) {
-            try {
-              const items = await recipesRes.value.json();
-              const seedDb = {};
-              for (const item of items) {
-                seedDb[dbKey(item.name)] = normaliseItem(item);
-              }
-              localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(seedDb));
-            } catch (e) {}
+        // If running via file:// there is no point attempting fetch — browsers block it.
+        // Show a clear error and fall back to whatever is already in localStorage.
+        if (isFileProtocol()) {
+          const hasExisting = !!localStorage.getItem(STORAGE_DB);
+          if (!hasExisting) {
+            // First visit via file:// — show a prominent setup message instead of 40 raw items
+            if (listEl)
+              listEl.innerHTML = `
+                <div style="padding:20px; line-height:1.7">
+                  <div style="font-size:1rem; color:var(--danger); font-weight:600; margin-bottom:10px">
+                    ⚠ Cannot load recipe data
+                  </div>
+                  <div style="font-size:0.85rem; color:var(--text); margin-bottom:14px">
+                    Browsers block file access when <code>index.html</code> is opened directly
+                    (the URL bar shows <code>file://</code>). The JSON recipe files cannot be
+                    fetched this way.
+                  </div>
+                  <div style="font-size:0.85rem; color:var(--text-bright); font-weight:600; margin-bottom:6px">
+                    Fix: serve the folder over HTTP
+                  </div>
+                  <div style="font-size:0.82rem; color:var(--text); margin-bottom:12px">
+                    Open a terminal in <code>D:\\Repositories\\Eco-Crafting-Calculator</code> and run:
+                  </div>
+                  <div style="font-family:monospace; background:var(--bg); border:1px solid var(--border);
+                              border-radius:6px; padding:10px 14px; font-size:0.85rem; color:var(--accent2)">
+                    python -m http.server 8080
+                  </div>
+                  <div style="font-size:0.82rem; color:var(--text-dim); margin-top:10px">
+                    Then open <strong style="color:var(--text)">http://localhost:8080/public/</strong> in your browser.
+                  </div>
+                </div>`;
+            loadDb(); loadSkills(); loadTables(); loadItemTags(); loadCalcSettings();
+            // Don't call renderList() — the error message above replaces it
+            if (currentPage === "pricer") renderPricerPanel();
+            return;
           }
+          // Returning user via file:// — just load from localStorage, skip fetch
+          loadDb(); loadSkills(); loadTables(); loadItemTags(); loadCalcSettings();
+          renderList(); updateIssuesBadge();
+          if (currentPage === "pricer") renderPricerPanel();
+          return;
+        }
 
-          // Seed skills
-          if (skillsRes.status === "fulfilled" && skillsRes.value.ok) {
-            try {
-              const items = await skillsRes.value.json();
-              const seedSkills = {};
-              for (const s of items) {
-                seedSkills[dbKey(s.name)] = { name: s.name, level: s.level, lavish: s.lavish };
-              }
-              localStorage.setItem(STORAGE_SKILLS, JSON.stringify(seedSkills));
-            } catch (e) {}
-          }
+        if (listEl && !localStorage.getItem(STORAGE_DB)) {
+          listEl.innerHTML = '<p style="padding:1rem;color:var(--text-dim)">Loading defaults…</p>';
+        }
 
-          // Seed tables
-          if (tablesRes.status === "fulfilled" && tablesRes.value.ok) {
-            try {
-              const items = await tablesRes.value.json();
-              const seedTables = {};
-              for (const t of items) {
-                seedTables[dbKey(t.name)] = { name: t.name, upgrade: t.upgrade };
-              }
-              localStorage.setItem(STORAGE_TABLES, JSON.stringify(seedTables));
-            } catch (e) {}
-          }
+        const [recipesRes, skillsRes, tablesRes, tagsRes] = await Promise.allSettled([
+          fetch("recipes.json"),
+          fetch("skills.json"),
+          fetch("tables.json"),
+          fetch("item-tags.json"),
+        ]);
 
-          // Seed item tags
-          if (tagsRes.status === "fulfilled" && tagsRes.value.ok) {
-            try {
-              const items = await tagsRes.value.json();
-              const seedTags = {};
-              for (const tag of items) {
-                seedTags[dbKey(tag.name)] = {
-                  name: tag.name,
-                  marketPrice: tag.marketPrice ?? null,
-                  memberNames: [...tag.memberNames],
-                };
+        // Only seed from JSON if the fetch succeeded
+        if (recipesRes.status === "fulfilled" && recipesRes.value.ok) {
+          try {
+            const items = await recipesRes.value.json();
+            // Preserve user market prices by merging with existing data
+            const existing = (() => {
+              try {
+                const r = localStorage.getItem(STORAGE_DB);
+                if (r) return JSON.parse(r);
+              } catch (e) {}
+              return {};
+            })();
+            const seedDb = {};
+            for (const item of items) {
+              const k = dbKey(item.name);
+              const norm = normaliseItem(item);
+              // Preserve user-set market price if it exists
+              if (existing[k] && existing[k].marketPrice !== null && existing[k].marketPrice >= 0) {
+                norm.marketPrice = existing[k].marketPrice;
               }
-              localStorage.setItem(STORAGE_ITEM_TAGS, JSON.stringify(seedTags));
-            } catch (e) {}
-          }
+              seedDb[k] = norm;
+            }
+            localStorage.setItem(STORAGE_DB, JSON.stringify(seedDb));
+          } catch (e) {}
+        }
+
+        // Seed skills — preserve user levels by merging
+        if (skillsRes.status === "fulfilled" && skillsRes.value.ok) {
+          try {
+            const items = await skillsRes.value.json();
+            const existingSkills = (() => {
+              try {
+                const r = localStorage.getItem(STORAGE_SKILLS);
+                return r ? JSON.parse(r) : {};
+              } catch (e) { return {}; }
+            })();
+            const seedSkills = {};
+            for (const s of items) {
+              const k = dbKey(s.name);
+              // Preserve user-set level and lavish if skill already exists
+              const existing = existingSkills[k];
+              seedSkills[k] = {
+                name: s.name,
+                level: existing ? existing.level : s.level,
+                lavish: existing ? existing.lavish : s.lavish,
+              };
+            }
+            localStorage.setItem(STORAGE_SKILLS, JSON.stringify(seedSkills));
+          } catch (e) {}
+        }
+
+        // Seed tables — preserve user upgrade selections
+        if (tablesRes.status === "fulfilled" && tablesRes.value.ok) {
+          try {
+            const items = await tablesRes.value.json();
+            const existingTables = (() => {
+              try {
+                const r = localStorage.getItem(STORAGE_TABLES);
+                return r ? JSON.parse(r) : {};
+              } catch (e) { return {}; }
+            })();
+            const seedTables = {};
+            for (const t of items) {
+              const k = dbKey(t.name);
+              const existing = existingTables[k];
+              seedTables[k] = { name: t.name, upgrade: existing ? existing.upgrade : t.upgrade };
+            }
+            localStorage.setItem(STORAGE_TABLES, JSON.stringify(seedTables));
+          } catch (e) {}
+        }
+
+        // Seed item tags — merge without overwriting user prices
+        if (tagsRes.status === "fulfilled" && tagsRes.value.ok) {
+          try {
+            const items = await tagsRes.value.json();
+            const existingTags = (() => {
+              try {
+                const r = localStorage.getItem(STORAGE_ITEM_TAGS);
+                return r ? JSON.parse(r) : {};
+              } catch (e) { return {}; }
+            })();
+            const seedTags = {};
+            for (const tag of items) {
+              const k = dbKey(tag.name);
+              const existing = existingTags[k];
+              seedTags[k] = {
+                name: tag.name,
+                marketPrice: existing ? existing.marketPrice : (tag.marketPrice ?? null),
+                memberNames: [...tag.memberNames],
+              };
+            }
+            localStorage.setItem(STORAGE_ITEM_TAGS, JSON.stringify(seedTags));
+          } catch (e) {}
         }
 
         loadDb();
@@ -4245,33 +5337,48 @@
         loadItemTags();
         loadCalcSettings();
         renderList();
+        updateIssuesBadge();
+
+        // Set up page tabs to match current page
+        const primerTab = document.getElementById("tab-pricer");
+        const recipesTab = document.getElementById("tab-recipes");
+        if (primerTab) primerTab.classList.toggle("active", currentPage === "pricer");
+        if (recipesTab) recipesTab.classList.toggle("active", currentPage === "recipes");
+
+        if (currentPage === "pricer") renderPricerPanel();
       }
 
       initApp();
 
       // ── Panel resize handles ──────────────────────
       (function initResizeHandles() {
+        const panelSkills = document.getElementById("panel-skills");
         const panelLeft = document.querySelector(".panel-left");
         const panelMid = document.querySelector(".panel-mid");
+        const panelTagDetail = document.getElementById("tag-detail-panel");
+        const handleSkills = document.getElementById("resize-handle-skills");
         const handleLeft = document.getElementById("resize-handle-left");
         const handleMid = document.getElementById("resize-handle-mid");
-        const STORAGE_PANEL_WIDTHS = "eco_panel_widths_v1";
+        const STORAGE_PANEL_WIDTHS = "eco_panel_widths";
 
         // Restore saved widths
         try {
           const saved = JSON.parse(localStorage.getItem(STORAGE_PANEL_WIDTHS));
           if (saved) {
+            if (saved.skills) panelSkills.style.width = saved.skills;
             if (saved.left) panelLeft.style.width = saved.left;
-            if (saved.mid) panelMid.style.width = saved.mid;
+            if (saved.mid) { panelMid.style.width = saved.mid; panelTagDetail.style.width = saved.mid; }
           }
         } catch (e) {}
 
         function saveWidths() {
+          const visibleMid = panelTagDetail.style.display !== "none" ? panelTagDetail : panelMid;
           localStorage.setItem(
             STORAGE_PANEL_WIDTHS,
             JSON.stringify({
+              skills: panelSkills.style.width || panelSkills.offsetWidth + "px",
               left: panelLeft.style.width || panelLeft.offsetWidth + "px",
-              mid: panelMid.style.width || panelMid.offsetWidth + "px",
+              mid: visibleMid.style.width || visibleMid.offsetWidth + "px",
             })
           );
         }
@@ -4300,8 +5407,12 @@
           document.addEventListener("mouseup", onUp);
         }
 
+        handleSkills.addEventListener("mousedown", (e) => startResize(panelSkills, handleSkills, e));
         handleLeft.addEventListener("mousedown", (e) => startResize(panelLeft, handleLeft, e));
-        handleMid.addEventListener("mousedown", (e) => startResize(panelMid, handleMid, e));
+        handleMid.addEventListener("mousedown", (e) => {
+          const visibleMid = panelTagDetail.style.display !== "none" ? panelTagDetail : panelMid;
+          startResize(visibleMid, handleMid, e);
+        });
       })();
     </script>
   </body>

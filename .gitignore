@@ -7,3 +7,6 @@ node_modules/
 ### OS Files
 .DS_Store
 Thumbs.db
+
+### Generated parser output
+parse_output.txt

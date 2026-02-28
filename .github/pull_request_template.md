@@ -16,9 +16,9 @@
 
 ## Testing
 
-<!-- How did you verify this works? e.g. opened in Chrome/Firefox, tested the calculator with X recipe, etc. -->
+<!-- How did you verify this works? e.g. tested in Chrome/Firefox, tested the calculator with X recipe, etc. -->
 
-- [ ] Opened `index.html` directly in a browser and tested the affected functionality
+- [ ] Served `public/` over HTTP (e.g. `python -m http.server 8080`) and tested the affected functionality
 - [ ] Ran `prettier`, `htmlhint`, and `eslint` with no errors
 
 ## For Data Update PRs
@@ -26,7 +26,8 @@
 <!-- Skip this section if not a data update. -->
 
 - Eco game version this data reflects: <!-- e.g. 0.10.3 -->
-- Files changed: <!-- e.g. tables.json, skills.json -->
+- Files changed: <!-- e.g. recipes.json, tables.json -->
+- Updated via `parse_eco_data.py`: <!-- Yes / No / Partial -->
 - [ ] Verified the calculator produces sensible output after the update
 
 ## Notes for Reviewer
