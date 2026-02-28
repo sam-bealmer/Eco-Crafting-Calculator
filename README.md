@@ -4,23 +4,52 @@ A browser-based crafting cost calculator for the game [Eco](https://play.eco/). 
 
 ## Features
 
-- **Recipe database** — create and manage items with multiple recipes per item, including ingredients and byproducts
-- **Recursive cost tree** — ingredient costs are calculated at depth, so nested recipes are fully resolved
-- **Skill & table modifiers** — configure 24 skills (levels 0–7, lavish workspace) and 32 crafting tables (10 upgrade tiers)
-- **Item tags** — map tag names (e.g. `Wood`) to a group of items whose cost is averaged
+- **Two-page layout** — ⚡ Pricer for fast lookups, 📖 Recipes for browsing and editing the database
+- **Recipe database** — create and manage items with multiple recipe variants per item, including ingredients and byproducts
+- **Recursive cost tree** — ingredient costs are calculated at depth, so nested recipes are fully resolved; nodes are collapsible
+- **Skill & table modifiers** — configure 33 skills (levels 0–7, lavish workspace) and 67 crafting tables (10 upgrade tiers)
+- **Inline Skills & Tables panel** — always visible on the Pricer page; any change immediately recalculates the current result
+- **Item tags** — map tag names (e.g. `Wood`) to a group of items whose cost is averaged; view and set tag market prices from the Tags view
+- **Issues badge** — flags missing recipes and unpriced raw materials directly in the recipe list
+- **Read-only recipe detail view** — click any item to see a summary with recipe tabs, ingredients, byproducts, and a reverse-ingredient lookup ("What uses this?")
 - **Calculator** — look up any item, set quantity and profit margin, and get an instant price with a full breakdown
 - **Import / Export** — back up or share your recipe database as JSON
-- **No install required** — single HTML file, runs entirely in the browser with no server or build step
+- **Data parser** — `parse_eco_data.py` extracts recipe, skill, table, and tag data directly from Eco's game files
+- **No install required** — single HTML file, runs entirely in the browser with no build step
 
 ## Usage
 
-Open `eco-price-calc.html` directly in a browser. No installation or internet connection required.
+The app fetches its data from local JSON files, so it must be served over HTTP — opening `index.html` directly as a `file://` URL will not work.
 
-For local development with live reload, use the VS Code Live Server extension (right-click the file → *Open with Live Server*) or run:
+Serve the `public/` folder with any static HTTP server:
 
 ```bash
-http-server -p 8080 -o
+# Python (built-in, no install needed)
+python -m http.server 8080
+# then open http://localhost:8080/public/
 ```
+
+```bash
+# Node http-server
+npx http-server public -p 8080 -o
+```
+
+Or use the VS Code **Live Server** extension — right-click `public/index.html` → *Open with Live Server*.
+
+## Updating Recipe Data
+
+When Eco patches change recipes, skills, or crafting tables, run the data parser to regenerate the JSON files:
+
+```bash
+python parse_eco_data.py
+```
+
+This reads from Eco's AutoGen source files at:
+```
+C:\Program Files (x86)\Steam\steamapps\common\Eco\Eco_Data\Server\Mods\__core__\AutoGen\
+```
+
+After running, click **↺ Reload JSON** in the app header to load the updated data (preserving any market prices and skill levels you have set).
 
 ## Development
 
@@ -32,11 +61,11 @@ The project uses a VS Code devcontainer (Debian 12 + Node.js LTS). Open in the d
 
 ```bash
 # Format
-prettier --write eco-price-calc.html
+prettier --write public/index.html
 
 # Lint
 htmlhint "**/*.html"
-eslint eco-price-calc.html
+eslint public/index.html
 ```
 
 ### Branching Strategy

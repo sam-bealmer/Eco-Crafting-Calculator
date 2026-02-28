@@ -1711,7 +1711,7 @@
           >↗ Source Code</a
         >
         <button onclick="openHelp()" style="font-size: 0.85rem; padding: 6px 14px">? Help</button>
-        <button onclick="openChangelog()" style="font-size: 0.85rem; padding: 6px 14px">📋 v1.1.0</button>
+        <button onclick="openChangelog()" style="font-size: 0.85rem; padding: 6px 14px">📋 v2.0.0</button>
       </div>
     </header>
 
@@ -2003,15 +2003,16 @@
           <nav class="help-toc">
             <a href="#help-overview">Overview</a>
             <a href="#help-quickstart">Quick Start</a>
-            <a href="#help-database">Recipe Database</a>
+            <a href="#help-layout">Layout</a>
+            <a href="#help-pricer">Pricer Page</a>
+            <a href="#help-recipes">Recipes Page</a>
             <a href="#help-editor">Item Editor</a>
-            <a href="#help-calculator">Calculator</a>
-            <a href="#help-skills">Skills &amp; Tables</a>
             <a href="#help-tags">Item Tags</a>
             <a href="#help-importexport">Import / Export</a>
             <a href="#help-formula">Cost Formula</a>
           </nav>
           <div class="help-sections">
+
             <div class="help-section" id="help-overview">
               <h4>📋 Overview</h4>
               <p style="font-size: 0.85rem; line-height: 1.6; color: var(--text)">
@@ -2023,6 +2024,7 @@
               <div class="help-note">
                 All data (recipes, skills, tables, tags) is stored in your browser's <strong>localStorage</strong>. Use
                 <strong>Export</strong> to back up your database and <strong>Import</strong> to restore or share it.
+                Use <strong>↺ Reload JSON</strong> in the header to re-fetch the latest recipe data from the JSON files.
               </div>
             </div>
 
@@ -2031,203 +2033,200 @@
               <div class="help-dl">
                 <div class="help-dt">1. Configure skills</div>
                 <div class="help-dd">
-                  Click <strong>⚙ Skills &amp; Tables</strong> and set each skill to your character's in-game star
-                  level.
+                  On the <strong>⚡ Pricer</strong> page, set each skill to your character's in-game star level using
+                  the <strong>Skills &amp; Tables</strong> panel on the left.
                 </div>
                 <div class="help-dt">2. Add your recipes</div>
                 <div class="help-dd">
-                  Click <strong>+ New</strong> in the Recipe Database, or click <strong>↺ Seed Raws</strong> to
-                  pre-populate common raw materials. You can also <strong>Import</strong> a JSON export.
+                  Switch to the <strong>📖 Recipes</strong> page. Click <strong>+ New</strong> to add an item, or
+                  <strong>↺ Seed Raws</strong> to pre-populate common raw materials. You can also
+                  <strong>Import</strong> a JSON export. By default, all vanilla recipes in the version listed in
+                  the header should be included.
                 </div>
                 <div class="help-dt">3. Set the calorie rate</div>
                 <div class="help-dd">
-                  Enter your server's <strong>Credits per Calorie</strong> in the Calculator panel (e.g.
-                  <code>1.6</code> if 1000 cal = 1600 credits).
+                  On the <strong>⚡ Pricer</strong> page, enter your server's <strong>Credits per Calorie</strong>
+                  in the calculator settings bar (e.g. <code>1.6</code> if 1000 cal = 1600 credits).
                 </div>
                 <div class="help-dt">4. Price an item</div>
                 <div class="help-dd">
-                  Click any item in the list — the Calculator instantly shows its credit price and full ingredient cost
-                  tree.
+                  Type an item name in the search box on the Pricer page and press <kbd>Enter</kbd>, or click any item
+                  in the Recipes list and press <strong>⚡ Price It</strong>.
                 </div>
               </div>
             </div>
 
-            <div class="help-section" id="help-database">
-              <h4>📦 Recipe Database (Left Panel)</h4>
+            <div class="help-section" id="help-layout">
+              <h4>🗂 Layout</h4>
+              <p style="font-size: 0.85rem; line-height: 1.6; color: var(--text); margin-bottom: 10px">
+                The app has two pages toggled by the tab bar in the header. Your last viewed page is remembered.
+              </p>
               <div class="help-dl">
-                <div class="help-dt">Search</div>
-                <div class="help-dd">Filter the list by typing any part of an item name.</div>
+                <div class="help-dt">⚡ Pricer</div>
+                <div class="help-dd">
+                  The main pricing view. Skills &amp; Tables are always visible on the left; the calculator and cost
+                  tree are on the right. Changes to skill levels or table upgrades immediately recalculate the current
+                  result.
+                </div>
+                <div class="help-dt">📖 Recipes</div>
+                <div class="help-dd">
+                  The recipe database. The left panel lists all items (or tags); the right panel shows a read-only
+                  detail view for the selected item, or the edit form if you click <strong>✎ Edit</strong>.
+                </div>
+                <div class="help-dt">↺ Reload JSON</div>
+                <div class="help-dd">
+                  Fetches the latest data from <code>recipes.json</code>, <code>skills.json</code>,
+                  <code>tables.json</code>, and <code>item-tags.json</code>, merging in any market prices and skill
+                  levels you have already set. Requires the app to be served over HTTP — it will not work when
+                  opened directly as a <code>file://</code> URL.
+                </div>
+              </div>
+            </div>
+
+            <div class="help-section" id="help-pricer">
+              <h4>🧮 Pricer Page</h4>
+              <div class="help-dl">
+                <div class="help-dt">Skills &amp; Tables panel</div>
+                <div class="help-dd">
+                  Always visible on the left of the Pricer page. Set each skill's star level (0–7) and lavish workspace
+                  checkbox, and assign upgrade modules to crafting tables. Any change immediately recalculates the
+                  current result. Click <strong>↺ Reset</strong> to restore all skills to level 1 and all tables to
+                  No Upgrade.
+                </div>
+                <div class="help-dt">Skill Level (0–7)</div>
+                <div class="help-dd">
+                  Matches the star rating shown in-game. Level 0 = not learned (100% labor). Level 7 = fully
+                  specialised (50% labor). Multipliers: <code>0→100%</code> <code>1→80%</code> <code>2→75%</code>
+                  <code>3→70%</code> <code>4→65%</code> <code>5→60%</code> <code>6→55%</code> <code>7→50%</code>
+                </div>
+                <div class="help-dt">Lavish Workspace</div>
+                <div class="help-dd">
+                  Applies an additional <strong>−5%</strong> to all reducible ingredient quantities for that skill.
+                </div>
+                <div class="help-dt">Table Upgrade</div>
+                <div class="help-dd">
+                  Ranges from <strong>No Upgrade</strong> (×1.0) through Basic I–IV, Advanced I–IV, up to
+                  <strong>Specialized</strong> (×0.50). Reduces reducible ingredient quantities and, if
+                  <em>Table mod affects labor</em> is checked, also reduces labor.
+                </div>
+                <div class="help-dt">Credits per Calorie</div>
+                <div class="help-dd">
+                  Your server's calorie-to-credit conversion rate. All prices scale linearly with this value.
+                </div>
+                <div class="help-dt">Currency Symbol</div>
+                <div class="help-dd">Cosmetic label shown next to prices (e.g. <code>$</code>, <code>¢</code>, <code>G</code>).</div>
+                <div class="help-dt">Profit Margin %</div>
+                <div class="help-dd">
+                  Percentage markup added on top of base cost. Per-item overrides are available in the editor.
+                </div>
+                <div class="help-dt">Craft Modifier</div>
+                <div class="help-dd">
+                  Global multiplier applied to all reducible ingredient quantities — useful for server-wide rate
+                  changes. Does <strong>not</strong> affect non-reducible ingredients or labor.
+                </div>
+                <div class="help-dt">Search &amp; Qty</div>
+                <div class="help-dd">
+                  Type an item name and press <kbd>Enter</kbd> to price it. Use the Qty field to price a batch. If an
+                  item has multiple recipe variants, a dropdown lets you choose which one to use.
+                </div>
+                <div class="help-dt">Cost tree</div>
+                <div class="help-dd">
+                  Shows the full recursive ingredient breakdown. Labor is shown in teal, byproducts in green (as
+                  savings), missing recipes in red. <strong>Click any parent node</strong> to collapse or expand its
+                  subtree. <strong>Ctrl+click</strong> collapses or expands the entire tree at once.
+                </div>
+              </div>
+            </div>
+
+            <div class="help-section" id="help-recipes">
+              <h4>📖 Recipes Page</h4>
+              <div class="help-dl">
+                <div class="help-dt">Items / Tags toggle</div>
+                <div class="help-dd">
+                  Switch the left panel between <strong>Items</strong> (recipe database) and <strong>🏷 Tags</strong>
+                  (item tag groups). The search bar filters whichever view is active.
+                </div>
                 <div class="help-dt">Group By</div>
                 <div class="help-dd">
-                  Sort the list alphabetically (A–Z), or group by Type (raw/crafted), Skill, or Crafting Table.
+                  In Items view, sort alphabetically (A–Z) or group by Type, Skill, or Crafting Table.
+                </div>
+                <div class="help-dt">Issues badge</div>
+                <div class="help-dd">
+                  The <strong>⚠ N issues</strong> badge appears when there are data quality problems. Click it to
+                  filter the list to two categories: <em>Missing Recipes</em> (ingredients referenced in recipes that
+                  have no entry in the database) and <em>Unpriced Raws</em> (raw materials with no market price and no
+                  labor cost set). Click a missing recipe card to create it pre-filled with that name.
+                </div>
+                <div class="help-dt">Item detail view</div>
+                <div class="help-dd">
+                  Clicking an item opens a <strong>read-only summary</strong> in the right panel showing recipe tabs,
+                  ingredient tables, byproducts, and a <em>What uses this?</em> reverse-ingredient lookup. From here
+                  you can:<br />
+                  • <strong>⚡ Price It</strong> — switch to the Pricer page and calculate its cost<br />
+                  • <strong>✎ Edit</strong> — open the full edit form
                 </div>
                 <div class="help-dt">+ New</div>
-                <div class="help-dd">Create a new blank item and open it in the editor.</div>
+                <div class="help-dd">Create a new blank item and open the editor.</div>
                 <div class="help-dt">↺ Seed Raws</div>
                 <div class="help-dd">
-                  Adds a built-in list of common raw materials (ores, wood, stone, etc.) to your database. Existing
-                  items are not overwritten. Set each raw material's <strong>Market Buy Price</strong> or
-                  <strong>Labor Calories</strong> to reflect your server's costs.
-                </div>
-                <div class="help-dt">Click an item</div>
-                <div class="help-dd">
-                  Opens the item in the editor <em>and</em> immediately runs the calculator for that item.
-                </div>
-                <div class="help-dt">Missing recipe (red)</div>
-                <div class="help-dd">
-                  If an ingredient has no recipe in the database, it appears red in the cost tree. Click it to create a
-                  new recipe pre-filled with that name.
+                  Adds common raw materials to the database without overwriting existing items. Set each raw's
+                  <strong>Market Buy Price</strong> or <strong>Labor Points</strong> to reflect your server's costs.
                 </div>
               </div>
             </div>
 
             <div class="help-section" id="help-editor">
-              <h4>✏️ Item Editor (Middle Panel)</h4>
+              <h4>✏️ Item Editor</h4>
               <p style="font-size: 0.82rem; color: var(--text-dim); margin-bottom: 10px">
-                Fields apply to the item as a whole unless noted as per-recipe.
+                Click <strong>✎ Edit</strong> in an item's detail view to open the editor. Fields apply to the item as
+                a whole unless noted as per-recipe.
               </p>
               <div class="help-dl">
                 <div class="help-dt">Item Name</div>
                 <div class="help-dd">
-                  The item's display name. This is what other recipes reference when listing this as an ingredient.
+                  The item's display name — what other recipes reference when listing this as an ingredient.
                 </div>
                 <div class="help-dt">Market Buy Price</div>
                 <div class="help-dd">
                   Fixed cost in credits per unit. When set, the calorie calculation is <strong>bypassed</strong> — the
-                  item is treated as a direct credit purchase. Leave blank to calculate cost from the recipe tree.
+                  item is treated as a direct credit purchase. Leave blank to calculate from the recipe tree.
                 </div>
                 <div class="help-dt">Item Tags</div>
                 <div class="help-dd">
-                  Comma-separated tag names this item belongs to (e.g. <code>Ore, Metal</code>). Tags are virtual
-                  ingredient categories — another recipe can list <code>Ore</code> as an ingredient and the cost will be
-                  the average of all items tagged as Ore. See
+                  Comma-separated tag names this item belongs to (e.g. <code>Ore, Metal</code>). See
                   <a href="#help-tags" onclick="document.getElementById('help-tags').scrollIntoView()">Item Tags</a>.
                 </div>
                 <div class="help-dt">Multiple Recipes</div>
                 <div class="help-dd">
-                  An item can have multiple recipe variants (e.g. two wood types). Use the tabs above the form to switch
-                  between them. Click <strong>★ Set Default</strong> on the tab you want used in cost calculations.
+                  An item can have multiple recipe variants (e.g. two different material options). Use the tabs to
+                  switch between them. Click <strong>★ Set Default</strong> on the tab you want used in cost
+                  calculations and as the initial selection in the Pricer dropdown.
                 </div>
                 <div class="help-dt">Recipe Label</div>
+                <div class="help-dd"><em>(per-recipe)</em> A name for this variant shown in the tab and Pricer dropdown.</div>
+                <div class="help-dt">Skill / Crafting Table</div>
                 <div class="help-dd">
-                  <em>(per-recipe)</em> A name for this variant shown in the tab and in the calculator dropdown.
-                </div>
-                <div class="help-dt">Skill</div>
-                <div class="help-dd">
-                  <em>(per-recipe)</em> The skill required to craft this item. Must match a name in your Skills settings
-                  (case-insensitive). The skill's level determines the labor calorie multiplier.
-                </div>
-                <div class="help-dt">Crafting Table</div>
-                <div class="help-dd">
-                  <em>(per-recipe)</em> The table used to craft this item. Must match a name in your Tables settings.
-                  The table's upgrade module reduces ingredient quantities and optionally labor.
+                  <em>(per-recipe)</em> Must match names in the Skills &amp; Tables panel (case-insensitive). The
+                  skill level and table upgrade determine the labor and ingredient modifiers.
                 </div>
                 <div class="help-dt">Labor Points</div>
                 <div class="help-dd">
-                  <em>(per-recipe)</em> Labor points consumed per craft batch (as shown in the Eco recipe UI). Treated
-                  as 1:1 with calories. For raw/gathered materials, set this to the gathering cost. Scaled by skill
-                  level and (optionally) table upgrade.
+                  <em>(per-recipe)</em> Labor consumed per craft batch, as shown in the Eco UI. Treated as 1:1 with
+                  calories. For raw materials, set this to the gathering cost.
                 </div>
-                <div class="help-dt">Qty Produced per Craft</div>
+                <div class="help-dt">Qty Produced / Min. Level / Profit Override</div>
                 <div class="help-dd">
-                  <em>(per-recipe)</em> How many units one craft produces. The calculator divides total cost by this
-                  number to get the per-unit price.
-                </div>
-                <div class="help-dt">Min. Skill Level</div>
-                <div class="help-dd">
-                  <em>(per-recipe)</em> Informational — the minimum skill level required to unlock this recipe in-game.
-                  Recipes below this threshold are flagged in the cost tree.
-                </div>
-                <div class="help-dt">Profit Override %</div>
-                <div class="help-dd">
-                  <em>(per-recipe)</em> Overrides the global Profit Margin for this specific item. Leave blank to use
-                  the global setting.
+                  <em>(per-recipe)</em> Units produced per batch; minimum skill level required; per-recipe profit
+                  margin override (overrides the global setting when set).
                 </div>
                 <div class="help-dt">Ingredients</div>
                 <div class="help-dd">
-                  Items consumed per craft. Each has a name, quantity, and a <strong>Red.</strong> (Reducible) checkbox.
-                  Reducible ingredients are scaled by the table upgrade, lavish workspace, and craft modifier. Uncheck
-                  for fixed costs that are never reduced.
+                  Items consumed per craft. The <strong>Red.</strong> checkbox marks reducible ingredients — those
+                  scaled by the table upgrade, lavish workspace, and craft modifier. Uncheck for fixed costs.
                 </div>
                 <div class="help-dt">Byproducts</div>
                 <div class="help-dd">
-                  Items produced as a side effect. Their calorie value is <strong>subtracted</strong> from the total
-                  cost — if a byproduct has its own recipe, its full tree value is credited back.
-                </div>
-              </div>
-            </div>
-
-            <div class="help-section" id="help-calculator">
-              <h4>🧮 Calculator (Right Panel)</h4>
-              <div class="help-dl">
-                <div class="help-dt">Credits per Calorie</div>
-                <div class="help-dd">
-                  Your server's calorie-to-credit conversion rate. Example: if 1000 calories costs 1600 credits, enter
-                  <code>1.6</code>. This is the most important setting — all prices scale linearly with this value.
-                </div>
-                <div class="help-dt">Currency Symbol</div>
-                <div class="help-dd">
-                  Cosmetic label shown next to prices (e.g. <code>$</code>, <code>¢</code>, <code>G</code>).
-                </div>
-                <div class="help-dt">Profit Margin %</div>
-                <div class="help-dd">
-                  Percentage markup added on top of the base cost. A value of <code>20</code> means the suggested price
-                  is 20% above cost. Per-item overrides are available in the editor.
-                </div>
-                <div class="help-dt">Craft Modifier</div>
-                <div class="help-dd">
-                  Global multiplier applied to all reducible ingredient quantities. Use this for server-wide craft rate
-                  modifications (e.g. <code>0.5</code> if your server halves all resource costs). Does
-                  <strong>not</strong> affect non-reducible ingredients or labor.
-                </div>
-                <div class="help-dt">Table mod affects labor</div>
-                <div class="help-dd">
-                  When checked, the crafting table upgrade module reduces labor calories in addition to ingredient
-                  quantities. Uncheck to match calculators that only apply upgrades to ingredients.
-                </div>
-                <div class="help-dt">Search &amp; Qty</div>
-                <div class="help-dd">
-                  Type an item name and press <kbd>Enter</kbd> to price it. Use the Qty field to price a batch. If an
-                  item has multiple recipe variants, a dropdown appears to select which one to use.
-                </div>
-                <div class="help-dt">Copy button</div>
-                <div class="help-dd">Copies the final calculated price to your clipboard.</div>
-                <div class="help-dt">Cost tree</div>
-                <div class="help-dd">
-                  Expands the full ingredient breakdown. Each node shows the calorie cost and credit equivalent. Labor
-                  is shown in teal, byproducts in green (as savings), missing recipes in red. Click a missing recipe to
-                  create it.
-                </div>
-              </div>
-            </div>
-
-            <div class="help-section" id="help-skills">
-              <h4>⚙️ Skills &amp; Crafting Tables</h4>
-              <div class="help-dl">
-                <div class="help-dt">Skill Level (0–7)</div>
-                <div class="help-dd">
-                  Matches the star rating shown in-game. Level 0 = not learned (no labor reduction). Level 7 = fully
-                  specialised (50% labor). The multipliers are: <code>0→100%</code> <code>1→80%</code>
-                  <code>2→75%</code> <code>3→70%</code> <code>4→65%</code> <code>5→60%</code> <code>6→55%</code>
-                  <code>7→50%</code>
-                </div>
-                <div class="help-dt">Lavish Workspace</div>
-                <div class="help-dd">
-                  Check if your character has the Lavish Workspace talent active for that skill. Applies an additional
-                  <strong>−5%</strong> to all reducible ingredient quantities (not supported by all skills, e.g. Mining
-                  does not support it).
-                </div>
-                <div class="help-dt">Table Upgrade</div>
-                <div class="help-dd">
-                  Assign an upgrade module to each crafting table. Options range from <strong>No Upgrade</strong> (×1.0)
-                  through Basic I–IV, Advanced I–IV, up to <strong>Specialized</strong> (×0.50). The modifier reduces
-                  reducible ingredient quantities and, if "Table mod affects labor" is checked, also reduces labor
-                  calories.
-                </div>
-                <div class="help-dt">Reset to Vanilla Defaults</div>
-                <div class="help-dd">
-                  Resets all skills to the built-in list at level 1 and all tables to No Upgrade. Your recipe database
-                  and item tags are not affected.
+                  Side-effect outputs whose calorie value is <strong>subtracted</strong> from the total cost.
                 </div>
               </div>
             </div>
@@ -2236,29 +2235,33 @@
               <h4>🏷️ Item Tags</h4>
               <p style="font-size: 0.85rem; line-height: 1.6; color: var(--text); margin-bottom: 10px">
                 Some Eco recipes accept any item from a category (e.g. "any Ore"). Item Tags model this — a tag is a
-                named group of items that can be used as an ingredient name in recipes.
+                named group of items that can be used as an ingredient name in a recipe.
               </p>
               <div class="help-dl">
-                <div class="help-dt">Creating tags</div>
+                <div class="help-dt">Viewing tags</div>
+                <div class="help-dd">
+                  On the <strong>📖 Recipes</strong> page, click the <strong>🏷 Tags</strong> toggle to see all tag
+                  groups. Click a tag to view its members and set a market price for the group.
+                </div>
+                <div class="help-dt">Assigning items to tags</div>
                 <div class="help-dd">
                   Open an item in the editor and type a tag name in the <strong>Item Tags</strong> field. The tag is
-                  created automatically and this item is added as a member. Multiple tags can be comma-separated.
+                  created automatically and the item is added as a member. Multiple tags are comma-separated.
                 </div>
                 <div class="help-dt">Using tags as ingredients</div>
                 <div class="help-dd">
-                  In another item's recipe, type the tag name in the ingredient list (it appears with a
-                  <code>[tag]</code> label in the autocomplete). The cost is the average of all member items' calculated
-                  costs.
+                  In a recipe's ingredient list, type the tag name (it appears with a <code>[tag]</code> label in
+                  autocomplete). The cost is the average of all member items' calculated costs.
                 </div>
                 <div class="help-dt">Tag market price override</div>
                 <div class="help-dd">
-                  In <strong>⚙ Skills &amp; Tables → Item Tags</strong>, you can set a market price override for a tag
-                  (in credits). When set, this overrides the member average — useful if you buy all ores at a fixed
-                  market price regardless of type.
+                  In the Tags view, click a tag and set a <strong>Market price</strong> for the group. When set, this
+                  replaces the member average — useful when you buy all items of a category at a fixed market price.
                 </div>
-                <div class="help-dt">Tag display</div>
+                <div class="help-dt">Tag display in cost tree</div>
                 <div class="help-dd">
-                  Tags appear in purple in the cost tree with a badge showing "tag · avg of N members".
+                  Tags appear in purple with a "tag · avg of N" badge. Market-priced tags show a "market" badge
+                  instead.
                 </div>
               </div>
             </div>
@@ -2273,18 +2276,16 @@
                 </div>
                 <div class="help-dt">Import</div>
                 <div class="help-dd">
-                  Paste a JSON export to load a database. This <strong>replaces</strong> your current data. Use the
-                  <strong>Schema</strong> tab for the expected format.
+                  Paste a JSON export to load a database. This <strong>merges</strong> into your current data (existing
+                  items are overwritten by the import). Use the <strong>Schema</strong> tab for the expected format.
                 </div>
               </div>
               <div class="help-note">
                 <strong>JSON format:</strong> An array of item objects. Each item needs at minimum a
                 <code>name</code> and a <code>recipes</code> array.<br /><br />
-                <code
-                  >[ { "name": "Wooden Chair", "recipes": [{ "label": "Default", "skill": "Carpentry", "craftingTable":
-                  "Workbench", "laborPoints": 200, "outputQty": 1, "ingredients": [{"name": "Wood Board", "qty": 4}],
-                  "byproducts": [] }] } ]</code
-                ><br /><br />
+                <code>[ { "name": "Wooden Chair", "recipes": [{ "label": "Default", "skill": "Carpentry",
+                "craftingTable": "Workbench", "laborPoints": 200, "outputQty": 1,
+                "ingredients": [{"name": "Wood Board", "qty": 4}], "byproducts": [] }] } ]</code><br /><br />
                 Raw materials have no <code>ingredients</code> and use <code>laborPoints</code> for the gathering cost,
                 or set a <code>marketPrice</code> on the item to use a fixed credit cost.
               </div>
@@ -2293,8 +2294,7 @@
             <div class="help-section" id="help-formula">
               <h4>📐 Cost Calculation Formula</h4>
               <p style="font-size: 0.85rem; line-height: 1.6; color: var(--text); margin-bottom: 8px">
-                Costs are calculated recursively — each ingredient's full tree is resolved before the parent item is
-                totalled.
+                Costs are calculated recursively — each ingredient's full tree is resolved before the parent is totalled.
               </p>
               <div class="help-formula">
                 reducible_mult = table_upgrade × lavish(0.95 if on) × craft_modifier<br />
@@ -2312,12 +2312,12 @@
               </div>
               <div class="help-note">
                 <strong>Market-priced items</strong> bypass the formula — their cost is
-                <code>market_price × credits_per_calorie⁻¹</code> calories (i.e. the credit cost converted back to
-                calories at the current rate).<br />
+                <code>market_price × credits_per_calorie⁻¹</code> calories.<br />
                 <strong>Tag ingredients</strong> cost the average of all member items' <code>net_cal</code> values, or
                 the tag's market price override if set.
               </div>
             </div>
+
           </div>
         </div>
         <div class="modal-footer">
@@ -2348,9 +2348,41 @@
       //  DATA STORE  (v2)
       // ═══════════════════════════════════════════
 
-      const APP_VERSION = "1.1.0";
+      const APP_VERSION = "2.0.0";
 
       const CHANGELOG = [
+        {
+          version: "2.0.0",
+          date: "2026-02-28",
+          sections: {
+            Added: [
+              "Two-page layout: ⚡ Pricer and 📖 Recipes tabs; last viewed page is remembered",
+              "Skills & Tables panel always visible as a side panel on the Pricer page",
+              "Auto-recalc when skill level, lavish setting, or table upgrade changes on Pricer page",
+              "↺ Reload JSON button to reload all data files without clearing market prices or skill levels",
+              "Collapsible ingredient cost tree — click nodes to collapse/expand; Ctrl+click for all",
+              "Recipe detail read-only view with recipe tabs, ingredient tables, byproducts, and 'What uses this?' reverse lookup",
+              "⚡ Price It button in recipe detail — switches to Pricer using the currently viewed recipe tab",
+              "Issues badge (⚠ N issues) in recipe list — filters to missing recipes and unpriced raw materials",
+              "Items / Tags toggle in recipe list — Tags view shows all tag groups with member counts and market prices",
+              "Tag detail panel showing member items and a market price input for the tag group",
+            ],
+            Changed: [
+              "Recipe list now defaults to read-only detail view; edit form requires explicit ✎ Edit button",
+              "Skills & Tables moved from modal to inline panel on Pricer page",
+              "'Tool' item tag added to item-tags.json (previously excluded from parser) — 46 tool items",
+            ],
+            Fixed: [
+              "JSON data files were only fetched on first visit — returning visitors always saw stale data",
+              "Clear error shown when app opened via file:// protocol (fetch is blocked; instructs user to use HTTP server)",
+              "Issues filter showed nothing for missing-recipe items (those items don't exist in the database)",
+            ],
+            Removed: [
+              "Backwards compatibility with v1.x localStorage keys — existing saved data will not be loaded",
+              "laborCalories field alias in recipe data — use laborPoints only",
+            ],
+          },
+        },
         {
           version: "1.1.0",
           date: "2026-02-25",
@@ -2390,12 +2422,11 @@
         },
       ];
 
-      const STORAGE_KEY_V2 = "eco_recipe_db_v2";
-      const STORAGE_KEY_V3 = "eco_recipe_db_v3";
-      const STORAGE_SKILLS = "eco_skills_v3";
-      const STORAGE_TABLES = "eco_tables_v2";
-      const STORAGE_ITEM_TAGS = "eco_item_tags_v1";
-      const STORAGE_CALC_SETTINGS = "eco_calc_settings_v1";
+      const STORAGE_DB = "eco_recipe_db";
+      const STORAGE_SKILLS = "eco_skills";
+      const STORAGE_TABLES = "eco_tables";
+      const STORAGE_ITEM_TAGS = "eco_item_tags";
+      const STORAGE_CALC_SETTINGS = "eco_calc_settings";
 
       // ── Skill level → labor modifier (index = level, matches Eco in-game values) ──
       // Level 0 = skill not learned, Level 7 = fully specialised
@@ -2583,12 +2614,12 @@
       let editState = null; // { name, origKey, defaultRecipeIdx, currentRecipeIdx, recipes[] }
       let selectedKey = null;
       let recipeViewMode = "view"; // "view" | "edit"
-      let currentPage = localStorage.getItem("eco_current_page_v1") || "pricer";
+      let currentPage = localStorage.getItem("eco_current_page") || "pricer";
       let collapsedTreeNodes = new Set(); // keys: "itemName:depth"
       let showingIssuesFilter = false; // whether issues filter is active in recipe list
       let showTagsView = false;        // whether the left panel shows tags instead of items
       let selectedTagName = null;      // currently selected tag name
-      const STORAGE_PAGE = "eco_current_page_v1";
+      const STORAGE_PAGE = "eco_current_page";
 
       // Apply initial page immediately
       document.body.setAttribute("data-page", currentPage);
@@ -2597,24 +2628,9 @@
 
       function loadDb() {
         try {
-          const raw3 = localStorage.getItem(STORAGE_KEY_V3);
-          if (raw3) {
-            db = JSON.parse(raw3);
-            return;
-          }
-
-          const raw2 = localStorage.getItem(STORAGE_KEY_V2);
-          if (raw2) {
-            db = JSON.parse(raw2);
-            for (const item of Object.values(db)) {
-              for (const recipe of item.recipes || []) {
-                if (recipe.laborCalories !== undefined) {
-                  recipe.laborPoints = recipe.laborCalories;
-                  delete recipe.laborCalories;
-                }
-              }
-            }
-            saveDb();
+          const raw = localStorage.getItem(STORAGE_DB);
+          if (raw) {
+            db = JSON.parse(raw);
             return;
           }
         } catch (e) {}
@@ -2644,7 +2660,7 @@
       }
 
       function saveDb() {
-        localStorage.setItem(STORAGE_KEY_V3, JSON.stringify(db));
+        localStorage.setItem(STORAGE_DB, JSON.stringify(db));
         updateIssuesBadge();
       }
 
@@ -2819,7 +2835,7 @@
           label: r.label || "Default",
           skill: r.skill || "",
           craftingTable: r.craftingTable || "",
-          laborPoints: Number(r.laborPoints ?? r.laborCalories) || 0,
+          laborPoints: Number(r.laborPoints) || 0,
           outputQty: Number(r.outputQty) || 1,
           ingredients: (r.ingredients || []).map((i) => ({
             name: String(i.name),
@@ -4657,8 +4673,7 @@
           return;
 
         // Clear all storage keys so initApp fetches fresh data
-        localStorage.removeItem(STORAGE_KEY_V2);
-        localStorage.removeItem(STORAGE_KEY_V3);
+        localStorage.removeItem(STORAGE_DB);
         localStorage.removeItem(STORAGE_SKILLS);
         localStorage.removeItem(STORAGE_TABLES);
         localStorage.removeItem(STORAGE_ITEM_TAGS);
@@ -5170,7 +5185,7 @@
         // If running via file:// there is no point attempting fetch — browsers block it.
         // Show a clear error and fall back to whatever is already in localStorage.
         if (isFileProtocol()) {
-          const hasExisting = !!(localStorage.getItem(STORAGE_KEY_V3) || localStorage.getItem(STORAGE_KEY_V2));
+          const hasExisting = !!localStorage.getItem(STORAGE_DB);
           if (!hasExisting) {
             // First visit via file:// — show a prominent setup message instead of 40 raw items
             if (listEl)
@@ -5210,7 +5225,7 @@
           return;
         }
 
-        if (listEl && !localStorage.getItem(STORAGE_KEY_V3) && !localStorage.getItem(STORAGE_KEY_V2)) {
+        if (listEl && !localStorage.getItem(STORAGE_DB)) {
           listEl.innerHTML = '<p style="padding:1rem;color:var(--text-dim)">Loading defaults…</p>';
         }
 
@@ -5228,10 +5243,8 @@
             // Preserve user market prices by merging with existing data
             const existing = (() => {
               try {
-                const r3 = localStorage.getItem(STORAGE_KEY_V3);
-                if (r3) return JSON.parse(r3);
-                const r2 = localStorage.getItem(STORAGE_KEY_V2);
-                if (r2) return JSON.parse(r2);
+                const r = localStorage.getItem(STORAGE_DB);
+                if (r) return JSON.parse(r);
               } catch (e) {}
               return {};
             })();
@@ -5245,11 +5258,7 @@
               }
               seedDb[k] = norm;
             }
-            // Save to V3 (the key loadDb() reads first) so the fresh data isn't
-            // shadowed by stale V3 data. Also clear V2 to avoid the migration path
-            // picking up outdated data on subsequent loads.
-            localStorage.setItem(STORAGE_KEY_V3, JSON.stringify(seedDb));
-            localStorage.removeItem(STORAGE_KEY_V2);
+            localStorage.setItem(STORAGE_DB, JSON.stringify(seedDb));
           } catch (e) {}
         }
 
@@ -5350,7 +5359,7 @@
         const handleSkills = document.getElementById("resize-handle-skills");
         const handleLeft = document.getElementById("resize-handle-left");
         const handleMid = document.getElementById("resize-handle-mid");
-        const STORAGE_PANEL_WIDTHS = "eco_panel_widths_v2";
+        const STORAGE_PANEL_WIDTHS = "eco_panel_widths";
 
         // Restore saved widths
         try {
