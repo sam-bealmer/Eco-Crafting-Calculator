@@ -1,32 +1,167 @@
 [
-  { "name": "Campfire Cooking", "level": 1, "lavish": false },
-  { "name": "Farming", "level": 1, "lavish": false },
-  { "name": "Gathering", "level": 1, "lavish": false },
-  { "name": "Hunting", "level": 1, "lavish": false },
-  { "name": "Logging", "level": 1, "lavish": false },
-  { "name": "Mining", "level": 1, "lavish": false },
-  { "name": "Baking", "level": 1, "lavish": false },
-  { "name": "Butchery", "level": 1, "lavish": false },
-  { "name": "Cooking", "level": 1, "lavish": false },
-  { "name": "Advanced Cooking", "level": 1, "lavish": false },
-  { "name": "Cutting Edge Cooking", "level": 1, "lavish": false },
-  { "name": "Fertilizers", "level": 1, "lavish": false },
-  { "name": "Milling", "level": 1, "lavish": false },
-  { "name": "Carpentry", "level": 1, "lavish": false },
-  { "name": "Masonry", "level": 1, "lavish": false },
-  { "name": "Advanced Masonry", "level": 1, "lavish": false },
-  { "name": "Pottery", "level": 1, "lavish": false },
-  { "name": "Glassworking", "level": 1, "lavish": false },
-  { "name": "Shipwright", "level": 1, "lavish": false },
-  { "name": "Blacksmith", "level": 1, "lavish": false },
-  { "name": "Smelting", "level": 1, "lavish": false },
-  { "name": "Advanced Smelting", "level": 1, "lavish": false },
-  { "name": "Mechanics", "level": 1, "lavish": false },
-  { "name": "Basic Engineering", "level": 1, "lavish": false },
-  { "name": "Electronics", "level": 1, "lavish": false },
-  { "name": "Industry", "level": 1, "lavish": false },
-  { "name": "Oil Drilling", "level": 1, "lavish": false },
-  { "name": "Composites", "level": 1, "lavish": false },
-  { "name": "Paper Milling", "level": 1, "lavish": false },
-  { "name": "Tailoring", "level": 1, "lavish": false }
+  {
+    "name": "Advanced Baking",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Advanced Cooking",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Advanced Masonry",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Advanced Smelting",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Baking",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Basic Engineering",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Blacksmith",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Butchery",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Campfire Cooking",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Carpentry",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Composites",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Cooking",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Cutting Edge Cooking",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Electronics",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Farming",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Fertilizers",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Gathering",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Glassworking",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Hunting",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Industry",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Logging",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Masonry",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Mechanics",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Milling",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Mining",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Oil Drilling",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Painting",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Paper Milling",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Pottery",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Self Improvement",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Shipwright",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Smelting",
+    "level": 1,
+    "lavish": false
+  },
+  {
+    "name": "Tailoring",
+    "level": 1,
+    "lavish": false
+  }
 ]
